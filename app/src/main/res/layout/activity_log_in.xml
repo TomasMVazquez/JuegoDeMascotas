@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.LogInActivity"
+    android:background="@color/colorPrimaryDark"
+    >
+
+    <LinearLayout
+        android:id="@+id/llEmailLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorGreen"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:padding="10dp"
+        >
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_marginTop="55dp"
+            android:id="@+id/tiEmailSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <EditText
+                android:id="@+id/etEmailSigIn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/email_login"
+                android:inputType="textEmailAddress"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="15dp"
+                android:id="@+id/tiPassSignIn"
+                android:layout_width="0dp"
+                android:layout_weight="90"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etPassSigIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/pass_login"
+                    android:inputType="textPassword"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/ivPassVisible"
+                android:layout_gravity="center"
+                android:background="@color/noBackground"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_visibility_black_24dp"
+                android:scaleType="fitCenter"
+                />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_login"
+            android:layout_marginTop="15dp"
+            android:background="@color/colorAccent"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"
+            />
+
+        <RelativeLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnForgotPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_forgot"
+                android:background="@color/noBackground"
+                android:layout_alignParentStart="true"
+                android:textSize="12sp"
+                />
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_register"
+                android:background="@color/noBackground"
+                android:layout_alignParentEnd="true"
+                android:textSize="12sp"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTmbIngrsarCon"
+        android:layout_below="@id/llEmailLogIn"
+        android:layout_marginTop="10dp"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_weight="60"
+        android:layout_height="wrap_content"
+        android:text="@string/or"
+        android:textColor="@color/colorBlack"
+        android:layout_marginBottom="15dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/llOtherLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/tvTmbIngrsarCon"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        >
+        <!--<com.facebook.login.widget.LoginButton-->
+            <!--android:id="@+id/login_button_facebook"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginBottom="15dp"-->
+            <!--/>-->
+
+        <!--<com.google.android.gms.common.SignInButton-->
+            <!--android:id="@+id/btnGoogleSignIn"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="match_parent"-->
+            <!--/>-->
+    </LinearLayout>
+
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/juego_mascota"
+        android:scaleType="centerInside"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        />
+
+</RelativeLayout>
