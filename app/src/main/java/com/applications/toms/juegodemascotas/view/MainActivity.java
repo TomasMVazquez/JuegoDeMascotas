@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -19,6 +20,8 @@ import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AmigosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.JuegosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.MascotasFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int KEY_LOGIN=101;
 
-//    private FirebaseAuth mAuth;
-//    private static FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
+    private static FirebaseUser currentUser;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        currentUser = mAuth.getCurrentUser();
+        currentUser = mAuth.getCurrentUser();
     }
 
 
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //        new UCEHandler.Builder(this).build();
 
         //Auth
-//        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         //Toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.my_profile:
-//                        goLogIn();
+                        goLogIn();
 //                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.my_pets:
@@ -134,5 +137,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //Ir al Login
+    public void goLogIn(){
+        if (currentUser!=null){
+            FirebaseAuth.getInstance().signOut();
+//            LoginManager.getInstance().logOut();
+            currentUser = null;
+            Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
+        }else {
+            Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+            startActivityForResult(intent, KEY_LOGIN);
+        }
     }
 }

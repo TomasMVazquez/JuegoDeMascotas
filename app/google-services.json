@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "1019232112841",
+    "firebase_url": "https://juegodemascotas-2cb9d.firebaseio.com",
+    "project_id": "juegodemascotas-2cb9d",
+    "storage_bucket": "juegodemascotas-2cb9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019232112841:android:c6dec1ebd2158c9c",
+        "android_client_info": {
+          "package_name": "com.applications.toms.juegodemascotas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1019232112841-7n1f3kgftdkc9k6q78jvks3igm57moe4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.applications.toms.juegodemascotas",
+            "certificate_hash": "68528757a6bdd69d734e4e2ae217664e4cdc4871"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA0PJZc0ikfK2L0BySOeSxsme_9oMl8ys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1019232112841-t9rn8ma1ck3o9fp9s4g8n0k0vbaa98tp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
