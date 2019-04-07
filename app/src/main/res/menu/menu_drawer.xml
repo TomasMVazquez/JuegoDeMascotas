@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/main"
+        android:title="@string/main"
+        android:icon="@drawable/ic_location_on_black_24dp"/>
+
+    <item android:id="@+id/my_profile"
+        android:title="@string/my_profile"
+        android:icon="@drawable/ic_account_circle_black_24dp"/>
+
+    <item
+        android:id="@+id/my_pets"
+        android:title="@string/my_pets"
+        android:icon="@drawable/dog_48"
+        />
+
+    <item
+        android:id="@+id/plays"
+        android:title="@string/plays"
+        android:icon="@drawable/ic_dogpark_48"
+        />
+
+    <item
+        android:id="@+id/chat"
+        android:title="@string/chat"
+        android:icon="@drawable/ic_forum_black_24dp"
+        />
+
+</menu>
