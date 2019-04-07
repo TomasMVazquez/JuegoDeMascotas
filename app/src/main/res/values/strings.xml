@@ -4,10 +4,12 @@
     <string name="main">Inicio</string>
     <string name="my_profile">Perfil</string>
     <string name="my_pets">Mis Mascotas</string>
+    <string name="my_owner">Mi Dueñ@</string>
     <string name="chat">Chat</string>
     <string name="plays">Juegos a asistir</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="login">Iniciar Sesión</string>
 
     //TAB Navigation
     <string name="juegos_fragment">Juegos</string>
@@ -28,6 +30,12 @@
     <string name="or">También puedes ingresar con:</string>
 
     //Facebook
-    <string name="facebook_app_id">309019083071764</string> <string name="fb_login_protocol_scheme">fb309019083071764</string>
+    <string name="facebook_app_id">309019083071764</string>
+    <string name="fb_login_protocol_scheme">fb309019083071764</string>
+
+    //Profile
+    <string name="about_profile">En esta seccion puedes escribir un poco sobre vos, tus intereses, hobbies y otros. De esta manera cuando asistas a un juego el resto puede conocerte un poco</string>
+    <string name="about_pet">En esta seccion puedes escribir un poco sobre tu mascota, sus gustos, juegos favoritos y otros. De esta manera cuando asistas a un juego el resto puede conocer un poco de tu mascota</string>
+
 
 </resources>
