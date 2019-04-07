@@ -20,6 +20,7 @@ import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AmigosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.JuegosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.MascotasFragment;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     public void goLogIn(){
         if (currentUser!=null){
             FirebaseAuth.getInstance().signOut();
-//            LoginManager.getInstance().logOut();
+            LoginManager.getInstance().logOut();
             currentUser = null;
             Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
         }else {

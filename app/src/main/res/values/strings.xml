@@ -28,5 +28,6 @@
     <string name="or">También puedes ingresar con:</string>
 
     //Facebook
+    <string name="facebook_app_id">309019083071764</string> <string name="fb_login_protocol_scheme">fb309019083071764</string>
 
 </resources>
