@@ -35,6 +35,7 @@
 
     //Profile
     <string name="about_profile">En esta seccion puedes escribir un poco sobre vos, tus intereses, hobbies y otros. De esta manera cuando asistas a un juego el resto puede conocerte un poco</string>
+    <string name="address_profile">Aquí puedes poner tu barrio</string>
     <string name="about_pet">En esta seccion puedes escribir un poco sobre tu mascota, sus gustos, juegos favoritos y otros. De esta manera cuando asistas a un juego el resto puede conocer un poco de tu mascota</string>
 
 

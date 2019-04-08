@@ -204,6 +204,7 @@ public class LogInActivity extends AppCompatActivity {
 
     public void updateUI(final FirebaseUser user){
         if (user != null) {
+
             setResult(Activity.RESULT_OK);
             finish();
         }else {
