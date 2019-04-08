@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.DuenioController;
+import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AmigosFragment;
@@ -26,6 +30,11 @@ import com.applications.toms.juegodemascotas.view.fragment.MascotasFragment;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +42,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final int KEY_LOGIN=101;
+    public static final String KEY_DUENIO = "duenio";
 
     private FirebaseAuth mAuth;
     private static FirebaseUser currentUser;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -59,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Auth
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference();
 
         //Toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -90,8 +104,9 @@ public class MainActivity extends AppCompatActivity {
                             bundle.putString(ProfileActivity.KEY_USER_ID,"0");
                             intent.putExtras(bundle);
                             startActivity(intent);
+                        }else {
+                            goLogIn();
                         }
-                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.my_pets:
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
@@ -183,5 +198,50 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case KEY_LOGIN:
+                    createDataBaseOwner();
+                    break;
+            }
+        }
+    }
+
+    public void createDataBaseOwner(){
+        DuenioController duenioController = new DuenioController();
+        duenioController.giveDuenios(this, new ResultListener<List<Duenio>>() {
+            @Override
+            public void finish(List<Duenio> resultado) {
+                currentUser = mAuth.getCurrentUser();
+                String name = "";
+                if (currentUser.getDisplayName() != null) {
+                    name = currentUser.getDisplayName();
+                } else {
+                    name = currentUser.getEmail();
+                }
+                String photo = "";
+                if (currentUser.getPhotoUrl() != null) {
+                    photo = currentUser.getPhotoUrl().toString() + "?height=500";
+                }
+
+                Duenio newDuenio = new Duenio(currentUser.getUid(), name, currentUser.getEmail(), photo);
+
+                if (resultado!=null) {
+                    for (Duenio duenioDB : resultado) {
+                        if (!duenioDB.getUserId().equals(currentUser.getUid())) {
+                            DatabaseReference idOwnerDB = mReference.child(newDuenio.getUserId()).push();
+                            idOwnerDB.setValue(newDuenio);
+                        }
+                    }
+                }else {
+                    DatabaseReference idOwnerDB = mReference.push();
+                    idOwnerDB.setValue(newDuenio);
+                }
+            }
+        });
+    }
 
 }
