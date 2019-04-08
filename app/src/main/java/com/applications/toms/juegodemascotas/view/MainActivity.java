@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -82,6 +83,14 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.my_profile:
+                        if (currentUser!=null){
+                            Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(ProfileActivity.KEY_TYPE,"1");
+                            bundle.putString(ProfileActivity.KEY_USER_ID,"0");
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.my_pets:
@@ -173,4 +182,6 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, KEY_LOGIN);
         }
     }
+
+
 }

@@ -19,4 +19,11 @@
         Tools:src="@drawable/juego_mascota"
         />
 
+    <TextView
+        android:id="@+id/tvUid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        />
+
 </android.support.v7.widget.CardView>

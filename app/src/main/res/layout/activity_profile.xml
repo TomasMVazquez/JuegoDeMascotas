@@ -49,8 +49,8 @@
                 android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="NOMBRE PROFILE"
-                android:textSize="25sp"
+                tools:text="NOMBRE PROFILE"
+                android:textSize="22sp"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"
                 android:textAllCaps="true"
@@ -60,7 +60,7 @@
                 android:id="@+id/tvDir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Direccion, Buenos Aires"
+                tools:text="@string/address_profile"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 />
@@ -107,7 +107,7 @@
             />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvMyPets"
+            android:id="@+id/rvMyPetsOwner"
             android:layout_below="@id/tvMyPetsOwner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
