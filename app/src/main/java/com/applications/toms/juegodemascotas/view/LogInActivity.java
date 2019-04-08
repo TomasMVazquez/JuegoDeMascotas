@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.model.Duenio;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -149,13 +150,11 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 // App code
-                Toast.makeText(LogInActivity.this, "cancel", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException exception) {
                 // App code
-                Toast.makeText(LogInActivity.this, exception.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -204,9 +203,9 @@ public class LogInActivity extends AppCompatActivity {
 
     public void updateUI(final FirebaseUser user){
         if (user != null) {
-
             setResult(Activity.RESULT_OK);
             finish();
+
         }else {
             FirebaseAuth.getInstance().signOut();
             LoginManager.getInstance().logOut();

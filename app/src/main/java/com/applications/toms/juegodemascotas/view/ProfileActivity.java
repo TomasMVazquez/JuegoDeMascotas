@@ -1,21 +1,51 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.model.Duenio;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.util.List;
+
+import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class ProfileActivity extends AppCompatActivity {
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_USER_ID = "user_id";
+    public static final int KEY_CAMERA = 301;
+
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
+    private FirebaseStorage mStorage;
+    private static FirebaseUser currentUser;
 
     private ImageView ivProfile;
     private TextView tvName;
@@ -24,14 +54,17 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvMyPetsOwner;
     private RecyclerView rvMyPetsOwner;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         //Auth
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference();
+        mStorage = FirebaseStorage.getInstance();
 
         ivProfile = findViewById(R.id.ivProfile);
         tvName = findViewById(R.id.tvName);
@@ -39,6 +72,8 @@ public class ProfileActivity extends AppCompatActivity {
         tvAboutProfile = findViewById(R.id.tvAboutProfile);
         tvMyPetsOwner = findViewById(R.id.tvMyPetsOwner);
         rvMyPetsOwner = findViewById(R.id.rvMyPetsOwner);
+
+        FloatingActionButton fabImageProfile = findViewById(R.id.fabImageProfile);
 
         //intent
         Intent intent = getIntent();
@@ -49,17 +84,24 @@ public class ProfileActivity extends AppCompatActivity {
         if (type.equals("1")){
             tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
             //TODO que pasa si quiere ver el profile de otro usuario
-            fetchOwnerProfile(mAuth.getCurrentUser());
+            fetchOwnerProfile(currentUser);
         }else {
             tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
         }
+
+        //Boton de foto para cambiarla
+        fabImageProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EasyImage.openChooserWithGallery(ProfileActivity.this,getResources().getString(R.string.take_profile_picture),KEY_CAMERA);
+            }
+        });
 
     }
 
     public void fetchOwnerProfile(FirebaseUser user){
         String photo = user.getPhotoUrl().toString() + "?height=500";
         Glide.with(this).load(photo).into(ivProfile);
-//        Glide.with(this).load(user.getPhotoUrl()).into(ivProfile);
         if (user.getDisplayName()!=null) {
             tvName.setText(user.getDisplayName());
         }else {
@@ -69,6 +111,82 @@ public class ProfileActivity extends AppCompatActivity {
 //        tvAboutProfile.setText("");
         //TODO Recycler de mascotas/Owner
 //        rvMyPetsOwner.setAdapter("");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, ProfileActivity.this, new EasyImage.Callbacks() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
+
+            }
+
+            @Override
+            public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
+                StorageReference raiz = mStorage.getReference();
+                if (list.size() > 0) {
+                    File file = list.get(0);
+                    final Uri uri = Uri.fromFile(file);
+                    final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
+
+                    switch (i) {
+                        case KEY_CAMERA:
+                            final StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(uriTemp.getLastPathSegment());
+                            final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
+                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    //Poner nueva foto
+                                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
+                                    //Actualizar foto de Firebase User
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setPhotoUri(uri)
+                                            .build();
+                                    currentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                updatePhotoDataBase(currentUser.getUid(),currentUser.getPhotoUrl().toString());
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCanceled(EasyImage.ImageSource imageSource, int i) {
+
+            }
+        });
+
+    }
+
+    public void updatePhotoDataBase(final String userID, final String newPhoto){
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+                    if (duenio.getUserId().equals(userID)){
+                        //TODO funciona pero deja la direccion al celular de cada uno no la de firebase hay que agregarlo al storage y una direccion a esta
+                        mReference.child(childSnapShot.getKey()).child("fotoDuenio").setValue(newPhoto);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
