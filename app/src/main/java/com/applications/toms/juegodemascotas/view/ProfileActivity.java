@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Duenio;
@@ -74,6 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
         rvMyPetsOwner = findViewById(R.id.rvMyPetsOwner);
 
         FloatingActionButton fabImageProfile = findViewById(R.id.fabImageProfile);
+        FloatingActionButton fabEditProfile = findViewById(R.id.fabEditProfile);
 
         //intent
         Intent intent = getIntent();
@@ -97,16 +99,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        //Boton to edit profile
+        fabEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO proximo a realizar
+            }
+        });
+
     }
 
     public void fetchOwnerProfile(FirebaseUser user){
         String photo = user.getPhotoUrl().toString() + "?height=500";
         Glide.with(this).load(photo).into(ivProfile);
-        if (user.getDisplayName()!=null) {
-            tvName.setText(user.getDisplayName());
-        }else {
-            tvName.setText(user.getEmail());
-        }
+        tvName.setText(user.getDisplayName());
 //        tvDir.setText("");
 //        tvAboutProfile.setText("");
         //TODO Recycler de mascotas/Owner
@@ -134,6 +140,9 @@ public class ProfileActivity extends AppCompatActivity {
                     switch (i) {
                         case KEY_CAMERA:
                             final StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(uriTemp.getLastPathSegment());
+
+                            Toast.makeText(ProfileActivity.this, "Espere mientras cargamos su foto", Toast.LENGTH_SHORT).show();
+
                             final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
                             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -148,7 +157,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                updatePhotoDataBase(currentUser.getUid(),currentUser.getPhotoUrl().toString());
+                                                updatePhotoDataBase(currentUser.getUid(),nuevaFoto.getName());
                                             }
                                         }
                                     });
@@ -176,7 +185,6 @@ public class ProfileActivity extends AppCompatActivity {
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
                     Duenio duenio = childSnapShot.getValue(Duenio.class);
                     if (duenio.getUserId().equals(userID)){
-                        //TODO funciona pero deja la direccion al celular de cada uno no la de firebase hay que agregarlo al storage y una direccion a esta
                         mReference.child(childSnapShot.getKey()).child("fotoDuenio").setValue(newPhoto);
                     }
                 }
