@@ -35,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static FirebaseUser currentUser;
     private FirebaseDatabase mDatabase;
-    private DatabaseReference mReference;
+    private static DatabaseReference mReference;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -240,6 +241,25 @@ public class MainActivity extends AppCompatActivity {
                     DatabaseReference idOwnerDB = mReference.push();
                     idOwnerDB.setValue(newDuenio);
                 }
+            }
+        });
+    }
+
+    public static void updateProfilePicture(final String userID, final String newPhoto){
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+                    if (duenio.getUserId().equals(userID)){
+                        mReference.child(childSnapShot.getKey()).child("fotoDuenio").setValue(newPhoto);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }

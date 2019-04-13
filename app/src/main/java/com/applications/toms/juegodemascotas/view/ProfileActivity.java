@@ -5,16 +5,20 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,7 +40,7 @@ import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify {
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_USER_ID = "user_id";
@@ -103,9 +107,21 @@ public class ProfileActivity extends AppCompatActivity {
         fabEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO proximo a realizar
+                UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containerProfile,updateProfileFragment);
+                fragmentTransaction.commit();
             }
         });
+
+    }
+
+    public void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about){
+        tvName.setText(name);
+        tvDir.setText(dir);
+        tvAboutProfile.setText(about);
+        //TODO complete Data update database
 
     }
 
@@ -113,8 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
         String photo = user.getPhotoUrl().toString() + "?height=500";
         Glide.with(this).load(photo).into(ivProfile);
         tvName.setText(user.getDisplayName());
-//        tvDir.setText("");
-//        tvAboutProfile.setText("");
+
         //TODO Recycler de mascotas/Owner
 //        rvMyPetsOwner.setAdapter("");
     }
@@ -153,11 +168,13 @@ public class ProfileActivity extends AppCompatActivity {
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setPhotoUri(uri)
                                             .build();
+
                                     currentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                updatePhotoDataBase(currentUser.getUid(),nuevaFoto.getName());
+                                                //Cambiamos un metodo local por uno en el main
+                                                MainActivity.updateProfilePicture(currentUser.getUid(),nuevaFoto.getName());
                                             }
                                         }
                                     });
@@ -178,23 +195,23 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    public void updatePhotoDataBase(final String userID, final String newPhoto){
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(userID)){
-                        mReference.child(childSnapShot.getKey()).child("fotoDuenio").setValue(newPhoto);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public void updatePhotoDataBase(final String userID, final String newPhoto){
+//        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+//                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+//                    if (duenio.getUserId().equals(userID)){
+//                        mReference.child(childSnapShot.getKey()).child("fotoDuenio").setValue(newPhoto);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
 }
