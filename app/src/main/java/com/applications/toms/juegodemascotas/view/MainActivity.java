@@ -264,4 +264,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static void updateProfile(final String name, final String dir, final String birth, final String sex, final String about){
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+                    if (duenio.getUserId().equals(currentUser.getUid())){
+                        mReference.child(childSnapShot.getKey()).child("nombre").setValue(name);
+                        mReference.child(childSnapShot.getKey()).child("sexo").setValue(sex);
+                        mReference.child(childSnapShot.getKey()).child("fechaNacimiento").setValue(birth);
+                        mReference.child(childSnapShot.getKey()).child("direccion").setValue(dir);
+                        mReference.child(childSnapShot.getKey()).child("infoDuenio").setValue(about);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

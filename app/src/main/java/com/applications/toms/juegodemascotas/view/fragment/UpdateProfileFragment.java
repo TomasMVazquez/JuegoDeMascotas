@@ -4,6 +4,7 @@ package com.applications.toms.juegodemascotas.view.fragment;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,8 +18,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.model.Duenio;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -29,6 +36,8 @@ public class UpdateProfileFragment extends Fragment {
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     private static EditText etUpdateBirth;
     private EditText etUpdateName;
@@ -50,6 +59,11 @@ public class UpdateProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_update_profile, container, false);
 
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference();
+
         etUpdateBirth = view.findViewById(R.id.etUpdateBirth);
         etUpdateName = view.findViewById(R.id.etUpdateName);
         etUpdateDireccion = view.findViewById(R.id.etUpdateDireccion);
@@ -57,6 +71,12 @@ public class UpdateProfileFragment extends Fragment {
         rbSexMasc = view.findViewById(R.id.rbSexMasc);
         rbSexFem = view.findViewById(R.id.rbSexFem);
         rbSexOtro = view.findViewById(R.id.rbSexOtro);
+
+        checkDataBaseInfo(currentUser.getUid());
+
+        if (!currentUser.getDisplayName().equals("")){
+            etUpdateName.setText(currentUser.getDisplayName());
+        }
 
         etUpdateBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -66,18 +86,6 @@ public class UpdateProfileFragment extends Fragment {
                 }
             }
         });
-
-//        etUpdateBirth.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        showTruitonDatePickerDialog(v);
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
 
         RadioGroup radioGroup = view.findViewById(R.id.rgSex);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -116,6 +124,45 @@ public class UpdateProfileFragment extends Fragment {
     //interface comunication to activity
     public interface OnFragmentNotify{
         void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about);
+    }
+
+    //CheckDataBaseInfo
+    public void checkDataBaseInfo(final String userID){
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+                    if (duenio.getUserId().equals(userID)){
+                        if (duenio.getSexo()!=null) {
+                            if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateMasculino))){
+                                rbSexMasc.setChecked(true);
+                            }
+                            if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateFemenino))){
+                                rbSexFem.setChecked(true);
+                            }
+                            if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateOtro))){
+                                rbSexOtro.setChecked(true);
+                            }
+                        }
+                        if (duenio.getFechaNacimiento()!=null){
+                            etUpdateBirth.setText(duenio.getFechaNacimiento());
+                        }
+                        if (duenio.getDireccion()!=null){
+                            etUpdateDireccion.setText(duenio.getDireccion());
+                        }
+                        if (duenio.getInfoDuenio()!=null){
+                            etUpdateAbout.setText(duenio.getInfoDuenio());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //Date picker

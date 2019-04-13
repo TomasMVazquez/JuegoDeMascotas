@@ -46,11 +46,10 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     public static final String KEY_USER_ID = "user_id";
     public static final int KEY_CAMERA = 301;
 
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference mReference;
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mReference;
 
     private ImageView ivProfile;
     private TextView tvName;
@@ -65,11 +64,11 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         setContentView(R.layout.activity_profile);
 
         //Auth
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
+        mStorage = FirebaseStorage.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
-        mStorage = FirebaseStorage.getInstance();
 
         ivProfile = findViewById(R.id.ivProfile);
         tvName = findViewById(R.id.tvName);
@@ -121,18 +120,48 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         tvName.setText(name);
         tvDir.setText(dir);
         tvAboutProfile.setText(about);
-        //TODO complete Data update database
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
 
+        currentUser.updateProfile(profileUpdates);
+
+        MainActivity.updateProfile( name,  dir,  birth,  sex,  about);
     }
 
     public void fetchOwnerProfile(FirebaseUser user){
         String photo = user.getPhotoUrl().toString() + "?height=500";
         Glide.with(this).load(photo).into(ivProfile);
         tvName.setText(user.getDisplayName());
+        checkDataBaseInfo(currentUser.getUid());
 
         //TODO Recycler de mascotas/Owner
 //        rvMyPetsOwner.setAdapter("");
     }
+    //CheckDataBaseInfo
+    public void checkDataBaseInfo(final String userID){
+
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+                    if (duenio.getDireccion()!=null){
+                        tvDir.setText(duenio.getDireccion());
+                    }
+                    if (duenio.getInfoDuenio()!=null){
+                        tvAboutProfile.setText(duenio.getInfoDuenio());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -194,24 +223,5 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         });
 
     }
-
-//    public void updatePhotoDataBase(final String userID, final String newPhoto){
-//        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-//                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-//                    if (duenio.getUserId().equals(userID)){
-//                        mReference.child(childSnapShot.getKey()).child("fotoDuenio").setValue(newPhoto);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
 
 }

@@ -11,6 +11,7 @@ public class Duenio implements Serializable {
     private String email;
     private String sexo;
     private String fechaNacimiento;
+    private String direccion;
     private String fotoDuenio;
     private String infoDuenio;
     private List<Mascota> misMascotas;
@@ -28,10 +29,11 @@ public class Duenio implements Serializable {
         this.fotoDuenio = fotoDuenio;
     }
 
-    public Duenio(String userId, String nombre, String email, String sexo, String fechaNacimiento, String fotoDuenio, String infoDuenio, List<Mascota> misMascotas, List<Mascota> amigos) {
+    public Duenio(String userId, String nombre, String email,String direccion, String sexo, String fechaNacimiento, String fotoDuenio, String infoDuenio, List<Mascota> misMascotas, List<Mascota> amigos) {
         this.userId = userId;
         this.nombre = nombre;
         this.email = email;
+        this.direccion = direccion;
         this.sexo = sexo;
         this.fechaNacimiento = fechaNacimiento;
         this.fotoDuenio = fotoDuenio;
@@ -52,6 +54,10 @@ public class Duenio implements Serializable {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getDireccion() {
+        return direccion;
     }
 
     public String getSexo() {

@@ -59,7 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/updateDir"
-                    android:inputType="textPostalAddress"
+                    android:inputType="textPostalAddress|textCapWords"
                     />
             </android.support.design.widget.TextInputLayout>
 
@@ -85,14 +85,14 @@
                     />
                 <RadioButton
                     android:id="@+id/rbSexFem"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/updateFemenino"
                     />
                 <RadioButton
                     android:id="@+id/rbSexOtro"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/updateOtro"
@@ -125,7 +125,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/updateAbout"
-                    android:inputType="textMultiLine"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:lines="5"
                     android:textAlignment="textStart"
                     android:ellipsize="start"
