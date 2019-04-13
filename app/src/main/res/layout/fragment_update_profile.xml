@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.fragment.UpdateProfileFragment"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/updateTitle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:text="@string/updateTitle"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="84"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            >
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="15dp"
+                android:id="@+id/tiUpdateName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etUpdateName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/updateName"
+                    android:inputType="textPersonName"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="15dp"
+                android:id="@+id/tiUpdateDireccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etUpdateDireccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/updateDir"
+                    android:inputType="textPostalAddress"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sex"
+                android:textColor="@color/colorBlack"
+                />
+            <RadioGroup
+                android:id="@+id/rgSex"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rbSexMasc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/updateMasculino"
+                    />
+                <RadioButton
+                    android:id="@+id/rbSexFem"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/updateFemenino"
+                    />
+                <RadioButton
+                    android:id="@+id/rbSexOtro"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/updateOtro"
+                    />
+            </RadioGroup>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="15dp"
+                android:id="@+id/tiUpdateBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etUpdateBirth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/updateBirth"
+                    android:inputType="date"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="15dp"
+                android:id="@+id/tiUpdateAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etUpdateAbout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/updateAbout"
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:textAlignment="textStart"
+                    android:ellipsize="start"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnUpdateProfile"
+        android:text="@string/btn_update"
+        android:background="@color/colorAccent"
+        android:theme="@style/Widget.AppCompat.ActionButton"
+        android:textSize="25sp"
+        android:textColor="@color/colorWhite"
+        />
+
+</LinearLayout>

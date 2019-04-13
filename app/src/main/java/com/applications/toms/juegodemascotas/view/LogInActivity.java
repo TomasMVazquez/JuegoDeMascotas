@@ -38,6 +38,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -222,6 +223,11 @@ public class LogInActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //Confirm Email access
                             resetEmailAccess(email);
+                            //Update prifile name when creating
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(email)
+                                    .build();
+                            mAuth.getCurrentUser().updateProfile(profileUpdates);
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {

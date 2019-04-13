@@ -35,7 +35,19 @@
 
     //Profile
     <string name="about_profile">En esta seccion puedes escribir un poco sobre vos, tus intereses, hobbies y otros. De esta manera cuando asistas a un juego el resto puede conocerte un poco</string>
+    <string name="updateAbout">Escribe un poco sobre vos, tus intereses, hobbies y otros.</string>
     <string name="address_profile">Aquí puedes poner tu barrio</string>
     <string name="about_pet">En esta seccion puedes escribir un poco sobre tu mascota, sus gustos, juegos favoritos y otros. De esta manera cuando asistas a un juego el resto puede conocer un poco de tu mascota</string>
     <string name="take_profile_picture">Elige tu foto de perfil</string>
+    <string name="updateTitle">Actualice su perfíl</string>
+    <string name="updateName">Nombre Completo</string>
+    <string name="updateDir">Dirección/Barrio</string>
+    <string name="updateMasculino">Masculino</string>
+    <string name="updateFemenino">Femenino</string>
+    <string name="updateOtro">Prefiero no decir</string>
+    <string name="sex">Sexo:</string>
+    <string name="updateBirth">Fecha de Nacimiento</string>
+    <string name="btn_update">Actualizar Profile</string>
+
+
 </resources>
