@@ -42,8 +42,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.LogInActivity"></activity>
-        <activity android:name=".view.ProfileActivity"></activity>
+        <activity android:name=".view.LogInActivity" />
+        <activity android:name=".view.ProfileActivity" />
+        <activity android:name=".view.MyPetsActivity"></activity>
     </application>
 
 </manifest>

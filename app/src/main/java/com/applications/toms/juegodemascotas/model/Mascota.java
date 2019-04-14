@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.model;
 public class Mascota {
 
     //atributos
+    private String idPet;
     private String nombre;
     private String raza;
     private String tamanio;
@@ -17,7 +18,8 @@ public class Mascota {
     public Mascota() {
     }
 
-    public Mascota(String nombre, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, Duenio miDuenio) {
+    public Mascota(String idPet,String nombre, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, Duenio miDuenio) {
+        this.idPet = idPet;
         this.nombre = nombre;
         this.raza = raza;
         this.tamanio = tamanio;
@@ -29,6 +31,10 @@ public class Mascota {
     }
 
     //Getter
+    public String getIdPet() {
+        return idPet;
+    }
+
     public String getNombre() {
         return nombre;
     }
