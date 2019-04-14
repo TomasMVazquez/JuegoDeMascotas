@@ -147,7 +147,6 @@ public class AddPetFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (checkCompleteData()){
-                    //TODO agregar a la base de datos
                     MyPetsActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
                     prog= new ProgressDialog(getContext());
                     progressDialogPhoto(uploadingPhoto);
