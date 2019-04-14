@@ -15,6 +15,8 @@ import com.applications.toms.juegodemascotas.model.Mascota;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -23,7 +25,7 @@ import java.util.List;
 public class MyPetsAdapter extends RecyclerView.Adapter {
 
     private FirebaseStorage mStorage;
-
+    private static FirebaseUser currentUser;
     //Atributos
     private List<Mascota> mascotaList;
     private Context context;
@@ -46,6 +48,8 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         mStorage = FirebaseStorage.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
 
         context = viewGroup.getContext();
         //pasamos contexto a inflador
@@ -108,9 +112,9 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         public void cargar(Mascota mascota){
             tvCVNameMyPet.setText(mascota.getNombre());
             tvCVIdMyPet.setText(mascota.getIdPet());
-            tvCVIdMyOwner.setText(mascota.getMiDuenioId().getUserId());
+            tvCVIdMyOwner.setText(currentUser.getUid());
 
-            StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenioId().getUserId()).child(mascota.getFotoMascota());
+            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(mascota.getFotoMascota());
             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {

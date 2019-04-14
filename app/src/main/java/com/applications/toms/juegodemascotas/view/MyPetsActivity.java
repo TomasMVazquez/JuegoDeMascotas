@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -42,8 +43,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
 
     //Atributos
-    private MyPetsAdapter myPetsAdapter;
-    private List<Mascota> misMascotas = new ArrayList<>();
+    private static MyPetsAdapter myPetsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,16 +61,18 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         Bundle bundle = intent.getExtras();
         String idDuenio = bundle.getString(KEY_DUENIO_ID);
 
+        myPetsAdapter = new MyPetsAdapter(new ArrayList<Mascota>(),this,this);
+
         //Traigo Mascotas Duenio
         PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
         petsFromOwnerController.giveOwnerPets(idDuenio, this, new ResultListener<List<Mascota>>() {
             @Override
             public void finish(List<Mascota> resultado) {
-                misMascotas.addAll(resultado);
+                myPetsAdapter.setMascotaList(resultado);
             }
         });
 
-        myPetsAdapter = new MyPetsAdapter(misMascotas,this,this);
+
         //Recycler View
         RecyclerView recyclerViewPets = findViewById(R.id.recyclerMyPets);
         recyclerViewPets.hasFixedSize();
@@ -94,26 +96,32 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        misMascotas.clear();
+    }
+
+    @Override
     public void goToProfile(String idOwner) {
         //TODO ir al profile
+        Toast.makeText(this, "En Construccion", Toast.LENGTH_SHORT).show();
     }
 
     public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
-        final List<Mascota> mascotaList = new ArrayList<>();
+        final List<Mascota> mascotas = new ArrayList<>();
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
                     Duenio duenio = childSnapShot.getValue(Duenio.class);
                     if (duenio.getUserId().equals(currentUser.getUid())){
-                        if (duenio.getMisMascotas()!=null){
-                            mascotaList.addAll(duenio.getMisMascotas());
-                        }
-
                         String idPet = childSnapShot.getKey();
-                        Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,idPet);
-                        mascotaList.add(newMascota);
-                        mReference.child(idPet).child("misMascotas").setValue(mascotaList);
+                        mascotas.addAll(duenio.getMisMascotas());
+                        Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
+                        mascotas.add(newMascota);
+                        mReference.child(idPet).child("misMascotas").setValue(mascotas);
+                        myPetsAdapter.setMascotaList(mascotas);
+                        //TODO revisar el refresh
                     }
                 }
             }
