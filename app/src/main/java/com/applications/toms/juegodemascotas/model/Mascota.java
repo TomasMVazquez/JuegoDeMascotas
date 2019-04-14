@@ -11,14 +11,14 @@ public class Mascota {
     private String fechaNacimiento;
     private String fotoMascota;
     private String infoMascota;
-    private Duenio miDuenio;
+    private String miDuenioId;
 
     //Constructor
 
     public Mascota() {
     }
 
-    public Mascota(String idPet,String nombre, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, Duenio miDuenio) {
+    public Mascota(String idPet,String nombre, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, String miDuenio) {
         this.idPet = idPet;
         this.nombre = nombre;
         this.raza = raza;
@@ -27,7 +27,7 @@ public class Mascota {
         this.fechaNacimiento = fechaNacimiento;
         this.fotoMascota = fotoMascota;
         this.infoMascota = infoMascota;
-        this.miDuenio = miDuenio;
+        this.miDuenioId = miDuenio;
     }
 
     //Getter
@@ -63,8 +63,8 @@ public class Mascota {
         return infoMascota;
     }
 
-    public Duenio getMiDuenio() {
-        return miDuenio;
+    public String getMiDuenioId() {
+        return miDuenioId;
     }
 
     //Setter

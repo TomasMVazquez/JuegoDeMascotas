@@ -49,5 +49,21 @@
     <string name="updateBirth">Fecha de Nacimiento</string>
     <string name="btn_update">Actualizar Profile</string>
 
+    //Add Pet
+    <string name="add_pet_title">Mi Mascota</string>
+    <string name="add_pet_name">Nombre</string>
+    <string name="add_pet_birth">Fecha de Nacimiento</string>
+    <string name="add_pet_size">Tamaño</string>
+    <string name="add_pet_raza">Raza</string>
+    <string name="add_pet_photo">Foto Perfil</string>
+    <string name="add_pet_sex_m">Macho</string>
+    <string name="add_pet_sex_h">Hembra</string>
+    <string name="add_pet_info">Sobre tu mascota, sus gustos, juegos favoritos y otros</string>
+    <string name="add_pet_btn">Agregar Mascota</string>
+    <string name="spinner_small">Chico - 0kg a 15kg</string>
+    <string name="spinner_medium">Mediano - 15kg a 25kg</string>
+    <string name="spinner_large">Grande - más de 25kg</string>
+
+
 
 </resources>

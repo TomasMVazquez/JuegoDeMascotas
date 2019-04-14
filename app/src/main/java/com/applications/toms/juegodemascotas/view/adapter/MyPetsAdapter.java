@@ -108,9 +108,9 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         public void cargar(Mascota mascota){
             tvCVNameMyPet.setText(mascota.getNombre());
             tvCVIdMyPet.setText(mascota.getIdPet());
-            tvCVIdMyOwner.setText(mascota.getMiDuenio().getUserId());
+            tvCVIdMyOwner.setText(mascota.getMiDuenioId().getUserId());
 
-            StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenio().getUserId()).child(mascota.getFotoMascota());
+            StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenioId().getUserId()).child(mascota.getFotoMascota());
             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
