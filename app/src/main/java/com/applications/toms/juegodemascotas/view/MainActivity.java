@@ -110,7 +110,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     case R.id.my_pets:
-                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
+                        if (currentUser!=null){
+                            Intent intent = new Intent(MainActivity.this,MyPetsActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(MyPetsActivity.KEY_DUENIO_ID,currentUser.getUid());
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }else {
+                            goLogIn();
+                        }
+//                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.chat:
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
