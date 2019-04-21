@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.model.Duenio;
 import com.applications.toms.juegodemascotas.model.Mascota;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,25 +23,23 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-public class CirculePetsAdapter extends RecyclerView.Adapter {
+public class CirculeOwnerAdapter extends RecyclerView.Adapter {
 
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
     //Atributos
-    private List<Mascota> mascotaList;
+    private List<Duenio> duenio;
     private Context context;
-    private AdapterInterfaceCircule adapterInterfaceCircule;
+    private AdapterInterfaceCirculeOwner adapterInterfaceCirculeOwner;
 
-    //constructor
-    public CirculePetsAdapter(List<Mascota> mascotaList, Context context, AdapterInterfaceCircule adapterInterfaceCircule) {
-        this.mascotaList = mascotaList;
+    public CirculeOwnerAdapter(List<Duenio> duenio, Context context, AdapterInterfaceCirculeOwner adapterInterfaceCirculeOwner) {
+        this.duenio = duenio;
         this.context = context;
-        this.adapterInterfaceCircule = adapterInterfaceCircule;
+        this.adapterInterfaceCirculeOwner = adapterInterfaceCirculeOwner;
     }
 
-    //Setter
-    public void setMascotaList(List<Mascota> mascotaList) {
-        this.mascotaList = mascotaList;
+    public void setDuenio(List<Duenio> duenio) {
+        this.duenio = duenio;
         notifyDataSetChanged();
     }
 
@@ -58,31 +56,31 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         //inflamos view
         View view = inflater.inflate(R.layout.card_view_profile,viewGroup,false);
         //pasamos holder
-        CirculePetViewHolder petViewHolder = new CirculePetViewHolder(view);
+        CirculeOwnerViewHolder ownerViewHolder = new CirculeOwnerViewHolder(view);
 
-        return petViewHolder;
+        return ownerViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         //buscamos datos
-        Mascota mascota = mascotaList.get(i);
+        Duenio newDuenio = duenio.get(i);
         //casteamos
-        CirculePetViewHolder petViewHolder = (CirculePetViewHolder) viewHolder;
+        CirculeOwnerViewHolder ownerViewHolder = (CirculeOwnerViewHolder) viewHolder;
         //cargamos
-        petViewHolder.cargar(mascota);
+        ownerViewHolder.cargar(newDuenio);
     }
 
     @Override
     public int getItemCount() {
-        return mascotaList.size();
+        return duenio.size();
     }
 
-    public interface AdapterInterfaceCircule{
+    public interface AdapterInterfaceCirculeOwner{
         void goToProfile(String idOwner,String idPet);
     }
 
-    public class CirculePetViewHolder extends RecyclerView.ViewHolder{
+    public class CirculeOwnerViewHolder extends RecyclerView.ViewHolder{
 
         //Atributos
         private ImageView ivCardViewProfile;
@@ -90,7 +88,7 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         private TextView tvPetId;
 
         //Constructor
-        public CirculePetViewHolder(@NonNull View itemView) {
+        public CirculeOwnerViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ivCardViewProfile = itemView.findViewById(R.id.ivCardViewProfile);
@@ -100,18 +98,18 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    adapterInterfaceCircule.goToProfile(tvUid.getText().toString(),tvPetId.getText().toString());
+                    adapterInterfaceCirculeOwner.goToProfile(tvUid.getText().toString(),tvPetId.getText().toString());
                 }
             });
 
         }
 
         //metodos
-        public void cargar(Mascota mascota){
-            tvUid.setText(mascota.getMiDuenioId());
-            tvPetId.setText(mascota.getIdPet());
+        public void cargar(Duenio duenio){
+            tvUid.setText(duenio.getUserId());
+            tvPetId.setText("");
 
-            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(mascota.getFotoMascota());
+            StorageReference storageReference = mStorage.getReference().child(duenio.getUserId()).child(duenio.getFotoDuenio());
             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {

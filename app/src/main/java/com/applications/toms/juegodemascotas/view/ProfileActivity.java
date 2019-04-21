@@ -12,21 +12,22 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.DuenioController;
 import com.applications.toms.juegodemascotas.controller.PetsFromOwnerController;
 import com.applications.toms.juegodemascotas.model.Duenio;
 import com.applications.toms.juegodemascotas.model.Mascota;
 import com.applications.toms.juegodemascotas.util.ResultListener;
+import com.applications.toms.juegodemascotas.view.adapter.CirculeOwnerAdapter;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
-import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,14 +48,18 @@ import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify, CirculePetsAdapter.AdapterInterfaceCircule {
+public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify,
+        CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner {
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_USER_ID = "user_id";
-    public static final int KEY_CAMERA = 301;
+    public static final String KEY_PET_ID = "pet_id";
+    public static final int KEY_CAMERA_OWNER_PICTURE = 301;
+
 
     //Atributos
     private static CirculePetsAdapter circulePetsAdapter;
+    private static CirculeOwnerAdapter circuleOwnerAdapter;
 
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
@@ -67,6 +72,8 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private TextView tvAboutProfile;
     private TextView tvMyPetsOwner;
     private RecyclerView rvMyPetsOwner;
+
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,33 +100,47 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         //intent
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
-        String type = bundle.getString(KEY_TYPE);
+        type = bundle.getString(KEY_TYPE);
         String userId = bundle.getString(KEY_USER_ID);
+        String petId = bundle.getString(KEY_PET_ID);
 
         //Adapter
         circulePetsAdapter = new CirculePetsAdapter(new ArrayList<Mascota>(),this,this);
-
-        if (type.equals("1")){
-            tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
-            //TODO que pasa si quiere ver el profile de otro usuario
-            fetchOwnerProfile(currentUser);
-        }else {
-            tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
-        }
+        circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<Duenio>(),this,this);
 
         //Recycler View
         rvMyPetsOwner.hasFixedSize();
         //LayoutManager
         LinearLayoutManager llm = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         rvMyPetsOwner.setLayoutManager(llm);
-        //adaptador
-        rvMyPetsOwner.setAdapter(circulePetsAdapter);
+
+
+        //Check Pet or Owner
+        if (type.equals("1")){
+            tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
+            fetchOwnerProfile(currentUser);
+            //adaptador
+            rvMyPetsOwner.setAdapter(circulePetsAdapter);
+            //TODO que pasa si quiere ver el profile de otro usuario
+        }else if (type.equals("2")){
+            tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
+            fetchMascota(userId,petId);
+            fetchOwner(userId);
+            rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
+        }
+
+
 
         //Boton de foto para cambiarla
         fabImageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyImage.openChooserWithGallery(ProfileActivity.this,getResources().getString(R.string.take_profile_picture),KEY_CAMERA);
+                if (type.equals("1")) {
+                    EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
+                }else if (type.equals("2")){
+                    //TODO CAMBIAR FOTO PERRO
+                    Toast.makeText(ProfileActivity.this, "En contrsuccion", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -127,11 +148,16 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         fabEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerProfile,updateProfileFragment);
-                fragmentTransaction.commit();
+                if (type.equals("1")) {
+                    UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
+                    fragmentTransaction.commit();
+                }else if (type.equals("2")){
+                    //TODO EDITAR PERFIL PERRO
+                    Toast.makeText(ProfileActivity.this, "En contrsuccion", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -165,6 +191,54 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             @Override
             public void finish(List<Mascota> resultado) {
                 circulePetsAdapter.setMascotaList(resultado);
+            }
+        });
+    }
+
+    public void fetchMascota(final String idOwner, final String idPet){
+
+
+        PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
+
+        petsFromOwnerController.giveOwnerPets(idOwner, this, new ResultListener<List<Mascota>>() {
+            @Override
+            public void finish(List<Mascota> resultado) {
+                for (Mascota mascota:resultado) {
+                    if (mascota.getIdPet().equals(idPet)){
+                        StorageReference storageReference = mStorage.getReference().child(idOwner).child(mascota.getFotoMascota());
+                        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                //TODO poner foto si falla la foto?
+                            }
+                        });
+                        tvName.setText(mascota.getNombre());
+                        String additionalInfo = mascota.getRaza() + " - " + mascota.getTamanio() + " - " + mascota.getSexo();
+                        tvDir.setText(additionalInfo);
+                        tvAboutProfile.setText(mascota.getInfoMascota());
+                    }
+                }
+            }
+        });
+    }
+
+    public void fetchOwner(final String idOwner){
+        DuenioController duenioController = new DuenioController();
+        duenioController.giveDuenios(this, new ResultListener<List<Duenio>>() {
+            @Override
+            public void finish(List<Duenio> resultado) {
+                for (Duenio duenio: resultado) {
+                    if (duenio.getUserId().equals(idOwner)){
+                        List<Duenio> miDuenio = new ArrayList<>();
+                        miDuenio.add(duenio);
+                        circuleOwnerAdapter.setDuenio(miDuenio);
+                    }
+                }
             }
         });
     }
@@ -217,7 +291,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                     final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
 
                     switch (i) {
-                        case KEY_CAMERA:
+                        case KEY_CAMERA_OWNER_PICTURE:
                             final StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(uriTemp.getLastPathSegment());
 
                             Toast.makeText(ProfileActivity.this, "Espere mientras cargamos su foto", Toast.LENGTH_SHORT).show();
@@ -260,8 +334,18 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     }
 
     @Override
-    public void goToProfile(String idPet) {
-        //TODO Go to Profile of my pets
-        Toast.makeText(this, "En construccion", Toast.LENGTH_SHORT).show();
+    public void goToProfile(String idOwner,String idPet) {
+        
+        if (type.equals("1")) {
+            Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(ProfileActivity.KEY_TYPE,"2"); //TODO POR AHI ACA PONER 3 PARA CUANDO HAGA click en el duenio vaya goback
+            bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+            bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }else if (type.equals("2")){
+            Toast.makeText(this, "En construccion", Toast.LENGTH_SHORT).show();
+        }
     }
 }

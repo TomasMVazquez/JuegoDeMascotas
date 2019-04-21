@@ -78,7 +78,7 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
     }
 
     public interface AdapterInterface{
-        void goToProfile(String idOwner);
+        void goToProfile(String idOwner, Mascota mascota);
     }
 
     public class PetViewHolder extends RecyclerView.ViewHolder{
@@ -102,7 +102,8 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     AdapterInterface adapterInterface = (AdapterInterface) context;
-                    adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString());
+                    Mascota mascotaProfile = mascotaList.get(getAdapterPosition());
+                    adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), mascotaProfile);
                 }
             });
 

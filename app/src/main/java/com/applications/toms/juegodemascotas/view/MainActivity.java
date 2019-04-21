@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                             Bundle bundle = new Bundle();
                             bundle.putString(ProfileActivity.KEY_TYPE,"1");
                             bundle.putString(ProfileActivity.KEY_USER_ID,"0");
+                            bundle.putString(ProfileActivity.KEY_PET_ID,"0");
                             intent.putExtras(bundle);
                             startActivity(intent);
                         }else {
