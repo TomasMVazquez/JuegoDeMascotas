@@ -39,6 +39,7 @@
     <string name="address_profile">Aquí puedes poner tu barrio</string>
     <string name="about_pet">En esta seccion puedes escribir un poco sobre tu mascota, sus gustos, juegos favoritos y otros. De esta manera cuando asistas a un juego el resto puede conocer un poco de tu mascota</string>
     <string name="take_profile_picture">Elige tu foto de perfil</string>
+    <string name="take_profile_pet_picture">Elige la foto de perfil de tu mascota</string>
     <string name="updateTitle">Actualice su perfíl</string>
     <string name="updateName">Nombre Completo</string>
     <string name="updateDir">Dirección/Barrio</string>
