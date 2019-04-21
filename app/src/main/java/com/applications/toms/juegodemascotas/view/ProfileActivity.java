@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,7 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PetsFromOwnerController;
 import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.util.ResultListener;
+import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
+import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,15 +42,19 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify {
+public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify, CirculePetsAdapter.AdapterInterfaceCircule {
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_USER_ID = "user_id";
     public static final int KEY_CAMERA = 301;
+
+    //Atributos
+    private static CirculePetsAdapter circulePetsAdapter;
 
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
@@ -86,6 +96,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         String type = bundle.getString(KEY_TYPE);
         String userId = bundle.getString(KEY_USER_ID);
 
+        //Adapter
+        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<Mascota>(),this,this);
+
         if (type.equals("1")){
             tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
             //TODO que pasa si quiere ver el profile de otro usuario
@@ -93,6 +106,14 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         }else {
             tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
         }
+
+        //Recycler View
+        rvMyPetsOwner.hasFixedSize();
+        //LayoutManager
+        LinearLayoutManager llm = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        rvMyPetsOwner.setLayoutManager(llm);
+        //adaptador
+        rvMyPetsOwner.setAdapter(circulePetsAdapter);
 
         //Boton de foto para cambiarla
         fabImageProfile.setOnClickListener(new View.OnClickListener() {
@@ -135,9 +156,15 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         tvName.setText(user.getDisplayName());
         checkDataBaseInfo(currentUser.getUid());
 
-        //TODO Recycler de mascotas/Owner
-//        rvMyPetsOwner.setAdapter("");
+        PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
+        petsFromOwnerController.giveOwnerPets(user.getUid(), this, new ResultListener<List<Mascota>>() {
+            @Override
+            public void finish(List<Mascota> resultado) {
+                circulePetsAdapter.setMascotaList(resultado);
+            }
+        });
     }
+
     //CheckDataBaseInfo
     public void checkDataBaseInfo(final String userID){
 
@@ -224,4 +251,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     }
 
+    @Override
+    public void goToProfile(String idPet) {
+        //TODO Go to Profile of my pets
+        Toast.makeText(this, "En construccion", Toast.LENGTH_SHORT).show();
+    }
 }
