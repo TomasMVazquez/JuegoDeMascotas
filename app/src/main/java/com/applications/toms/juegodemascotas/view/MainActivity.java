@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 if (resultado!=null) {
                     for (Duenio duenioDB : resultado) {
                         if (!duenioDB.getUserId().equals(currentUser.getUid())) {
-                            DatabaseReference idOwnerDB = mReference.child(newDuenio.getUserId()).push();
+                            DatabaseReference idOwnerDB = mReference.push(); //mReference.child(newDuenio.getUserId()).push();
                             idOwnerDB.setValue(newDuenio);
                         }
                     }

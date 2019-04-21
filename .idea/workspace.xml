@@ -16,13 +16,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dfb05a3d-05cb-4e2c-a520-7f4dfe138540" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/CirculePetsAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/ProfileAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_view_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/card_view_profile.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -45,87 +42,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MyPetsActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="67" column="39" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
+            <state relative-caret-position="83">
+              <caret line="247" column="21" selection-start-line="247" selection-start-column="21" selection-end-line="247" selection-end-column="21" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CirculePetsAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/CirculePetsAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-68">
-              <caret line="61" selection-start-line="61" selection-end-line="61" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1011#1012#0" expanded="true" />
-                <element signature="e#1035#1036#0" expanded="true" />
-                <element signature="e#2478#2747#0" expanded="true" />
-                <element signature="e#2746#2747#0" expanded="true" />
-                <element signature="e#3127#3331#0" expanded="true" />
-                <element signature="e#3330#3331#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="card_view_profile.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_view_profile.xml">
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="19" column="33" lean-forward="true" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProfileActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ProfileActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="165" selection-start-line="165" selection-end-line="165" />
+            <state relative-caret-position="442">
+              <caret line="187" column="94" selection-start-line="187" selection-start-column="94" selection-end-line="187" selection-end-column="94" />
               <folding>
-                <element signature="e#4153#4195#0" expanded="true" />
-                <element signature="e#4361#4404#0" expanded="true" />
-                <element signature="e#4808#5063#0" expanded="true" />
-                <element signature="e#4971#5026#0" expanded="true" />
-                <element signature="e#5062#5063#0" expanded="true" />
-                <element signature="e#5141#5657#0" expanded="true" />
-                <element signature="e#5656#5657#0" expanded="true" />
-                <element signature="e#6592#6795#0" expanded="true" />
-                <element signature="e#6794#6795#0" expanded="true" />
-                <element signature="method#checkDataBaseInfo#0;class#ProfileActivity#0" />
                 <element signature="method#onActivityResult#0;class#ProfileActivity#0" />
-                <element signature="e#8996#10395#0" expanded="true" />
-                <element signature="e#9739#10329#0" expanded="true" />
-                <element signature="e#10328#10329#0" expanded="true" />
-                <element signature="e#10394#10395#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DaoPetsFromOwner.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/dao/DaoPetsFromOwner.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="269">
-              <caret line="32" selection-start-line="32" selection-end-line="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MyPetsAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/MyPetsAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="60" selection-start-line="60" selection-end-line="60" />
-              <folding>
-                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -137,10 +69,9 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="427">
-              <caret line="125" column="17" selection-start-line="125" selection-start-column="17" selection-end-line="125" selection-end-column="17" />
+            <state relative-caret-position="306">
+              <caret line="71" column="59" selection-start-line="71" selection-start-column="44" selection-end-line="71" selection-end-column="59" />
               <folding>
-                <element signature="e#3013#3038#0" expanded="true" />
                 <element signature="e#3465#3488#0" expanded="true" />
                 <element signature="e#4672#4689#0" expanded="true" />
               </folding>
@@ -2460,7 +2391,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/model/Juego.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/controller/DuenioController.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/dao/DaoOwner.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/LogInActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_log_in.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/model/Duenio.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/UpdateProfileFragment.java" />
@@ -2469,7 +2399,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/card_view_my_pet.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/dao/DaoPetsFromOwner.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/controller/PetsFromOwnerController.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/border.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_my_pets.xml" />
@@ -2478,14 +2407,16 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/model/Mascota.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/MyPetsAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/ProfileAdapterInterface.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/ProfileAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/CirculeProfileAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/CirculePetsAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_profile.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/card_view_profile.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/LogInActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java" />
       </list>
     </option>
   </component>
@@ -2743,7 +2674,7 @@
       <window_info id="Build Variants" order="2" sideWeight="0.50165015" side_tool="true" weight="0.24962178" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info active="true" anchor="right" id="Preview" order="5" visible="true" weight="0.32980332" />
+      <window_info anchor="right" id="Preview" order="5" weight="0.32980332" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32838285" />
@@ -2751,7 +2682,7 @@
       <window_info id="Captures" order="2" weight="0.25" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49834985" visible="true" weight="0.24281392" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49834985" visible="true" weight="0.24281392" />
       <window_info anchor="bottom" id="Build" order="7" weight="0.32838285" />
       <window_info anchor="right" id="Gradle" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -2995,13 +2926,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/LogInActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2329">
-          <caret line="217" column="73" selection-start-line="217" selection-start-column="73" selection-end-line="217" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_mis_mascotas.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MisMascotasActivity.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_amigos.xml">
@@ -3049,13 +2973,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
-          <caret line="121" column="26" selection-start-line="121" selection-start-column="26" selection-end-line="121" selection-end-column="106" />
         </state>
       </provider>
     </entry>
@@ -3164,41 +3081,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/dao/DaoPetsFromOwner.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/MyPetsAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="32" selection-start-line="32" selection-end-line="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="67" column="39" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="165" selection-start-line="165" selection-end-line="165" />
+        <state relative-caret-position="272">
+          <caret line="60" selection-start-line="60" selection-end-line="60" />
           <folding>
-            <element signature="e#4153#4195#0" expanded="true" />
-            <element signature="e#4361#4404#0" expanded="true" />
-            <element signature="e#4808#5063#0" expanded="true" />
-            <element signature="e#4971#5026#0" expanded="true" />
-            <element signature="e#5062#5063#0" expanded="true" />
-            <element signature="e#5141#5657#0" expanded="true" />
-            <element signature="e#5656#5657#0" expanded="true" />
-            <element signature="e#6592#6795#0" expanded="true" />
-            <element signature="e#6794#6795#0" expanded="true" />
-            <element signature="method#checkDataBaseInfo#0;class#ProfileActivity#0" />
-            <element signature="method#onActivityResult#0;class#ProfileActivity#0" />
-            <element signature="e#8996#10395#0" expanded="true" />
-            <element signature="e#9739#10329#0" expanded="true" />
-            <element signature="e#10328#10329#0" expanded="true" />
-            <element signature="e#10394#10395#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_view_profile.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="43" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
         </state>
       </provider>
     </entry>
@@ -3218,38 +3117,60 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/dao/DaoPetsFromOwner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="32" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/LogInActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="204" column="16" selection-start-line="204" selection-start-column="16" selection-end-line="204" selection-end-column="16" />
+          <folding>
+            <element signature="e#8845#9067#0" expanded="true" />
+            <element signature="e#9066#9067#0" expanded="true" />
+            <element signature="e#9553#9606#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="83">
+          <caret line="247" column="21" selection-start-line="247" selection-start-column="21" selection-end-line="247" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="83">
+          <caret line="125" column="49" selection-start-line="125" selection-start-column="49" selection-end-line="125" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_profile.xml">
       <provider editor-type-id="android-designer2">
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="427">
-          <caret line="125" column="17" selection-start-line="125" selection-start-column="17" selection-end-line="125" selection-end-column="17" />
+        <state relative-caret-position="306">
+          <caret line="71" column="59" selection-start-line="71" selection-start-column="44" selection-end-line="71" selection-end-column="59" />
           <folding>
-            <element signature="e#3013#3038#0" expanded="true" />
             <element signature="e#3465#3488#0" expanded="true" />
             <element signature="e#4672#4689#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/MyPetsAdapter.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="60" selection-start-line="60" selection-end-line="60" />
+        <state relative-caret-position="442">
+          <caret line="187" column="94" selection-start-line="187" selection-start-column="94" selection-end-line="187" selection-end-column="94" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="method#onActivityResult#0;class#ProfileActivity#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_view_profile.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="33" lean-forward="true" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="33" />
         </state>
       </provider>
     </entry>

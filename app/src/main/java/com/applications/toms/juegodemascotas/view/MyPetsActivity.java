@@ -116,7 +116,9 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
                     Duenio duenio = childSnapShot.getValue(Duenio.class);
                     if (duenio.getUserId().equals(currentUser.getUid())){
                         String idPet = childSnapShot.getKey();
-                        mascotas.addAll(duenio.getMisMascotas());
+                        if (duenio.getMisMascotas()!=null) {
+                            mascotas.addAll(duenio.getMisMascotas());
+                        }
                         Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
                         mascotas.add(newMascota);
                         mReference.child(idPet).child("misMascotas").setValue(mascotas);
