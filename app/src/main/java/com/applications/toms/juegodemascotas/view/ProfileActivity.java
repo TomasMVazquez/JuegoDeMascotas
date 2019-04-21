@@ -151,8 +151,12 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     }
 
     public void fetchOwnerProfile(FirebaseUser user){
-        String photo = user.getPhotoUrl().toString() + "?height=500";
-        Glide.with(this).load(photo).into(ivProfile);
+        if (user.getPhotoUrl()!=null) {
+            String photo = user.getPhotoUrl().toString() + "?height=500";
+            Glide.with(this).load(photo).into(ivProfile);
+        }else {
+
+        }
         tvName.setText(user.getDisplayName());
         checkDataBaseInfo(currentUser.getUid());
 
@@ -175,9 +179,13 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                     Duenio duenio = childSnapShot.getValue(Duenio.class);
                     if (duenio.getDireccion()!=null){
                         tvDir.setText(duenio.getDireccion());
+                    }else {
+                        tvDir.setText(getResources().getString(R.string.address_profile));
                     }
                     if (duenio.getInfoDuenio()!=null){
                         tvAboutProfile.setText(duenio.getInfoDuenio());
+                    }else {
+                        tvAboutProfile.setText(getResources().getString(R.string.about_profile));
                     }
                 }
             }
