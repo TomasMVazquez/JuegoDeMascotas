@@ -1,5 +1,7 @@
 package com.applications.toms.juegodemascotas.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -48,6 +50,8 @@ import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify,
         CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner {
 
@@ -55,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     public static final String KEY_USER_ID = "user_id";
     public static final String KEY_PET_ID = "pet_id";
     public static final int KEY_CAMERA_OWNER_PICTURE = 301;
+    public static final int KEY_CAMERA_PET_PICTURE = 302;
 
 
     //Atributos
@@ -74,6 +79,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private RecyclerView rvMyPetsOwner;
 
     private String type;
+    private String userId;
+    private String petId;
+    private String photoPetActual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +109,8 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         type = bundle.getString(KEY_TYPE);
-        String userId = bundle.getString(KEY_USER_ID);
-        String petId = bundle.getString(KEY_PET_ID);
+        userId = bundle.getString(KEY_USER_ID);
+        petId = bundle.getString(KEY_PET_ID);
 
         //Adapter
         circulePetsAdapter = new CirculePetsAdapter(new ArrayList<Mascota>(),this,this);
@@ -123,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             rvMyPetsOwner.setAdapter(circulePetsAdapter);
             //TODO que pasa si quiere ver el profile de otro usuario
         }else if (type.equals("2")){
+            fabEditProfile.setImageDrawable(getDrawable(R.drawable.ic_delete_forever_white_24dp));
             tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
             fetchMascota(userId,petId);
             fetchOwner(userId);
@@ -138,8 +147,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                 if (type.equals("1")) {
                     EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
                 }else if (type.equals("2")){
-                    //TODO CAMBIAR FOTO PERRO
-                    Toast.makeText(ProfileActivity.this, "En contrsuccion", Toast.LENGTH_SHORT).show();
+                    EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
                 }
             }
         });
@@ -155,8 +163,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                     fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
                     fragmentTransaction.commit();
                 }else if (type.equals("2")){
-                    //TODO EDITAR PERFIL PERRO
-                    Toast.makeText(ProfileActivity.this, "En contrsuccion", Toast.LENGTH_SHORT).show();
+                    deletePetProfile();
                 }
             }
         });
@@ -174,6 +181,31 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         currentUser.updateProfile(profileUpdates);
 
         MainActivity.updateProfile( name,  dir,  birth,  sex,  about);
+    }
+
+    public void deletePetProfile(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmación");
+        builder.setMessage("Por favor confirmar que usted quiere eliminar este perfil");
+        builder.setCancelable(false);
+        builder.setIcon(this.getDrawable(R.drawable.ic_delete_forever_white_24dp));
+        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(ProfileActivity.this,MainActivity.class);
+                MainActivity.deleteProfilePet(userId, petId);
+                startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "El perfil NO se elimino", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
     }
 
     public void fetchOwnerProfile(FirebaseUser user){
@@ -197,7 +229,6 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     public void fetchMascota(final String idOwner, final String idPet){
 
-
         PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
 
         petsFromOwnerController.giveOwnerPets(idOwner, this, new ResultListener<List<Mascota>>() {
@@ -205,6 +236,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             public void finish(List<Mascota> resultado) {
                 for (Mascota mascota:resultado) {
                     if (mascota.getIdPet().equals(idPet)){
+                        photoPetActual = mascota.getFotoMascota();
                         StorageReference storageReference = mStorage.getReference().child(idOwner).child(mascota.getFotoMascota());
                         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
@@ -316,6 +348,23 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                                             }
                                         }
                                     });
+                                }
+                            });
+                            break;
+
+                        case KEY_CAMERA_PET_PICTURE:
+                            final StorageReference nuevaFotoPet = raiz.child(userId).child(uriTemp.getLastPathSegment());
+
+                            Toast.makeText(ProfileActivity.this, "Espere mientras cargamos la foto", Toast.LENGTH_SHORT).show();
+
+                            final UploadTask uploadTaskPet = nuevaFotoPet.putFile(uriTemp);
+                            uploadTaskPet.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    //Poner nueva foto
+                                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
+                                    MainActivity.updatePhotoPet(userId,petId,photoPetActual,uriTemp.getLastPathSegment());
+
                                 }
                             });
                             break;

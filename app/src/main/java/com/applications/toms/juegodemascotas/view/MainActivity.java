@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,7 +21,9 @@ import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.DuenioController;
+import com.applications.toms.juegodemascotas.controller.PetsFromOwnerController;
 import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.model.Mascota;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
@@ -36,6 +39,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +54,13 @@ public class MainActivity extends AppCompatActivity {
     private static FirebaseUser currentUser;
     private FirebaseDatabase mDatabase;
     private static DatabaseReference mReference;
+    private static FirebaseStorage mStorage;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
+    private Menu menuToolbar;
+    private MenuItem item_toolbar;
 
     @Override
     protected void onStart() {
@@ -74,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
+        mStorage = FirebaseStorage.getInstance();
 
         //Toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -120,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                         }else {
                             goLogIn();
                         }
-//                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.chat:
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
@@ -179,8 +188,17 @@ public class MainActivity extends AppCompatActivity {
     //Inflar Menu para ver el boton de ir al Login
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menuToolbar = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu,menu);
+        item_toolbar = menu.findItem(R.id.login_toolbar);
+
+        if (currentUser!=null){
+            item_toolbar.setIcon(getDrawable(R.drawable.account_off_36));
+        }else {
+            item_toolbar.setIcon(getDrawable(R.drawable.ic_person_black_24dp));
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
     //On item Click del Menu
@@ -190,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.login_toolbar:
                 goLogIn();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -203,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
             LoginManager.getInstance().logOut();
             currentUser = null;
             Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
+            item_toolbar.setIcon(getDrawable(R.drawable.ic_person_black_24dp));
         }else {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivityForResult(intent, KEY_LOGIN);
@@ -215,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case KEY_LOGIN:
+                    item_toolbar.setIcon(getDrawable(R.drawable.account_off_36));
                     createDataBaseOwner();
                     break;
             }
@@ -286,6 +305,62 @@ public class MainActivity extends AppCompatActivity {
                         mReference.child(childSnapShot.getKey()).child("fechaNacimiento").setValue(birth);
                         mReference.child(childSnapShot.getKey()).child("direccion").setValue(dir);
                         mReference.child(childSnapShot.getKey()).child("infoDuenio").setValue(about);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void updatePhotoPet(final String idOwner, final String idPet, String oldPhoto , final String newPhoto){
+        StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
+        storageReference.delete();
+
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+                    if (duenio.getUserId().equals(idOwner)){
+                        List<Mascota> mascotas = duenio.getMisMascotas();
+                        for (Mascota m:mascotas) {
+                            if (m.getIdPet().equals(idPet)){
+                                mReference.child(childSnapShot.getKey()).child("misMascotas").child(String.valueOf(mascotas.indexOf(m))).child("fotoMascota").setValue(newPhoto);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    public static void deleteProfilePet(final String idOwner, final String idPet){
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
+                    Duenio duenio = childSnapShot.getValue(Duenio.class);
+                    if (duenio.getUserId().equals(idOwner)){
+                        List<Mascota> mascotas = duenio.getMisMascotas();
+                        for (Mascota m:mascotas) {
+                            if (m.getIdPet().equals(idPet)){
+                                mascotas.remove(m);
+                                StorageReference storageReference = mStorage.getReference().child(idOwner).child(m.getFotoMascota());
+                                storageReference.delete();
+                                mReference.child(childSnapShot.getKey()).child("misMascotas").setValue(mascotas);
+                                return;
+                            }
+                        }
                     }
                 }
             }
