@@ -102,9 +102,15 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
     }
 
     @Override
-    public void goToProfile(String idOwner) {
-        //TODO ir al profile
-        Toast.makeText(this, "En Construccion", Toast.LENGTH_SHORT).show();
+    public void goToProfile(String idOwner, Mascota mascotaProfile) {
+        Intent intent = new Intent(MyPetsActivity.this,ProfileActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileActivity.KEY_TYPE,"2");
+        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileActivity.KEY_PET_ID,mascotaProfile.getIdPet());
+        intent.putExtras(bundle);
+        startActivity(intent);
+
     }
 
     public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
@@ -115,15 +121,14 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
                     Duenio duenio = childSnapShot.getValue(Duenio.class);
                     if (duenio.getUserId().equals(currentUser.getUid())){
-                        String idPet = childSnapShot.getKey();
                         if (duenio.getMisMascotas()!=null) {
                             mascotas.addAll(duenio.getMisMascotas());
                         }
+                        String idPet = childSnapShot.getKey() + (mascotas.size()+1);
                         Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
                         mascotas.add(newMascota);
-                        mReference.child(idPet).child("misMascotas").setValue(mascotas);
+                        mReference.child(childSnapShot.getKey()).child("misMascotas").setValue(mascotas);
                         myPetsAdapter.setMascotaList(mascotas);
-                        //TODO revisar el refresh
                     }
                 }
             }
@@ -133,7 +138,6 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
             }
         });
-
-
     }
+
 }
