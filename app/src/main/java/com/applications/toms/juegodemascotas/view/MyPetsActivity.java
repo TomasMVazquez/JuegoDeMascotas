@@ -91,6 +91,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         final CollectionReference userRefMasc = db.collection(userFirestore)
                 .document(currentUser.getUid()).collection("misMascotas");
 
+        //todo cuando agrego no actualiza
         userRefMasc.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -144,8 +145,8 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
     public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
         final CollectionReference userRefMasc = db.collection(userFirestore)
                 .document(currentUser.getUid()).collection("misMascotas");
-        DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
-                .document(currentUser.getUid());
+
+
 
         final String idPet = userRefMasc.document().getId();
         Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
@@ -163,6 +164,9 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
                         //TODO
                     }
                 });
+
+        DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
+                .document(idPet);
 
         petsRef.set(newMascota).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

@@ -239,13 +239,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                 circulePetsAdapter.setMascotaList(misMascotas);
             }
         });
-//        PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
-//        petsFromOwnerController.giveOwnerPets(user.getUid(), this, new ResultListener<List<Mascota>>() {
-//            @Override
-//            public void finish(List<Mascota> resultado) {
-//                circulePetsAdapter.setMascotaList(resultado);
-//            }
-//        });
+
     }
 
     public void fetchMascota(final String idOwner, final String idPet){
@@ -276,40 +270,12 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             }
         });
 
-//        PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
-//
-//        petsFromOwnerController.giveOwnerPets(idOwner, this, new ResultListener<List<Mascota>>() {
-//            @Override
-//            public void finish(List<Mascota> resultado) {
-//                for (Mascota mascota:resultado) {
-//                    if (mascota.getIdPet().equals(idPet)){
-//                        photoPetActual = mascota.getFotoMascota();
-//                        StorageReference storageReference = mStorage.getReference().child(idOwner).child(mascota.getFotoMascota());
-//                        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                            @Override
-//                            public void onSuccess(Uri uri) {
-//                                Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
-//                            }
-//                        }).addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                //TODO poner foto si falla la foto?
-//                            }
-//                        });
-//                        tvName.setText(mascota.getNombre());
-//                        String additionalInfo = mascota.getRaza() + " - " + mascota.getTamanio() + " - " + mascota.getSexo();
-//                        tvDir.setText(additionalInfo);
-//                        tvAboutProfile.setText(mascota.getInfoMascota());
-//                    }
-//                }
-//            }
-//        });
     }
 
     public void fetchOwner(final String idOwner){
         DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
                 .document(idOwner);
-
+//todo no funcions foto duenio
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -319,19 +285,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                 circuleOwnerAdapter.setDuenio(miDuenio);
             }
         });
-//        DuenioController duenioController = new DuenioController();
-//        duenioController.giveDuenios(this, new ResultListener<List<Duenio>>() {
-//            @Override
-//            public void finish(List<Duenio> resultado) {
-//                for (Duenio duenio: resultado) {
-//                    if (duenio.getUserId().equals(idOwner)){
-//                        List<Duenio> miDuenio = new ArrayList<>();
-//                        miDuenio.add(duenio);
-//                        circuleOwnerAdapter.setDuenio(miDuenio);
-//                    }
-//                }
-//            }
-//        });
+
     }
 
     //CheckDataBaseInfo
