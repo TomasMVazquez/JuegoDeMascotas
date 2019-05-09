@@ -1,7 +1,9 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -33,6 +35,7 @@ import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AmigosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.JuegosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.MascotasFragment;
+import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private static FirebaseFirestore db;
     private static DatabaseReference mReference;
     private static FirebaseStorage mStorage;
+    private static Context context;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance();
 
         db = FirebaseFirestore.getInstance();
+        context = getApplicationContext();
 
         //Toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -324,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
     public static void updateProfile(final String name, final String dir, final String birth, final String sex, final String about){
         DocumentReference userRef = db.collection("Owners")
                 .document(currentUser.getUid());
+
         userRef.update(
                 "nombre",name,
                 "sexo", sex,
@@ -349,31 +355,40 @@ public class MainActivity extends AppCompatActivity {
         StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
         storageReference.delete();
 
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
+                .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
+
+        userRefMasc.update("fotoMascota",newPhoto).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(idOwner)){
-                        List<Mascota> mascotas = duenio.getMisMascotas();
-                        for (Mascota m:mascotas) {
-                            if (m.getIdPet().equals(idPet)){
-                                mReference.child(childSnapShot.getKey()).child("misMascotas").child(String.valueOf(mascotas.indexOf(m))).child("fotoMascota").setValue(newPhoto);
-                            }
-                        }
-                    }
-                }
+            public void onSuccess(Void aVoid) {
+                //TODO
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onFailure(@NonNull Exception e) {
+                //TODO
+            }
+        });
 
+        DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
+                .document(idPet);
+
+        mascRef.update("fotoMascota",newPhoto).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //TODO
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //TODO
             }
         });
 
     }
 
     public static void deleteProfilePet(final String idOwner, final String idPet){
+        //TODO DELETE profile pet
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
