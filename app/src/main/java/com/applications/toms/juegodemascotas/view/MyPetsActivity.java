@@ -87,7 +87,6 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
         myPetsAdapter = new MyPetsAdapter(new ArrayList<Mascota>(),this,this);
 
-        //TODO pets from store
         //Traigo Mascotas Duenio
         final CollectionReference userRefMasc = db.collection(userFirestore)
                 .document(currentUser.getUid()).collection("misMascotas");
