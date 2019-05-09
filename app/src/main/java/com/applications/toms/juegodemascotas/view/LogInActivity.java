@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -46,6 +47,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
+
 //    private GoogleSignInClient mGoogleSignInClient;
 
     private TextInputLayout tiPassSignIn;

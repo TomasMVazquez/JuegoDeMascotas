@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -14,9 +15,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
@@ -31,6 +34,10 @@ import com.applications.toms.juegodemascotas.view.fragment.AmigosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.JuegosFragment;
 import com.applications.toms.juegodemascotas.view.fragment.MascotasFragment;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -39,6 +46,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -53,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static FirebaseUser currentUser;
     private FirebaseDatabase mDatabase;
+    private static FirebaseFirestore db;
     private static DatabaseReference mReference;
     private static FirebaseStorage mStorage;
 
@@ -84,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
         mStorage = FirebaseStorage.getInstance();
+
+        db = FirebaseFirestore.getInstance();
 
         //Toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -241,79 +255,94 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createDataBaseOwner(){
-        DuenioController duenioController = new DuenioController();
-        duenioController.giveDuenios(this, new ResultListener<List<Duenio>>() {
+
+        //TODO MEJORAR ESTA PARTE
+        currentUser = mAuth.getCurrentUser();
+        String name = "";
+        if (currentUser.getDisplayName() != null) {
+            name = currentUser.getDisplayName();
+        } else {
+            name = currentUser.getEmail();
+        }
+        String photo = "";
+        if (currentUser.getPhotoUrl() != null) {
+            photo = currentUser.getPhotoUrl().toString() + "?height=500";
+        }
+
+        final Duenio newDuenio = new Duenio(currentUser.getUid(), name, currentUser.getEmail(), photo);
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
+
+        final DocumentReference userRef = db.collection(getString(R.string.collection_users))
+                .document(currentUser.getUid());
+
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void finish(List<Duenio> resultado) {
-                currentUser = mAuth.getCurrentUser();
-                String name = "";
-                if (currentUser.getDisplayName() != null) {
-                    name = currentUser.getDisplayName();
-                } else {
-                    name = currentUser.getEmail();
-                }
-                String photo = "";
-                if (currentUser.getPhotoUrl() != null) {
-                    photo = currentUser.getPhotoUrl().toString() + "?height=500";
-                }
-
-                Duenio newDuenio = new Duenio(currentUser.getUid(), name, currentUser.getEmail(), photo);
-
-                if (resultado!=null) {
-                    for (Duenio duenioDB : resultado) {
-                        if (!duenioDB.getUserId().equals(currentUser.getUid())) {
-                            DatabaseReference idOwnerDB = mReference.push(); //mReference.child(newDuenio.getUserId()).push();
-                            idOwnerDB.setValue(newDuenio);
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (!documentSnapshot.exists()){
+                    Toast.makeText(MainActivity.this, "Usuario No Existe Creado...", Toast.LENGTH_SHORT).show();
+                    userRef.set(newDuenio).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(MainActivity.this, "LogInSuccesful", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, userRef.getId(), Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(MainActivity.this, "Error Log In", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
+                    });
                 }else {
-                    DatabaseReference idOwnerDB = mReference.push();
-                    idOwnerDB.setValue(newDuenio);
+                    Toast.makeText(MainActivity.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
     }
 
-    public static void updateProfilePicture(final String userID, final String newPhoto){
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+    public static void updateProfilePicture(final String newPhoto){
+        DocumentReference userRef = db.collection("Owners")
+                .document(currentUser.getUid());
+        userRef.update("fotoDuenio",newPhoto)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(userID)){
-                        mReference.child(childSnapShot.getKey()).child("fotoDuenio").setValue(newPhoto);
-                    }
-                }
-            }
+            public void onSuccess(Void aVoid) {
 
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onFailure(@NonNull Exception e) {
 
             }
         });
     }
 
     public static void updateProfile(final String name, final String dir, final String birth, final String sex, final String about){
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(currentUser.getUid())){
-                        mReference.child(childSnapShot.getKey()).child("nombre").setValue(name);
-                        mReference.child(childSnapShot.getKey()).child("sexo").setValue(sex);
-                        mReference.child(childSnapShot.getKey()).child("fechaNacimiento").setValue(birth);
-                        mReference.child(childSnapShot.getKey()).child("direccion").setValue(dir);
-                        mReference.child(childSnapShot.getKey()).child("infoDuenio").setValue(about);
+        DocumentReference userRef = db.collection("Owners")
+                .document(currentUser.getUid());
+        userRef.update(
+                "nombre",name,
+                "sexo", sex,
+                "fechaNacimiento",birth,
+                "direccion",dir,
+                "infoDuenio",about
+                )
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
                     }
-                }
-            }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+                    }
+                });
     }
 
     public static void updatePhotoPet(final String idOwner, final String idPet, String oldPhoto , final String newPhoto){

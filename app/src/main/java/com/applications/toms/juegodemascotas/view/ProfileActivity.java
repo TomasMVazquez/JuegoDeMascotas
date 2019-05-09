@@ -40,6 +40,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -70,6 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private static FirebaseUser currentUser;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
+    private FirebaseFirestore db;
 
     private ImageView ivProfile;
     private TextView tvName;
@@ -94,6 +98,8 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         mStorage = FirebaseStorage.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
+
+        db = FirebaseFirestore.getInstance();
 
         ivProfile = findViewById(R.id.ivProfile);
         tvName = findViewById(R.id.tvName);
@@ -218,6 +224,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         tvName.setText(user.getDisplayName());
         checkDataBaseInfo(currentUser.getUid());
 
+
         PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
         petsFromOwnerController.giveOwnerPets(user.getUid(), this, new ResultListener<List<Mascota>>() {
             @Override
@@ -277,30 +284,35 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     //CheckDataBaseInfo
     public void checkDataBaseInfo(final String userID){
+        final DocumentReference userRef = db.collection(getString(R.string.collection_users))
+                .document(userID);
 
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getDireccion()!=null){
-                        tvDir.setText(duenio.getDireccion());
-                    }else {
-                        tvDir.setText(getResources().getString(R.string.address_profile));
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Duenio duenio = document.toObject(Duenio.class);
+                        if (duenio.getDireccion()!=null){
+                            tvDir.setText(duenio.getDireccion());
+                        }else {
+                            tvDir.setText(getResources().getString(R.string.address_profile));
+                        }
+                        if (duenio.getInfoDuenio()!=null){
+                            tvAboutProfile.setText(duenio.getInfoDuenio());
+                        }else {
+                            tvAboutProfile.setText(getResources().getString(R.string.about_profile));
+                        }
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "No Existe", Toast.LENGTH_SHORT).show();
                     }
-                    if (duenio.getInfoDuenio()!=null){
-                        tvAboutProfile.setText(duenio.getInfoDuenio());
-                    }else {
-                        tvAboutProfile.setText(getResources().getString(R.string.about_profile));
-                    }
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Task Unsuccesful", Toast.LENGTH_SHORT).show();
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
         });
+
     }
 
 
@@ -344,7 +356,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 //Cambiamos un metodo local por uno en el main
-                                                MainActivity.updateProfilePicture(currentUser.getUid(),nuevaFoto.getName());
+                                                MainActivity.updateProfilePicture(nuevaFoto.getName());
                                             }
                                         }
                                     });
