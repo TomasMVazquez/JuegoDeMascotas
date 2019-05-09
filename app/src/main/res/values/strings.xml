@@ -29,6 +29,10 @@
     <string name="no_account_toast">Esta cuenta no esta registrada, si la quiere registrar haga click en registrar</string>
     <string name="or">También puedes ingresar con:</string>
 
+     //Firestore Strings
+    <string name="collection_users">Owners</string>
+    <string name="collection_pets">Pets</string>
+
     //Facebook
     <string name="facebook_app_id">309019083071764</string>
     <string name="fb_login_protocol_scheme">fb309019083071764</string>
