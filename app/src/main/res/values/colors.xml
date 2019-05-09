@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorPrimary_light">#B2DFDB</color>
 
+    <color name="colorTeal_light">#e7f5f4</color>
+    <color name="colorTeal_down">#66b2b2</color>
+    <color name="colorTeal">#008080</color>
+
     <color name="colorAccent">#795548</color>
 
     <color name="noBackground">#00ffffff</color>
@@ -12,13 +16,9 @@
     <color name="colorBlack">#000000</color>
     <color name="colorBlueGray">#607D8B</color>
     <color name="colorGray">#9E9E9E</color>
-    <color name="colorLightBlue">#03A9F4</color>
-    <color name="colorBlue">#2196F3</color>
-    <color name="colorIndigo">#536DFE</color>
-    <color name="colorGreen">#4CAF50</color>
-    <color name="colorGreenDark">#388E3C</color>
 
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="divider">#BDBDBD</color>
+    <color name="bckLog">#e9e9e9</color>
 </resources>

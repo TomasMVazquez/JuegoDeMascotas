@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.LogInActivity"
+    android:background="@color/colorTeal_light"
     >
 
     <LinearLayout
@@ -13,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorTeal_down"
         android:layout_alignParentTop="true"
         android:layout_marginTop="80dp"
         android:layout_marginStart="25dp"
@@ -95,7 +96,7 @@
                 android:background="@color/noBackground"
                 android:layout_alignParentStart="true"
                 android:textSize="12sp"
-                android:textColor="@color/divider"
+                android:textColor="@color/colorBlueGray"
                 />
 
             <Button
@@ -106,7 +107,7 @@
                 android:background="@color/noBackground"
                 android:layout_alignParentEnd="true"
                 android:textSize="12sp"
-                android:textColor="@color/divider"
+                android:textColor="@color/colorBlueGray"
                 />
         </RelativeLayout>
 
