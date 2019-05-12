@@ -1,6 +1,9 @@
 package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -105,24 +108,26 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         }
 
         //metodos
-        public void cargar(Duenio duenio){
+        public void cargar(final Duenio duenio){
             tvUid.setText(duenio.getUserId());
             tvPetId.setText("");
-
-            StorageReference storageReference = mStorage.getReference().child(duenio.getUserId()).child(duenio.getFotoDuenio());
-            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(context).load(uri).into(ivCardViewProfile);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //TODO poner foto si falla la foto?
-                }
-            });
+            if (duenio.getFotoDuenio().equals("")){
+                Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewProfile);
+            }else {
+                StorageReference storageReference = mStorage.getReference().child(duenio.getUserId()).child(duenio.getFotoDuenio());
+                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(context).load(uri).into(ivCardViewProfile);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Glide.with(context).load(duenio.getFotoDuenio()).into(ivCardViewProfile);
+                    }
+                });
+            }
         }
-
     }
 
 }

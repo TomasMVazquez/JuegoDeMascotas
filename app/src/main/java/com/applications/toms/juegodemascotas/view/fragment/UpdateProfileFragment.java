@@ -19,6 +19,9 @@ import android.widget.RadioGroup;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Duenio;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,18 +29,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class UpdateProfileFragment extends Fragment {
 
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference mReference;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private static FirebaseFirestore db;
 
     private static EditText etUpdateBirth;
     private EditText etUpdateName;
@@ -61,8 +68,7 @@ public class UpdateProfileFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance();
-        mReference = mDatabase.getReference();
+        db = FirebaseFirestore.getInstance();
 
         etUpdateBirth = view.findViewById(R.id.etUpdateBirth);
         etUpdateName = view.findViewById(R.id.etUpdateName);
@@ -72,12 +78,15 @@ public class UpdateProfileFragment extends Fragment {
         rbSexFem = view.findViewById(R.id.rbSexFem);
         rbSexOtro = view.findViewById(R.id.rbSexOtro);
 
+        //buscar info a la base de datos
         checkDataBaseInfo(currentUser.getUid());
 
+        //Si no tiene nombre poner vacio
         if (!currentUser.getDisplayName().equals("")){
             etUpdateName.setText(currentUser.getDisplayName());
         }
 
+        //fecha de nacimiento
         etUpdateBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -87,6 +96,7 @@ public class UpdateProfileFragment extends Fragment {
             }
         });
 
+        //El genero de la persona
         RadioGroup radioGroup = view.findViewById(R.id.rgSex);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -104,6 +114,7 @@ public class UpdateProfileFragment extends Fragment {
         });
 
 
+        //Boton actualizar
         Button btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
         btnUpdateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,39 +139,33 @@ public class UpdateProfileFragment extends Fragment {
 
     //CheckDataBaseInfo
     public void checkDataBaseInfo(final String userID){
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        DocumentReference userRef = db.collection("Owners")
+                .document(userID);
+
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(userID)){
-                        if (duenio.getSexo()!=null) {
-                            if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateMasculino))){
-                                rbSexMasc.setChecked(true);
-                            }
-                            if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateFemenino))){
-                                rbSexFem.setChecked(true);
-                            }
-                            if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateOtro))){
-                                rbSexOtro.setChecked(true);
-                            }
-                        }
-                        if (duenio.getFechaNacimiento()!=null){
-                            etUpdateBirth.setText(duenio.getFechaNacimiento());
-                        }
-                        if (duenio.getDireccion()!=null){
-                            etUpdateDireccion.setText(duenio.getDireccion());
-                        }
-                        if (duenio.getInfoDuenio()!=null){
-                            etUpdateAbout.setText(duenio.getInfoDuenio());
-                        }
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Duenio duenio = documentSnapshot.toObject(Duenio.class);
+                if (duenio.getSexo()!=null) {
+                    if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateMasculino))){
+                        rbSexMasc.setChecked(true);
+                    }
+                    if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateFemenino))){
+                        rbSexFem.setChecked(true);
+                    }
+                    if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateOtro))){
+                        rbSexOtro.setChecked(true);
                     }
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                if (duenio.getFechaNacimiento()!=null){
+                    etUpdateBirth.setText(duenio.getFechaNacimiento());
+                }
+                if (duenio.getDireccion()!=null){
+                    etUpdateDireccion.setText(duenio.getDireccion());
+                }
+                if (duenio.getInfoDuenio()!=null){
+                    etUpdateAbout.setText(duenio.getInfoDuenio());
+                }
             }
         });
     }
