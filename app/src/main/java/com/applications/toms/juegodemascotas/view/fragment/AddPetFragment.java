@@ -83,6 +83,7 @@ public class AddPetFragment extends Fragment {
         etAddPetRaza = view.findViewById(R.id.etAddPetRaza);
         etAddPetInfo = view.findViewById(R.id.etAddPetInfo);
 
+        //Fecha nacimiento mascota
         etAddPetBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -93,6 +94,7 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //Seleccion del tamanio de mascota
         Spinner spinnerAddPetSize = view.findViewById(R.id.spinnerAddPetSize);
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(getResources().getString(R.string.add_pet_size));
@@ -114,6 +116,7 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //botones del genero
         final RadioButton rbAddPetSexMasc = view.findViewById(R.id.rbAddPetSexMasc);
         final RadioButton rbAddPetSexFem = view.findViewById(R.id.rbAddPetSexFem);
 
@@ -130,6 +133,7 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //foto para la mascota
         ivAddPetPhoto = view.findViewById(R.id.ivAddPetPhoto);
 
         FloatingActionButton fabAddPetPhoto = view.findViewById(R.id.fabAddPetPhoto);
@@ -140,9 +144,8 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //Boton agregar mascota
         Button btnAddPet = view.findViewById(R.id.btnAddPet);
-
-
         btnAddPet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +162,7 @@ public class AddPetFragment extends Fragment {
         return view;
     }
 
+    //Checkear que to do este comeplto
     public Boolean checkCompleteData(){
 
         if (etAddPetName.getText().equals("")){
@@ -185,6 +189,7 @@ public class AddPetFragment extends Fragment {
         return true;
     }
 
+    //Progess dialogo para esperar
     public void progressDialogPhoto(Boolean detener){
         //TODO Mejorar el progress dialog a uno mas lindo
         //Progess dialog
@@ -203,6 +208,7 @@ public class AddPetFragment extends Fragment {
 
     }
 
+    //Activity resullt de la imagen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -118,6 +118,7 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
 
+        //Boton olvodar contrasena
         btnForgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,6 +205,7 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
+    //Actualizar User Interface
     public void updateUI(final FirebaseUser user){
         if (user != null) {
             setResult(Activity.RESULT_OK);
@@ -217,6 +219,7 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
+    //Crear acceso con EMAIL
     private void createEmailAccess(final String email, final String pass){
         mAuth.createUserWithEmailAndPassword(email,pass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -240,6 +243,7 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
+    //Reset pass con acceso con email
     private void resetEmailAccess(String email){
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -253,6 +257,7 @@ public class LogInActivity extends AppCompatActivity {
                 });
     }
 
+    //Manejando el resultado del acceso con email
     private void handleEmailAccess(final String email, final String pass){
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -270,6 +275,7 @@ public class LogInActivity extends AppCompatActivity {
                 });
     }
 
+    //Manejando acceso con facebook
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)

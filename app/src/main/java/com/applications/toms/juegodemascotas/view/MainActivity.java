@@ -66,9 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private static FirebaseUser currentUser;
-    private FirebaseDatabase mDatabase;
     private static FirebaseFirestore db;
-    private static DatabaseReference mReference;
     private static FirebaseStorage mStorage;
     private static Context context;
 
@@ -97,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Auth
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
-        mReference = mDatabase.getReference();
         mStorage = FirebaseStorage.getInstance();
 
         db = FirebaseFirestore.getInstance();
@@ -220,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+
     //On item Click del Menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -246,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Resultado del activity Result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -259,9 +257,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Crear la base de datos
     public void createDataBaseOwner(){
 
-        //TODO MEJORAR ESTA PARTE
+        //TODO FUNCIONA PERO MEJORAR ESTA PARTE
         currentUser = mAuth.getCurrentUser();
         String name = "";
         if (currentUser.getDisplayName() != null) {
@@ -288,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (!documentSnapshot.exists()){
-                    Toast.makeText(MainActivity.this, "Usuario No Existe Creado...", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Usuario No Existe Creando...", Toast.LENGTH_SHORT).show();
                     userRef.set(newDuenio).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -301,13 +300,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }else {
-                    Toast.makeText(MainActivity.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 
+    //Actualizar la foto de perfil de la persona
     public static void updateProfilePicture(final String newPhoto){
         DocumentReference userRef = db.collection("Owners")
                 .document(currentUser.getUid());
@@ -315,17 +315,18 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-
+                //TODO
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                //TODO
             }
         });
     }
 
+    //Actualizar el perfil de la persona
     public static void updateProfile(final String name, final String dir, final String birth, final String sex, final String about){
         DocumentReference userRef = db.collection("Owners")
                 .document(currentUser.getUid());
@@ -340,17 +341,18 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        //TODO
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        //TODO
                     }
                 });
     }
 
+    //Actualizar la foto de perfil de la mascota
     public static void updatePhotoPet(final String idOwner, final String idPet, String oldPhoto , final String newPhoto){
         StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
         storageReference.delete();
@@ -387,31 +389,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Borrar el perfil de la mascota
     public static void deleteProfilePet(final String idOwner, final String idPet){
         //TODO DELETE profile pet
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
+                .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
+
+        userRefMasc.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(idOwner)){
-                        List<Mascota> mascotas = duenio.getMisMascotas();
-                        for (Mascota m:mascotas) {
-                            if (m.getIdPet().equals(idPet)){
-                                mascotas.remove(m);
-                                StorageReference storageReference = mStorage.getReference().child(idOwner).child(m.getFotoMascota());
-                                storageReference.delete();
-                                mReference.child(childSnapShot.getKey()).child("misMascotas").setValue(mascotas);
-                                return;
-                            }
-                        }
-                    }
-                }
+            public void onSuccess(Void aVoid) {
+                //todo
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onFailure(@NonNull Exception e) {
+                //todo
+            }
+        });
 
+        DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
+                .document(idPet);
+
+        mascRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //todo
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //todo
             }
         });
     }

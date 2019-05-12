@@ -68,15 +68,12 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     public static final int KEY_CAMERA_OWNER_PICTURE = 301;
     public static final int KEY_CAMERA_PET_PICTURE = 302;
 
-
     //Atributos
     private static CirculePetsAdapter circulePetsAdapter;
     private static CirculeOwnerAdapter circuleOwnerAdapter;
 
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference mReference;
     private FirebaseFirestore db;
 
     private ImageView ivProfile;
@@ -100,8 +97,6 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
-        mReference = mDatabase.getReference();
 
         db = FirebaseFirestore.getInstance();
 
@@ -180,6 +175,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     }
 
+    //Actualizar el profile y salvarlo
     public void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about){
         tvName.setText(name);
         tvDir.setText(dir);
@@ -193,6 +189,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         MainActivity.updateProfile( name,  dir,  birth,  sex,  about);
     }
 
+    //Eliminar perfil (solo para mascotas)
     public void deletePetProfile(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Confirmación");
@@ -218,6 +215,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         builder.show();
     }
 
+    //Buscar datos del perfil del Duenio
     public void fetchOwnerProfile(FirebaseUser user){
         if (user.getPhotoUrl()!=null) {
             String photo = user.getPhotoUrl().toString() + "?height=500";
@@ -242,6 +240,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     }
 
+    //Buscar datos de la mascota
     public void fetchMascota(final String idOwner, final String idPet){
         DocumentReference mascRef = db.collection(getResources().getString(R.string.collection_users))
                 .document(idOwner).collection("misMascotas").document(idPet);
@@ -272,10 +271,10 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     }
 
+    //Buscar Duenio
     public void fetchOwner(final String idOwner){
         DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
                 .document(idOwner);
-//todo no funcions foto duenio
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -321,7 +320,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     }
 
-
+    //On Activity Result de las fotos
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -374,7 +373,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                             final StorageReference nuevaFotoPet = raiz.child(userId).child(uriTemp.getLastPathSegment());
 
                             Toast.makeText(ProfileActivity.this, "Espere mientras cargamos la foto", Toast.LENGTH_SHORT).show();
-
+                            //TODO si Sale en este punto se caga la app
                             final UploadTask uploadTaskPet = nuevaFotoPet.putFile(uriTemp);
                             uploadTaskPet.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
@@ -400,6 +399,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     }
 
+    //Ir al perfil de la fotito
     @Override
     public void goToProfile(String idOwner,String idPet) {
         

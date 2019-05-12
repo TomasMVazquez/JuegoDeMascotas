@@ -52,9 +52,6 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     public static final String KEY_DUENIO_ID = "duenio";
 
-    private FirebaseDatabase mDatabase;
-    private static DatabaseReference mReference;
-
     private static FirebaseFirestore db;
     private static String userFirestore;
 
@@ -73,8 +70,6 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance();
-        mReference = mDatabase.getReference();
 
         db = FirebaseFirestore.getInstance();
         userFirestore = getResources().getString(R.string.collection_users);
@@ -98,6 +93,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
                 List<Mascota> misMascotas = new ArrayList<>();
                 misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
                 myPetsAdapter.setMascotaList(misMascotas);
+//                recreate();
             }
         });
 
@@ -111,6 +107,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         //adaptador
         recyclerViewPets.setAdapter(myPetsAdapter);
 
+        //Boton agregar mascota
         fabAddPet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +127,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 //        misMascotas.clear();
     }
 
+    //ir al profile de la mascota
     @Override
     public void goToProfile(String idOwner, Mascota mascotaProfile) {
         Intent intent = new Intent(MyPetsActivity.this,ProfileActivity.class);
@@ -142,11 +140,10 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     }
 
+    //Aniadir mascota a la base de datos
     public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
         final CollectionReference userRefMasc = db.collection(userFirestore)
                 .document(currentUser.getUid()).collection("misMascotas");
-
-
 
         final String idPet = userRefMasc.document().getId();
         Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
