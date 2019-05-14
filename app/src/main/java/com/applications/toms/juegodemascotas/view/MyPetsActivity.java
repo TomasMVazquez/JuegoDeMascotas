@@ -86,14 +86,12 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         final CollectionReference userRefMasc = db.collection(userFirestore)
                 .document(currentUser.getUid()).collection("misMascotas");
 
-        //todo cuando agrego no actualiza
         userRefMasc.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 List<Mascota> misMascotas = new ArrayList<>();
                 misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
                 myPetsAdapter.setMascotaList(misMascotas);
-//                recreate();
             }
         });
 

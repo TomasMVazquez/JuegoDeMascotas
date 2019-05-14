@@ -63,7 +63,6 @@ public class AddPetFragment extends Fragment {
     private EditText etAddPetRaza;
     private EditText etAddPetInfo;
     private Boolean uploadingPhoto;
-    private ProgressDialog prog;
 
     public AddPetFragment() {
         // Required empty public constructor
@@ -151,8 +150,6 @@ public class AddPetFragment extends Fragment {
             public void onClick(View v) {
                 if (checkCompleteData()){
                     MyPetsActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
-                    prog= new ProgressDialog(getContext());
-                    progressDialogPhoto(uploadingPhoto);
                 } else {
                     Toast.makeText(getActivity(), "Faltan completar datos", Toast.LENGTH_SHORT).show();
                 }
@@ -187,25 +184,6 @@ public class AddPetFragment extends Fragment {
             return false;
         }
         return true;
-    }
-
-    //Progess dialogo para esperar
-    public void progressDialogPhoto(Boolean detener){
-        //TODO Mejorar el progress dialog a uno mas lindo
-        //Progess dialog
-        prog.setTitle("Por favor espere");
-        prog.setMessage("Estamos cargando su imagen");
-        prog.setCancelable(false);
-        prog.setIndeterminate(true);
-        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-        if (!detener){
-            prog.show();
-        }else {
-            prog.dismiss();
-            getActivity().getSupportFragmentManager().beginTransaction().remove(AddPetFragment.this).commit();
-        }
-
     }
 
     //Activity resullt de la imagen
@@ -244,7 +222,6 @@ public class AddPetFragment extends Fragment {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     uploadingPhoto = true;
-                                    progressDialogPhoto(uploadingPhoto);
                                 }
                             });
                             break;

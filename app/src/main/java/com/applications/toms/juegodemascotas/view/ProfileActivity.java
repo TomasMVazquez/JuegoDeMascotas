@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -87,7 +88,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private String userId;
     private String petId;
     private String photoPetActual;
+    private String photoOwnerActual;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +141,13 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         }else if (type.equals("2")){
             fabEditProfile.setImageDrawable(getDrawable(R.drawable.ic_delete_forever_white_24dp));
             tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
+            fetchMascota(userId,petId);
+            fetchOwner(userId);
+            rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
+        }else if (type.equals("3")){
+            tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
+            fabEditProfile.setVisibility(View.GONE);
+            fabImageProfile.hide();
             fetchMascota(userId,petId);
             fetchOwner(userId);
             rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
@@ -238,6 +248,16 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             }
         });
 
+        DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
+                .document(currentUser.getUid());
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Duenio duenio = documentSnapshot.toObject(Duenio.class);
+                photoOwnerActual = duenio.getFotoDuenio();
+            }
+        });
+
     }
 
     //Buscar datos de la mascota
@@ -259,7 +279,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        //TODO poner foto si falla la foto?
+                        Glide.with(ProfileActivity.this).load(getResources().getDrawable(R.drawable.shadow_dog)).into(ivProfile);
                     }
                 });
                 tvName.setText(mascota.getNombre());
@@ -343,47 +363,30 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                         case KEY_CAMERA_OWNER_PICTURE:
                             final StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(uriTemp.getLastPathSegment());
 
-                            Toast.makeText(ProfileActivity.this, "Espere mientras cargamos su foto", Toast.LENGTH_SHORT).show();
-                            //TODO si Sale en este punto se caga la app
-                            final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
-                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            //Poner nueva foto
+                            Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
+                            //Actualizar foto de Firebase User
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setPhotoUri(uri)
+                                    .build();
+                            currentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    //Poner nueva foto
-                                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
-                                    //Actualizar foto de Firebase User
-                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                            .setPhotoUri(uri)
-                                            .build();
-
-                                    currentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                //Cambiamos un metodo local por uno en el main
-                                                MainActivity.updateProfilePicture(nuevaFoto.getName());
-                                            }
-                                        }
-                                    });
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        //Cambiamos un metodo local por uno en el main
+                                        MainActivity.updateProfilePicture(photoOwnerActual,nuevaFoto.getName(),uriTemp);
+                                    }
                                 }
                             });
+
                             break;
 
                         case KEY_CAMERA_PET_PICTURE:
                             final StorageReference nuevaFotoPet = raiz.child(userId).child(uriTemp.getLastPathSegment());
+                            //Poner nueva foto
+                            Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
+                            MainActivity.updatePhotoPet(userId,petId,photoPetActual,uriTemp.getLastPathSegment(),uriTemp);
 
-                            Toast.makeText(ProfileActivity.this, "Espere mientras cargamos la foto", Toast.LENGTH_SHORT).show();
-                            //TODO si Sale en este punto se caga la app
-                            final UploadTask uploadTaskPet = nuevaFotoPet.putFile(uriTemp);
-                            uploadTaskPet.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    //Poner nueva foto
-                                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
-                                    MainActivity.updatePhotoPet(userId,petId,photoPetActual,uriTemp.getLastPathSegment());
-
-                                }
-                            });
                             break;
                         default:
                             break;
