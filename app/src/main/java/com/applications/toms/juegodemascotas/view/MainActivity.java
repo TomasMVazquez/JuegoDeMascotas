@@ -55,6 +55,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private static FirebaseUser currentUser;
     private static FirebaseFirestore db;
     private static FirebaseStorage mStorage;
+    private static StorageReference raiz;
     private static Context context;
 
     private DrawerLayout drawerLayout;
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         //Auth
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
+        raiz = mStorage.getReference();
 
         db = FirebaseFirestore.getInstance();
         context = getApplicationContext();
@@ -308,20 +311,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Actualizar la foto de perfil de la persona
-    public static void updateProfilePicture(final String newPhoto){
-        DocumentReference userRef = db.collection("Owners")
+    public static void updateProfilePicture(String oldPhoto,final String newPhoto, Uri uriTemp){
+        StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(newPhoto);
+
+        final DocumentReference userRef = db.collection("Owners")
                 .document(currentUser.getUid());
+
+        StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(oldPhoto);
+        storageReference.delete();
+
         userRef.update("fotoDuenio",newPhoto)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //TODO
-            }
-        })
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //TODO
+                    }
+                })
                 .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //TODO
+                    }
+                });
+
+
+        final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                //TODO
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(context, "Profile Foto OK!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -353,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Actualizar la foto de perfil de la mascota
-    public static void updatePhotoPet(final String idOwner, final String idPet, String oldPhoto , final String newPhoto){
+    public static void updatePhotoPet(final String idOwner, final String idPet, String oldPhoto , final String newPhoto,Uri uriTemp){
         StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
         storageReference.delete();
 
@@ -387,11 +405,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        StorageReference nuevaFotoPet = mStorage.getReference().child(idOwner).child(newPhoto);
+        final UploadTask uploadTaskPet = nuevaFotoPet.putFile(uriTemp);
+        uploadTaskPet.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                //Todo
+            }
+        });
+
     }
 
     //Borrar el perfil de la mascota
     public static void deleteProfilePet(final String idOwner, final String idPet){
-        //TODO DELETE profile pet
+
         DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
                 .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
 

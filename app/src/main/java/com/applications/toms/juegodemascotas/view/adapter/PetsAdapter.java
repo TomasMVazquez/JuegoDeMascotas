@@ -15,24 +15,22 @@ import com.applications.toms.juegodemascotas.model.Mascota;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-public class MyPetsAdapter extends RecyclerView.Adapter {
+public class PetsAdapter extends RecyclerView.Adapter {
 
     private FirebaseStorage mStorage;
-    private static FirebaseUser currentUser;
+
     //Atributos
     private List<Mascota> mascotaList;
     private Context context;
-    private AdapterInterface adapterInterface;
+    private PetsAdapterInterface adapterInterface;
 
-    //Constructor
-    public MyPetsAdapter(List<Mascota> mascotaList, Context context, AdapterInterface adapterInterface) {
+    //constructor
+    public PetsAdapter(List<Mascota> mascotaList, Context context, PetsAdapterInterface adapterInterface) {
         this.mascotaList = mascotaList;
         this.context = context;
         this.adapterInterface = adapterInterface;
@@ -48,16 +46,13 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         mStorage = FirebaseStorage.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-
         context = viewGroup.getContext();
         //pasamos contexto a inflador
         LayoutInflater inflater = LayoutInflater.from(context);
         //inflamos view
-        View view = inflater.inflate(R.layout.card_view_my_pet,viewGroup,false);
+        View view = inflater.inflate(R.layout.card_view_pets,viewGroup,false);
         //pasamos holder
-        PetViewHolder petViewHolder = new PetViewHolder(view);
+        PetsViewHolder petViewHolder = new PetsViewHolder(view);
 
         return petViewHolder;
     }
@@ -67,7 +62,7 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         //buscamos datos
         Mascota mascota = mascotaList.get(i);
         //casteamos
-        PetViewHolder petViewHolder = (PetViewHolder) viewHolder;
+        PetsViewHolder petViewHolder = (PetsViewHolder) viewHolder;
         //cargamos
         petViewHolder.cargar(mascota);
     }
@@ -77,32 +72,33 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         return mascotaList.size();
     }
 
-    public interface AdapterInterface{
-        void goToProfile(String idOwner, Mascota mascota);
+    public interface PetsAdapterInterface{
+        void goToProfileFromPets(String idOwner, Mascota mascota);
     }
 
-    public class PetViewHolder extends RecyclerView.ViewHolder{
+
+    public class PetsViewHolder extends RecyclerView.ViewHolder{
 
         //Atributos
-        private ImageView ivCVMyPet;
-        private TextView tvCVNameMyPet;
-        private TextView tvCVIdMyPet;
-        private TextView tvCVIdMyOwner;
+        private ImageView ivCVPets;
+        private TextView tvCVNamePets;
+        private TextView tvCVIdPet;
+        private TextView tvCVIdOwner;
 
         //constructor
-        public PetViewHolder(@NonNull View itemView) {
+        public PetsViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            ivCVMyPet = itemView.findViewById(R.id.ivCVMyPet);
-            tvCVNameMyPet = itemView.findViewById(R.id.tvCVNameMyPet);
-            tvCVIdMyPet = itemView.findViewById(R.id.tvCVIdMyPet);
-            tvCVIdMyOwner = itemView.findViewById(R.id.tvCVIdMyOwner);
+            ivCVPets = itemView.findViewById(R.id.ivCVPets);
+            tvCVNamePets = itemView.findViewById(R.id.tvCVNamePets);
+            tvCVIdPet = itemView.findViewById(R.id.tvCVIdPet);
+            tvCVIdOwner = itemView.findViewById(R.id.tvCVIdOwner);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Mascota mascotaProfile = mascotaList.get(getAdapterPosition());
-                    adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), mascotaProfile);
+                    adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), mascotaProfile);
                 }
             });
 
@@ -110,15 +106,15 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
 
         //metodo cargar tarjeta
         public void cargar(Mascota mascota){
-            tvCVNameMyPet.setText(mascota.getNombre());
-            tvCVIdMyPet.setText(mascota.getIdPet());
-            tvCVIdMyOwner.setText(currentUser.getUid());
+            tvCVNamePets.setText(mascota.getNombre());
+            tvCVIdPet.setText(mascota.getIdPet());
+            tvCVIdOwner.setText(mascota.getMiDuenioId());
 
-            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(mascota.getFotoMascota());
+            StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenioId()).child(mascota.getFotoMascota());
             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    Glide.with(context).load(uri).into(ivCVMyPet);
+                    Glide.with(context).load(uri).into(ivCVPets);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
