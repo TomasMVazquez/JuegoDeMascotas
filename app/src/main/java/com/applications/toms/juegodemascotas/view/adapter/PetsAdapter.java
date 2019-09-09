@@ -119,7 +119,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    //TODO poner foto si falla la foto?
+                    Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCVPets);
                 }
             });
         }

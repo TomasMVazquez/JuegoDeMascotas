@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.jkwiecien:EasyImage:2.1.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/EasyImage-2.1.0.aar/5ee3077c927da5a857c08a87082af6bf/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/EasyImage-2.1.0.aar/5ee3077c927da5a857c08a87082af6bf/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7e0222b7a7d31e37b328a56012de941f/EasyImage-2.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7e0222b7a7d31e37b328a56012de941f/EasyImage-2.1.0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

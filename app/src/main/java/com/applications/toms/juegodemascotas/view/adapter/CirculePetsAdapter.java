@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.view.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,7 +121,7 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    //TODO poner foto si falla la foto?
+                    Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCardViewProfile);
                 }
             });
         }

@@ -16,17 +16,33 @@
     <string name="amigos_fragment">Amigos</string>
     <string name="mascotas_fragment">Mascotas</string>
 
+    <string name="welcome_guide">
+        Bienvenido a "Juego de Mascotas", en esta sección econtraras una pequeña guia que te orientará como usar la App.
+    </string>
+    <string name="guide">
+        Una vez logeado podrás ver y navegar entre las principales 3 pantallas:
+    </string>
+    <string name="guide_play">
+        En la sección Juegos encontrarás todos los juegos organizados para que vos y tus mascotas puedan sumarse.
+    </string>
+    <string name="guide_friends">
+        En la sección Amigos encontrarás a todas las mascotas amigas de las tuyas.
+    </string>
+    <string name="guide_pets">
+        En la sección Mascotas podrás ver a todas las mascotas registradas en nuestra App.
+    </string>
+
     //LogIn
-    <string name="choose_login">Elige como ingresar:</string>
-    <string name="email_login">Ingrese su Email</string>
-    <string name="pass_login">Ingrese su Contraseña</string>
-    <string name="pass_error_1">Su contraseña debe tener más de 6 caracteres</string>
-    <string name="pass_error_2">Su contraseña debe tener al menos un número</string>
+    <string name="choose_login">Eligí como ingresar:</string>
+    <string name="email_login">Ingresá tu Email</string>
+    <string name="pass_login">Ingresá tu Contraseña</string>
+    <string name="pass_error_1">La contraseña debe contener más de 6 caracteres</string>
+    <string name="pass_error_2">La contraseña debe contener al menos un número</string>
     <string name="btn_login">Ingresar</string>
-    <string name="btn_forgot">Olvide mi contraseña</string>
-    <string name="btn_register">Registrar</string>
+    <string name="btn_forgot">Olvidaste tu contraseña?</string>
+    <string name="btn_register">Registrate</string>
     <string name="btn_register_toast">Un email se envió para ingresar una contraseña</string>
-    <string name="no_account_toast">Esta cuenta no esta registrada, si la quiere registrar haga click en registrar</string>
+    <string name="no_account_toast">Usuario y contraseña no coinciden, si no estas registrado haga click en registrar</string>
     <string name="or">También puedes ingresar con:</string>
 
      //Firestore Strings
