@@ -6,21 +6,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.LogInActivity"
-    android:background="@color/colorTeal_light"
+    android:background="@drawable/border_dark_primary"
     >
+<!--    android:background="@color/colorTeal_light"-->
 
     <LinearLayout
         android:id="@+id/llEmailLogIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/colorTeal_down"
         android:layout_alignParentTop="true"
         android:layout_marginTop="80dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:padding="10dp"
+        android:background="@drawable/border_dark_primary"
         >
+<!--        android:background="@color/colorTeal_down"-->
 
         <android.support.design.widget.TextInputLayout
             android:layout_marginTop="55dp"
