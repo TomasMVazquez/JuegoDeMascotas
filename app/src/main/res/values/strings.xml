@@ -45,7 +45,7 @@
     <string name="no_account_toast">Usuario y contraseña no coinciden, si no estas registrado haga click en registrar</string>
     <string name="or">También puedes ingresar con:</string>
 
-     //Firestore Strings
+    //Firestore Strings
     <string name="collection_users">Owners</string>
     <string name="collection_pets">Pets</string>
     <string name="collection_my_pets">misMascotas</string>
@@ -86,6 +86,9 @@
     <string name="spinner_medium">Mediano - 15kg a 25kg</string>
     <string name="spinner_large">Grande - más de 25kg</string>
 
-
+    //MAPS
+    <string name="google_maps_api_key">AIzaSyCozYyL2Fsq45cUtiqXPs35QJrAkHzp47Q</string>
+    <string name="playLocation">Ubicación</string>
+    <string name="myLocation">Mi ubicación</string>
 
 </resources>

@@ -33,7 +33,7 @@
                 android:textColor="@color/colorBlack"
                 />
 
-            <android.support.design.widget.CoordinatorLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
@@ -57,7 +57,7 @@
                         />
                 </LinearLayout>
 
-                <android.support.design.widget.FloatingActionButton
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabAddPetPhoto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,9 +66,9 @@
                     app:fabSize="mini"
                     android:src="@drawable/ic_camera_white_24dp"
                     />
-            </android.support.design.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,9 +81,9 @@
                     android:inputType="textPersonName|textCapWords"
                     android:textColor="@color/colorBlack"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetBirth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,9 +96,9 @@
                     android:inputType="date"
                     android:textColor="@color/colorBlack"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetRaza"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,9 +111,9 @@
                     android:inputType="textCapWords"
                     android:textColor="@color/colorBlack"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.v7.widget.AppCompatSpinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinnerAddPetSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                     />
             </RadioGroup>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                     android:textAlignment="textStart"
                     android:ellipsize="start"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>
