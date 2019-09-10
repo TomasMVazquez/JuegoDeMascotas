@@ -3,15 +3,10 @@ package com.applications.toms.juegodemascotas.view.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +21,15 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.view.MyPetsActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -44,7 +44,7 @@ import java.util.Objects;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-/**
+/*
  * A simple {@link Fragment} subclass.
  */
 public class AddPetFragment extends Fragment {
@@ -63,7 +63,6 @@ public class AddPetFragment extends Fragment {
     private EditText etAddPetRaza;
     private EditText etAddPetInfo;
     private Boolean uploadingPhoto;
-    private ProgressDialog prog;
 
     public AddPetFragment() {
         // Required empty public constructor
@@ -83,6 +82,7 @@ public class AddPetFragment extends Fragment {
         etAddPetRaza = view.findViewById(R.id.etAddPetRaza);
         etAddPetInfo = view.findViewById(R.id.etAddPetInfo);
 
+        //Fecha nacimiento mascota
         etAddPetBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -93,6 +93,7 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //Seleccion del tamanio de mascota
         Spinner spinnerAddPetSize = view.findViewById(R.id.spinnerAddPetSize);
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(getResources().getString(R.string.add_pet_size));
@@ -114,6 +115,7 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //botones del genero
         final RadioButton rbAddPetSexMasc = view.findViewById(R.id.rbAddPetSexMasc);
         final RadioButton rbAddPetSexFem = view.findViewById(R.id.rbAddPetSexFem);
 
@@ -130,6 +132,7 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //foto para la mascota
         ivAddPetPhoto = view.findViewById(R.id.ivAddPetPhoto);
 
         FloatingActionButton fabAddPetPhoto = view.findViewById(R.id.fabAddPetPhoto);
@@ -140,16 +143,13 @@ public class AddPetFragment extends Fragment {
             }
         });
 
+        //Boton agregar mascota
         Button btnAddPet = view.findViewById(R.id.btnAddPet);
-
-
         btnAddPet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkCompleteData()){
                     MyPetsActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
-                    prog= new ProgressDialog(getContext());
-                    progressDialogPhoto(uploadingPhoto);
                 } else {
                     Toast.makeText(getActivity(), "Faltan completar datos", Toast.LENGTH_SHORT).show();
                 }
@@ -159,6 +159,7 @@ public class AddPetFragment extends Fragment {
         return view;
     }
 
+    //Checkear que to do este comeplto
     public Boolean checkCompleteData(){
 
         if (etAddPetName.getText().equals("")){
@@ -185,24 +186,7 @@ public class AddPetFragment extends Fragment {
         return true;
     }
 
-    public void progressDialogPhoto(Boolean detener){
-        //TODO Mejorar el progress dialog a uno mas lindo
-        //Progess dialog
-        prog.setTitle("Por favor espere");
-        prog.setMessage("Estamos cargando su imagen");
-        prog.setCancelable(false);
-        prog.setIndeterminate(true);
-        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-        if (!detener){
-            prog.show();
-        }else {
-            prog.dismiss();
-            getActivity().getSupportFragmentManager().beginTransaction().remove(AddPetFragment.this).commit();
-        }
-
-    }
-
+    //Activity resullt de la imagen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -238,7 +222,6 @@ public class AddPetFragment extends Fragment {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                     uploadingPhoto = true;
-                                    progressDialogPhoto(uploadingPhoto);
                                 }
                             });
                             break;

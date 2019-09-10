@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragment.AddPetFragment"
-    android:background="@color/colorPrimary_light"
+    android:background="@color/colorTeal_light"
     android:orientation="vertical"
     >
 
@@ -33,7 +33,42 @@
                 android:textColor="@color/colorBlack"
                 />
 
-            <android.support.design.widget.TextInputLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_pet_photo"
+                        android:textColor="@color/colorBlack"
+                        />
+
+                    <ImageView
+                        android:id="@+id/ivAddPetPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:background="@drawable/border"
+                        android:scaleType="centerCrop"
+                        />
+                </LinearLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabAddPetPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_anchor="@id/ivAddPetPhoto"
+                    app:layout_anchorGravity="bottom|right"
+                    app:fabSize="mini"
+                    android:src="@drawable/ic_camera_white_24dp"
+                    />
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,9 +81,9 @@
                     android:inputType="textPersonName|textCapWords"
                     android:textColor="@color/colorBlack"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetBirth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,9 +96,9 @@
                     android:inputType="date"
                     android:textColor="@color/colorBlack"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetRaza"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,9 +111,9 @@
                     android:inputType="textCapWords"
                     android:textColor="@color/colorBlack"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.v7.widget.AppCompatSpinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinnerAddPetSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,56 +151,23 @@
                     />
             </RadioGroup>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tiAddPetInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
                 >
                 <EditText
                     android:id="@+id/etAddPetInfo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/add_pet_info"
-                    android:inputType="textCapSentences"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:textColor="@color/colorBlack"
+                    android:textAlignment="textStart"
+                    android:ellipsize="start"
                     />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:orientation="vertical"
-                    >
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_pet_photo"
-                        android:textColor="@color/colorBlack"
-                        />
-
-                    <ImageView
-                        android:id="@+id/ivAddPetPhoto"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:background="@drawable/border"
-                        android:scaleType="centerCrop"
-                        />
-                </LinearLayout>
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabAddPetPhoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_anchor="@id/ivAddPetPhoto"
-                    app:layout_anchorGravity="bottom|right"
-                    app:fabSize="mini"
-                    android:src="@drawable/ic_camera_white_24dp"
-                    />
-            </android.support.design.widget.CoordinatorLayout>
-
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>

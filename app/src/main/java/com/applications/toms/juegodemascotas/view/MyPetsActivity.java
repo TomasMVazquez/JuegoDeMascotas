@@ -1,46 +1,51 @@
 package com.applications.toms.juegodemascotas.view;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.view.View;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.controller.PetsFromOwnerController;
-import com.applications.toms.juegodemascotas.model.Duenio;
 import com.applications.toms.juegodemascotas.model.Mascota;
-import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.AdapterInterface {
 
     public static final String KEY_DUENIO_ID = "duenio";
 
-    private FirebaseDatabase mDatabase;
-    private static DatabaseReference mReference;
-    private static FirebaseUser currentUser;
+    private static FirebaseFirestore db;
+    private static String userFirestore;
 
+    private static FirebaseUser currentUser;
+    private static Context context;
 
     //Atributos
     private static MyPetsAdapter myPetsAdapter;
@@ -50,10 +55,13 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pets);
 
+        context = getApplicationContext();
+
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance();
-        mReference = mDatabase.getReference();
+
+        db = FirebaseFirestore.getInstance();
+        userFirestore = getResources().getString(R.string.collection_users);
 
         FloatingActionButton fabAddPet = findViewById(R.id.fabAddPet);
 
@@ -64,11 +72,15 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         myPetsAdapter = new MyPetsAdapter(new ArrayList<Mascota>(),this,this);
 
         //Traigo Mascotas Duenio
-        PetsFromOwnerController petsFromOwnerController = new PetsFromOwnerController();
-        petsFromOwnerController.giveOwnerPets(idDuenio, this, new ResultListener<List<Mascota>>() {
+        final CollectionReference userRefMasc = db.collection(userFirestore)
+                .document(currentUser.getUid()).collection("misMascotas");
+
+        userRefMasc.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void finish(List<Mascota> resultado) {
-                myPetsAdapter.setMascotaList(resultado);
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                List<Mascota> misMascotas = new ArrayList<>();
+                misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
+                myPetsAdapter.setMascotaList(misMascotas);
             }
         });
 
@@ -82,6 +94,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         //adaptador
         recyclerViewPets.setAdapter(myPetsAdapter);
 
+        //Boton agregar mascota
         fabAddPet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +114,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 //        misMascotas.clear();
     }
 
+    //ir al profile de la mascota
     @Override
     public void goToProfile(String idOwner, Mascota mascotaProfile) {
         Intent intent = new Intent(MyPetsActivity.this,ProfileActivity.class);
@@ -113,29 +127,39 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     }
 
+    //Aniadir mascota a la base de datos
     public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
-        final List<Mascota> mascotas = new ArrayList<>();
-        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(currentUser.getUid())){
-                        if (duenio.getMisMascotas()!=null) {
-                            mascotas.addAll(duenio.getMisMascotas());
-                        }
-                        String idPet = childSnapShot.getKey() + (mascotas.size()+1);
-                        Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
-                        mascotas.add(newMascota);
-                        mReference.child(childSnapShot.getKey()).child("misMascotas").setValue(mascotas);
-                        myPetsAdapter.setMascotaList(mascotas);
+        final CollectionReference userRefMasc = db.collection(userFirestore)
+                .document(currentUser.getUid()).collection("misMascotas");
+
+        final String idPet = userRefMasc.document().getId();
+        Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
+
+        userRefMasc.document(idPet).set(newMascota)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //TODO
                     }
-                }
-            }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //TODO
+                    }
+                });
 
+        DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
+                .document(idPet);
+
+        petsRef.set(newMascota).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    //TODO
+                }else{
+                    //TODO
+                }
             }
         });
     }

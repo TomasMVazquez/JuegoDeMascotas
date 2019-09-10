@@ -2,10 +2,7 @@ package com.applications.toms.juegodemascotas.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -16,6 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Duenio;
@@ -32,6 +33,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -39,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -46,6 +49,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
+
 //    private GoogleSignInClient mGoogleSignInClient;
 
     private TextInputLayout tiPassSignIn;
@@ -116,6 +120,7 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
 
+        //Boton olvodar contrasena
         btnForgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,6 +207,7 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
+    //Actualizar User Interface
     public void updateUI(final FirebaseUser user){
         if (user != null) {
             setResult(Activity.RESULT_OK);
@@ -215,6 +221,7 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
+    //Crear acceso con EMAIL
     private void createEmailAccess(final String email, final String pass){
         mAuth.createUserWithEmailAndPassword(email,pass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -238,6 +245,7 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
+    //Reset pass con acceso con email
     private void resetEmailAccess(String email){
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -251,6 +259,7 @@ public class LogInActivity extends AppCompatActivity {
                 });
     }
 
+    //Manejando el resultado del acceso con email
     private void handleEmailAccess(final String email, final String pass){
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -261,13 +270,13 @@ public class LogInActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {
-                            //TODO si existe y se equivoca de contrase;a cambiar el texto
                             Toast.makeText(LogInActivity.this, getResources().getString(R.string.no_account_toast), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
 
+    //Manejando acceso con facebook
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)

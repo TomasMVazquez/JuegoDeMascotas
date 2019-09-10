@@ -6,22 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.LogInActivity"
+    android:background="@drawable/border_dark_primary"
     >
+<!--    android:background="@color/colorTeal_light"-->
 
     <LinearLayout
         android:id="@+id/llEmailLogIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/colorPrimaryDark"
         android:layout_alignParentTop="true"
         android:layout_marginTop="80dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:padding="10dp"
+        android:background="@drawable/border_dark_primary"
         >
+<!--        android:background="@color/colorTeal_down"-->
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_marginTop="55dp"
             android:id="@+id/tiEmailSignIn"
             android:layout_width="match_parent"
@@ -34,7 +37,7 @@
                 android:hint="@string/email_login"
                 android:inputType="textEmailAddress"
                 />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,7 +45,7 @@
             android:orientation="horizontal"
             >
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_marginTop="15dp"
                 android:id="@+id/tiPassSignIn"
                 android:layout_width="0dp"
@@ -56,7 +59,7 @@
                     android:hint="@string/pass_login"
                     android:inputType="textPassword"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                 android:id="@+id/ivPassVisible"
@@ -95,7 +98,7 @@
                 android:background="@color/noBackground"
                 android:layout_alignParentStart="true"
                 android:textSize="12sp"
-                android:textColor="@color/divider"
+                android:textColor="@color/colorBlueGray"
                 />
 
             <Button
@@ -106,7 +109,7 @@
                 android:background="@color/noBackground"
                 android:layout_alignParentEnd="true"
                 android:textSize="12sp"
-                android:textColor="@color/divider"
+                android:textColor="@color/colorBlueGray"
                 />
         </RelativeLayout>
 
