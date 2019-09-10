@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
-            <android.support.design.widget.CoordinatorLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="230dp">
 
@@ -30,7 +30,7 @@
                     android:scaleType="centerCrop"
                     />
 
-                <android.support.design.widget.FloatingActionButton
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabImageProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,9 +41,9 @@
                     app:layout_anchor="@id/ivProfile"
                     app:layout_anchorGravity="bottom|end"
                     />
-            </android.support.design.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <android.support.design.widget.CoordinatorLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -88,7 +88,7 @@
                 </LinearLayout>
 
 
-                <android.support.design.widget.FloatingActionButton
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabEditProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                     app:layout_anchorGravity="bottom|end"
                     />
 
-            </android.support.design.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -115,7 +115,7 @@
                     android:textColor="@color/colorBlack"
                     />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvMyPetsOwner"
                     android:layout_below="@id/tvMyPetsOwner"
                     android:layout_width="match_parent"
