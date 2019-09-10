@@ -1,7 +1,8 @@
 package com.applications.toms.juegodemascotas.dao;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Duenio;

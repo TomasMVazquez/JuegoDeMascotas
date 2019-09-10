@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="15dp"
+    >
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="15dp"
+        android:id="@+id/tiPlayLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <AutoCompleteTextView
+            android:id="@+id/etPlayLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/playLocation"
+            android:inputType="textPostalAddress"
+            android:imeOptions="actionSearch"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    <fragment
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+    </fragment>
+
+</LinearLayout>
+
