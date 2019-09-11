@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,14 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.view.adapter.AutoCompleteAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,14 +38,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MapTest extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+public class MapTest extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "MapTest";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -51,10 +66,11 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback, Go
     private Boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private GoogleApiClient mGoogleApiClient;
-
     //Widgets
     private AutoCompleteTextView etPlayLocation;
+    private AutoCompleteAdapter adapter;
+    private TextView responseView;
+    private PlacesClient placesClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,27 +78,35 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback, Go
         setContentView(R.layout.activity_map_test);
 
         etPlayLocation = findViewById(R.id.etPlayLocation);
+        responseView = findViewById(R.id.response);
 
         getLocationPermission();
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        String apiKey = getString(R.string.google_maps_key);
+        if(apiKey.isEmpty()){
+            responseView.setText("EERROORR");
+            return;
+        }
+
+        // Setup Places Client
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), apiKey);
+        }
+
+        placesClient = Places.createClient(this);
+
     }
 
     private void init(){
         Log.d(TAG, "init: initializing");
 
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addApi(Places.createClient(this).GEO_DATA_API)
-//                .addApi(Places.PLACE_DETECTION_API)
-//                .enableAutoManage(this,this)
-//                .build();
-//
-//        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this,mGoogleApiClient,LAT_LONG_BOUNDS,null);
-//
-//        etPlayLocation.setAdapter(mPlaceAutocompleteAdapter);
+        initAutoCompleteTextView();
 
         etPlayLocation.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE){
                     geoLocate();
                 }
@@ -91,6 +115,63 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback, Go
         });
         hideSoftKeyboard();
     }
+
+    private void initAutoCompleteTextView() {
+
+        etPlayLocation.setThreshold(1);
+        etPlayLocation.setOnItemClickListener(autocompleteClickListener);
+        adapter = new AutoCompleteAdapter(this, placesClient);
+        etPlayLocation.setAdapter(adapter);
+    }
+
+    private AdapterView.OnItemClickListener autocompleteClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            try {
+                final AutocompletePrediction item = adapter.getItem(i);
+                Log.d(TAG, "onItemClick: item: " + item );
+                String placeID = null;
+                if (item != null) {
+                    placeID = item.getPlaceId();
+                    Log.d(TAG, "onItemClick: placeID: " + placeID);
+                }
+
+//                To specify which data types to return, pass an array of Place.Fields in your FetchPlaceRequest
+//                Use only those fields which are required.
+
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS
+                        , Place.Field.LAT_LNG);
+
+                FetchPlaceRequest request = null;
+                if (placeID != null) {
+                    request = FetchPlaceRequest.builder(placeID, placeFields)
+                            .build();
+                    Log.d(TAG, "onItemClick: request: " + request);
+                }
+
+                if (request != null) {
+                    placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onSuccess(FetchPlaceResponse task) {
+                            responseView.setText(task.getPlace().getName() + "\n" + task.getPlace().getAddress());
+                            Log.d(TAG, "onSuccess: task: " + task.getPlace().getName());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            responseView.setText(e.getMessage());
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
 
     private void geoLocate(){
         Log.d(TAG, "geoLocate: geolocating");
@@ -133,7 +214,6 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback, Go
             }
         }catch (SecurityException e){
             Log.d(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
-
         }
     }
 
@@ -211,10 +291,5 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback, Go
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             init();
         }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 }
