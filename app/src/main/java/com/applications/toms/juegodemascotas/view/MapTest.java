@@ -1,9 +1,8 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -13,10 +12,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
@@ -31,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,15 +37,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,11 +56,13 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
     private static final LatLngBounds LAT_LONG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
+    public static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     //Atributos
     private Boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LatLng myLocationBias;
     //Widgets
     private TextView responseView;
     private PlacesClient placesClient;
@@ -93,34 +93,67 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback {
     private void init(){
         Log.d(TAG, "init: initializing");
 
-        // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        ImageButton testBtn = findViewById(R.id.testBtn);
 
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-        //
-        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
-        autocompleteFragment.setCountry("AR");
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                // TODO: Get info about the selected place.
+            public void onClick(View v) {
+                // Set the fields to specify which types of place data to
+                // return after the user has made a selection.
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+
+                //Create Location Bias
+                LatLng biasLocation = null;
+                if (myLocationBias != null){
+                    biasLocation = myLocationBias;
+                }else {
+                    biasLocation = new LatLng(0,0);
+                }
+
+                // Start the autocomplete intent.
+                Intent intent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.OVERLAY, fields)
+                        .setLocationBias(RectangularBounds.newInstance(
+                                biasLocation, biasLocation))
+                        .build(MapTest.this);
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+
+            }
+        });
+
+        hideSoftKeyboard();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.d(TAG, "Place: " + place.getName() + ", " + place.getId());
+                //Start Test
                 // Specify the fields to return.
-                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,Place.Field.LAT_LNG);
+
+                // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+                // and once again when the user makes a selection (for example when calling fetchPlace()).
+                AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
                 // Construct a request object, passing the place ID and fields array.
-                FetchPlaceRequest request = FetchPlaceRequest.newInstance(place.getId(), placeFields);
-                Log.d(TAG, "geoLocate: request: " + request.toString());
+                FetchPlaceRequest request = FetchPlaceRequest.builder(place.getId(), placeFields)
+                        .setSessionToken(token)
+                        .build();
+                Log.d(TAG, "onActivityResult: request: " + request);
 
+                // Add a listener to handle the response.
                 placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
                     @Override
                     public void onSuccess(FetchPlaceResponse response) {
+                        Log.d(TAG, "onSuccess: response: " + response);
                         Place mPlace = response.getPlace();
-                        Log.i(TAG, "Place found: " + mPlace.getName() + " - " + mPlace.getLatLng());
+                        Log.d(TAG, "Place found: " + mPlace.getName() + " - " + mPlace.getLatLng() + " - " + mPlace.getId());
+                        moveCamera(mPlace.getLatLng(),DEFAULT_ZOOM,mPlace.getName());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -133,19 +166,24 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback {
                         }
                     }
                 });
-            }
 
-            @Override
-            public void onError(Status status) {
+
+                //FIN
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
-                Log.d(TAG, "An error occurred: " + status);
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.d(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
             }
-        });
-
-        hideSoftKeyboard();
+        }
     }
 
+/**
 
+    LO QUE ESTA ABAJO ESTA OK **********************************************************
+
+ */
 
     private void geoLocate(Place place){
         Log.d(TAG, "geoLocate: geolocating: " + place.getId());
@@ -180,6 +218,7 @@ public class MapTest extends AppCompatActivity implements OnMapReadyCallback {
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()){
                             Location currentLocation = (Location) task.getResult();
+                            myLocationBias = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
                             Log.d(TAG, "onComplete: Fond Location - LAT " + currentLocation.getLatitude() + " -LON " + currentLocation.getLongitude());
                             moveCamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),DEFAULT_ZOOM,getResources().getString(R.string.myLocation));
                         }else {
