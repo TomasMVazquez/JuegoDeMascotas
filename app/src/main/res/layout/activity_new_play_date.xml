@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="80"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="45dp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/title_new_play_date"
+                android:textSize="22sp"
+                android:textColor="@color/colorBlack"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiDatePlayDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etDatePlayDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/date_new_play_date"
+                    android:inputType="date"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/colorBlack"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiHourPlayDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etHourPlayDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hour_new_play_date"
+                    android:inputType="date"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/colorBlack"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerPetSizePlayDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"
+                android:backgroundTint="@color/colorBlack"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_marginTop="15dp"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiPlayLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etPlayLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/playLocation"
+                    android:inputType="textPostalAddress"
+                    android:imeOptions="actionSearch"
+                    android:textAllCaps="true"
+                    android:textAlignment="textEnd"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <fragment
+                    class="com.google.android.gms.maps.SupportMapFragment"
+                    android:id="@+id/map"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp">
+                </fragment>
+
+                <ImageButton
+                    android:id="@+id/testBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search"
+                    android:background="@color/translucid"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:elevation="10dp"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+    <Button
+        android:id="@+id/btnNewPlayDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/btn_new_play_date"
+        android:theme="@style/Widget.AppCompat.ActionButton"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/colorWhite"
+        android:textSize="25sp"
+        />
+
+</LinearLayout>
+
