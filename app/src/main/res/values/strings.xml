@@ -85,10 +85,16 @@
     <string name="spinner_small">Chico - 0kg a 15kg</string>
     <string name="spinner_medium">Mediano - 15kg a 25kg</string>
     <string name="spinner_large">Grande - más de 25kg</string>
+    <string name="spinner_all">Todos los tamaños</string>
 
+    //New Play Date
     //MAPS
     <string name="google_maps_api_key">AIzaSyCozYyL2Fsq45cUtiqXPs35QJrAkHzp47Q</string>
     <string name="playLocation">Ubicación</string>
     <string name="myLocation">Mi ubicación</string>
+    <string name="btn_new_play_date">Crear Juego</string>
+    <string name="title_new_play_date">Crear Nuevo Juego</string>
+    <string name="date_new_play_date">Fecha</string>
+    <string name="hour_new_play_date">Hora</string>
 
 </resources>
