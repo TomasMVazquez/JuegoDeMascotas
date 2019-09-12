@@ -47,6 +47,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -461,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
         if (available == ConnectionResult.SUCCESS){
             //Everything is find and user can do maps request
             Log.d(TAG, "isServicesOk: Google Play services is working");
-            Toast.makeText(this, " Service ok ", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, " Service ok ", Toast.LENGTH_SHORT).show();
             return true;
         }
         else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)){
@@ -474,4 +475,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
 }
