@@ -1,7 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.Manifest;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -56,6 +55,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,13 +64,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback {
+public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = "NewPlayDate";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = android.Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
+    private static final float DEFAULT_ZOOM = 10f;
     private static final LatLngBounds LAT_LONG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
     public static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
@@ -84,6 +85,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private EditText etPlayLocation;
     private static EditText etDatePlayDate;
     private EditText etHourPlayDate;
+    private EditText etTitlePlayDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,8 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         etPlayLocation = findViewById(R.id.etPlayLocation);
         etDatePlayDate = findViewById(R.id.etDatePlayDate);
         etHourPlayDate = findViewById(R.id.etHourPlayDate);
+        etTitlePlayDate = findViewById(R.id.etTitlePlayDate);
+        etDatePlayDate.clearFocus();
 
         //Seleccion del tamanio de mascota
         Spinner spinnerPetSizePlayDate = findViewById(R.id.spinnerPetSizePlayDate);
@@ -109,6 +113,9 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 size =  parent.getItemAtPosition(position).toString();
+                if (size != getResources().getString(R.string.add_pet_size)){
+                    etPlayLocation.requestFocus();
+                }
             }
 
             @Override
@@ -118,13 +125,16 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         });
 
         //Fecha del Juego
-        etDatePlayDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-                    //TODO mejorar el date picker
-                    showTruitonDatePickerDialog(v);
-                }
+        etDatePlayDate.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus){
+                datePicker();
+            }
+        });
+
+        //Hora del Juego
+        etHourPlayDate.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus){
+                timePicker();
             }
         });
 
@@ -146,33 +156,32 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-    //Date picker
-    public void showTruitonDatePickerDialog(View v) {
-        DialogFragment newFragment = new AddPetFragment.DatePickerFragment();
-        newFragment.show(this.getSupportFragmentManager(), "datePicker");
+    //DatePicker
+    private void datePicker(){
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                NewPlayDate.this,
+                now.get(Calendar.YEAR), // Initial year selection
+                now.get(Calendar.MONTH), // Initial month selection
+                now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+        );
+        dpd.setMinDate(now);
+        // If you're calling this from a support Fragment
+        // dpd.show(getFragmentManager(), "Datepickerdialog");
+        // If you're calling this from an AppCompatActivity
+         dpd.show(getSupportFragmentManager(), "Datepickerdialog");
     }
 
-    //Date Picker Comands - for purchase date
-    public static class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            String dateChoosen=(dayOfMonth + "/" + (month + 1) + "/" + year);
-            etDatePlayDate.setText(dateChoosen);
-        }
+    //TimePicker
+    private void timePicker(){
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                NewPlayDate.this,
+                now.get(Calendar.HOUR),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.show(getSupportFragmentManager(),"Timepickerdialog");
     }
 
     //Inicializar MAPS y SEARCH
@@ -395,5 +404,18 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
             init();
         }
+    }
+
+    //DATE TIME PICKERS
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        String time = hourOfDay+":"+minute+":"+second;
+        etHourPlayDate.setText(time);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        etDatePlayDate.setText(date);
     }
 }
