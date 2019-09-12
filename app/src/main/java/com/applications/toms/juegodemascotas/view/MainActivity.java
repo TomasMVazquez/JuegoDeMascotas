@@ -148,12 +148,13 @@ public class MainActivity extends AppCompatActivity {
                             goLogIn();
                         }
                         return true;
-                    case R.id.chat:
-                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
-                        return true;
                     case R.id.plays:
                         Intent intentMap = new Intent(MainActivity.this,MapTest.class);
                         startActivity(intentMap);
+                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.chat:
+
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                 }

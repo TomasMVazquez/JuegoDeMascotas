@@ -11,6 +11,7 @@
     <color name="colorAccent">#795548</color>
 
     <color name="noBackground">#00ffffff</color>
+    <color name="translucid">#CCFFFFFF</color>
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
