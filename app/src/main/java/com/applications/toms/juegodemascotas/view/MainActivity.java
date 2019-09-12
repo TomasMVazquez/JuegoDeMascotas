@@ -149,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     case R.id.chat:
-                        Intent intentAutoCom = new Intent(MainActivity.this, AutocompleteTest.class);
-                        startActivity(intentAutoCom);
                         Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.plays:

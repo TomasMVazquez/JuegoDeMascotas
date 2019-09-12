@@ -8,29 +8,29 @@
     android:orientation="vertical"
     android:layout_margin="15dp"
     >
-
-    <AutoCompleteTextView
-        android:id="@+id/etPlayLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/playLocation"
-        android:inputType="textPostalAddress"
-        android:imeOptions="actionSearch"
-        />
-
-    <fragment
-        class="com.google.android.gms.maps.SupportMapFragment"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="200dp">
-
-    </fragment>
-
-    <TextView
-        android:id="@+id/response"
-        android:textIsSelectable="true"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+
+        <fragment
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+        </fragment>
+
+        <fragment android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:elevation="10dp"
+            />
+    </RelativeLayout>
+
+
 
 </LinearLayout>
 
