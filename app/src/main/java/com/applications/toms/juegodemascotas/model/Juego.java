@@ -1,17 +1,17 @@
 package com.applications.toms.juegodemascotas.model;
 
-import java.util.Date;
 import java.util.List;
 
 public class Juego {
 
     //atributos
-    private String privacidad;
-    private Date fechaJuego;
-    private Date horaJuego;
-    private String lugar;
+    private String idPlay;
+    private Integer privacidad; //La privacidad es 0 para publica y 1 para privada -- por ahora no esta la funcionalidad de privada
+    private String fechaJuego;
+    private String horaJuego;
+    private String idPlace;
     private String tamanioPerros;
-    private String organizadorMascota;
+    private List<Mascota> organizadorMascota;
     private String organizadorDuenio;
     private List<Mascota> invitados;
 
@@ -20,11 +20,12 @@ public class Juego {
     public Juego() {
     }
 
-    public Juego(String privacidad, Date fechaJuego, Date horaJuego, String lugar, String tamanioPerros, String organizadorMascota, String organizadorDuenio, List<Mascota> invitados) {
+    public Juego(String idPlay, Integer privacidad, String fechaJuego, String horaJuego, String idPlace, String tamanioPerros, List<Mascota> organizadorMascota, String organizadorDuenio, List<Mascota> invitados) {
+        this.idPlay = idPlay;
         this.privacidad = privacidad;
         this.fechaJuego = fechaJuego;
         this.horaJuego = horaJuego;
-        this.lugar = lugar;
+        this.idPlace = idPlace;
         this.tamanioPerros = tamanioPerros;
         this.organizadorMascota = organizadorMascota;
         this.organizadorDuenio = organizadorDuenio;
@@ -32,27 +33,32 @@ public class Juego {
     }
 
     //Getter
-    public String getPrivacidad() {
+
+    public String getIdPlay() {
+        return idPlay;
+    }
+
+    public Integer getPrivacidad() {
         return privacidad;
     }
 
-    public Date getFechaJuego() {
+    public String getFechaJuego() {
         return fechaJuego;
     }
 
-    public Date getHoraJuego() {
+    public String getHoraJuego() {
         return horaJuego;
     }
 
-    public String getLugar() {
-        return lugar;
+    public String getIdPlace() {
+        return idPlace;
     }
 
     public String getTamanioPerros() {
         return tamanioPerros;
     }
 
-    public String getOrganizadorMascota() {
+    public List<Mascota> getOrganizadorMascota() {
         return organizadorMascota;
     }
 
@@ -70,7 +76,7 @@ public class Juego {
         return "Juego{" +
                 "fechaJuego=" + fechaJuego +
                 ", horaJuego=" + horaJuego +
-                ", lugar='" + lugar + '\'' +
+                ", idPlace='" + idPlace + '\'' +
                 '}';
     }
 }

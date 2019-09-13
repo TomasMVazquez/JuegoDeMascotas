@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
 //        new UCEHandler.Builder(this).build();
 
         if (isServicesOk()){
-            Toast.makeText(this, "finish checking", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "finish checking", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onCreate: Check Service OK!");
         }
 
         //Auth
@@ -149,13 +150,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     case R.id.plays:
-                        Intent intentMap = new Intent(MainActivity.this, NewPlayDate.class);
-                        startActivity(intentMap);
-                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Juegos En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.chat:
-
-                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Chat En construccion", Toast.LENGTH_SHORT).show();
                         return true;
                 }
                 return false;

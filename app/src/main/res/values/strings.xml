@@ -4,6 +4,7 @@
     <string name="main">Inicio</string>
     <string name="my_profile">Perfil</string>
     <string name="my_pets">Mis Mascotas</string>
+    <string name="about_me">Sobre mí</string>
     <string name="my_owner">Mi Dueñ@</string>
     <string name="chat">Chat</string>
     <string name="plays">Juegos a asistir</string>
@@ -47,6 +48,7 @@
 
     //Firestore Strings
     <string name="collection_users">Owners</string>
+    <string name="collection_play">Plays</string>
     <string name="collection_pets">Pets</string>
     <string name="collection_my_pets">misMascotas</string>
 
@@ -98,4 +100,6 @@
     <string name="hour_new_play_date">Hora</string>
     <string name="Title_new_play_date">Nombre del nuevo juego</string>
 
+    //CARD VIEW PLAY DATE
+    <string name="btn_join_me">Asistir</string>
 </resources>

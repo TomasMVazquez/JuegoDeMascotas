@@ -13,11 +13,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="230dp">
@@ -50,7 +51,7 @@
                 <LinearLayout
                     android:id="@+id/llProfile"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_margin="10dp"
                     >
@@ -73,20 +74,7 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         />
-
-                    <TextView
-                        android:id="@+id/tvAboutProfile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
-                        android:text="@string/about_profile"
-                        android:textSize="18sp"
-                        android:ellipsize="start"
-                        android:maxLines="6"
-                        />
-
                 </LinearLayout>
-
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabEditProfile"
@@ -104,7 +92,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp">
+                android:layout_height="150dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                >
 
                 <TextView
                     android:id="@+id/tvMyPetsOwner"
@@ -122,6 +113,33 @@
                     android:layout_height="wrap_content"/>
 
             </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp"
+                >
+                <TextView
+                    android:id="@+id/tvAboutMe"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/about_me"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorBlack"
+                    />
+
+                <TextView
+                    android:id="@+id/tvAboutProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_profile"
+                    android:textSize="18sp"
+                    android:ellipsize="start"
+                    android:maxLines="6"
+                    />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
