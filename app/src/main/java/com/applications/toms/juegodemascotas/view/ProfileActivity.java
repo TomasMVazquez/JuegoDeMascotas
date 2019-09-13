@@ -150,14 +150,11 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
 
         //Boton de foto para cambiarla
-        fabImageProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (type.equals("1")) {
-                    EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
-                }else if (type.equals("2")){
-                    EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
-                }
+        fabImageProfile.setOnClickListener(v -> {
+            if (type.equals("1")) {
+                EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
+            }else if (type.equals("2")){
+                EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
             }
         });
 
@@ -200,21 +197,14 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         builder.setMessage("Por favor confirmar que usted quiere eliminar este perfil");
         builder.setCancelable(false);
         builder.setIcon(this.getDrawable(R.drawable.ic_delete_forever_white_24dp));
-        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ProfileActivity.this,MainActivity.class);
-                MainActivity.deleteProfilePet(userId, petId);
-                startActivity(intent);
-            }
+        builder.setPositiveButton("Si", (dialog, which) -> {
+            Intent intent = new Intent(ProfileActivity.this,MainActivity.class);
+            MainActivity.deleteProfilePet(userId, petId);
+            startActivity(intent);
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "El perfil NO se elimino", Toast.LENGTH_SHORT).show();
-            }
-        });
+        builder.setNegativeButton("No", (dialog, which) ->
+                Toast.makeText(getApplicationContext(), "El perfil NO se elimino", Toast.LENGTH_SHORT).show());
 
         builder.show();
     }
@@ -225,7 +215,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             String photo = user.getPhotoUrl().toString() + "?height=500";
             Glide.with(this).load(photo).into(ivProfile);
         }else {
-
+            //todo
         }
         tvName.setText(user.getDisplayName());
         checkDataBaseInfo(currentUser.getUid());
@@ -233,23 +223,17 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         final CollectionReference userRefMasc = db.collection(getResources().getString(R.string.collection_users))
                 .document(currentUser.getUid()).collection("misMascotas");
 
-        userRefMasc.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                List<Mascota> misMascotas = new ArrayList<>();
-                misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
-                circulePetsAdapter.setMascotaList(misMascotas);
-            }
+        userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            List<Mascota> misMascotas = new ArrayList<>();
+            misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
+            circulePetsAdapter.setMascotaList(misMascotas);
         });
 
         DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
                 .document(currentUser.getUid());
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Duenio duenio = documentSnapshot.toObject(Duenio.class);
-                photoOwnerActual = duenio.getFotoDuenio();
-            }
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            Duenio duenio = documentSnapshot.toObject(Duenio.class);
+            photoOwnerActual = duenio.getFotoDuenio();
         });
 
     }
@@ -259,28 +243,19 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         DocumentReference mascRef = db.collection(getResources().getString(R.string.collection_users))
                 .document(idOwner).collection("misMascotas").document(idPet);
 
-        mascRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Mascota mascota = documentSnapshot.toObject(Mascota.class);
-                photoPetActual = mascota.getFotoMascota();
-                StorageReference storageReference = mStorage.getReference().child(idOwner).child(mascota.getFotoMascota());
-                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Glide.with(ProfileActivity.this).load(getResources().getDrawable(R.drawable.shadow_dog)).into(ivProfile);
-                    }
-                });
-                tvName.setText(mascota.getNombre());
-                String additionalInfo = mascota.getRaza() + " - " + mascota.getTamanio() + " - " + mascota.getSexo();
-                tvDir.setText(additionalInfo);
-                tvAboutProfile.setText(mascota.getInfoMascota());
-            }
+        mascRef.get().addOnSuccessListener(documentSnapshot -> {
+            Mascota mascota = documentSnapshot.toObject(Mascota.class);
+            photoPetActual = mascota.getFotoMascota();
+            StorageReference storageReference = mStorage.getReference().child(idOwner).child(mascota.getFotoMascota());
+            storageReference.getDownloadUrl()
+                    .addOnSuccessListener(uri ->
+                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile))
+                    .addOnFailureListener(e ->
+                            Glide.with(ProfileActivity.this).load(getDrawable(R.drawable.shadow_dog)).into(ivProfile));
+            tvName.setText(mascota.getNombre());
+            String additionalInfo = mascota.getRaza() + " - " + mascota.getTamanio() + " - " + mascota.getSexo();
+            tvDir.setText(additionalInfo);
+            tvAboutProfile.setText(mascota.getInfoMascota());
         });
 
     }
@@ -289,14 +264,11 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     public void fetchOwner(final String idOwner){
         DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
                 .document(idOwner);
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Duenio duenio = documentSnapshot.toObject(Duenio.class);
-                List<Duenio> miDuenio = new ArrayList<>();
-                miDuenio.add(duenio);
-                circuleOwnerAdapter.setDuenio(miDuenio);
-            }
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            Duenio duenio = documentSnapshot.toObject(Duenio.class);
+            List<Duenio> miDuenio = new ArrayList<>();
+            miDuenio.add(duenio);
+            circuleOwnerAdapter.setDuenio(miDuenio);
         });
 
     }
@@ -306,29 +278,26 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         final DocumentReference userRef = db.collection(getString(R.string.collection_users))
                 .document(userID);
 
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Duenio duenio = document.toObject(Duenio.class);
-                        if (duenio.getDireccion()!=null){
-                            tvDir.setText(duenio.getDireccion());
-                        }else {
-                            tvDir.setText(getResources().getString(R.string.address_profile));
-                        }
-                        if (duenio.getInfoDuenio()!=null){
-                            tvAboutProfile.setText(duenio.getInfoDuenio());
-                        }else {
-                            tvAboutProfile.setText(getResources().getString(R.string.about_profile));
-                        }
-                    } else {
-                        Toast.makeText(ProfileActivity.this, "No Existe", Toast.LENGTH_SHORT).show();
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Duenio duenio = document.toObject(Duenio.class);
+                    if (duenio.getDireccion()!=null){
+                        tvDir.setText(duenio.getDireccion());
+                    }else {
+                        tvDir.setText(getResources().getString(R.string.address_profile));
+                    }
+                    if (duenio.getInfoDuenio()!=null){
+                        tvAboutProfile.setText(duenio.getInfoDuenio());
+                    }else {
+                        tvAboutProfile.setText(getResources().getString(R.string.about_profile));
                     }
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Task Unsuccesful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "No Existe", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(ProfileActivity.this, "Task Unsuccesful", Toast.LENGTH_SHORT).show();
             }
         });
 

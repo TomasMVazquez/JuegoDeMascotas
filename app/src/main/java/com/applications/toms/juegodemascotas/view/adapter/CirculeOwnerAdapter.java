@@ -117,12 +117,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
                 Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewProfile);
             }else {
                 StorageReference storageReference = mStorage.getReference().child(duenio.getUserId()).child(duenio.getFotoDuenio());
-                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(context).load(uri).into(ivCardViewProfile);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                storageReference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile)).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Glide.with(context).load(duenio.getFotoDuenio()).into(ivCardViewProfile);
