@@ -4,6 +4,7 @@ package com.applications.toms.juegodemascotas.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
             CollectionReference playRef = db.collection(context.getString(R.string.collection_play));
             playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 List<Juego> juegos = new ArrayList<>();
+                Log.d("MAP", "onCreateView: " + queryDocumentSnapshots.getDocuments().toString());
                 juegos.addAll(queryDocumentSnapshots.toObjects(Juego.class));
                 playDateAdapter.setPlayDates(juegos);
             });
