@@ -69,8 +69,6 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private PlacesClient placesClient;
     private GoogleMap mMap;
 
-    private String creatorId;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,9 +132,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
                DocumentSnapshot document = task.getResult();
                if (document.exists()) {
                    playDateDetail = document.toObject(Juego.class);
-                   getCreator(playDateDetail.getOrganizadorDuenio());
                    getDetails(playDateDetail);
-                   creatorId = playDateDetail.getOrganizadorDuenio();
                }
            }else {
                //TODO
@@ -152,6 +148,14 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         tvSizePlayDetail.setText(playDateDetail.getTamanioPerros());
         circulePetsCreatorsAdapter.setMascotaList(playDateDetail.getOrganizadorMascota());
         circulePetsParticipantsAdapter.setMascotaList(playDateDetail.getInvitados());
+        //Traer Foto del Duenio
+        StorageReference storageReference = mStorage.getReference()
+                .child(playDateDetail.getOrganizadorDuenio().getUserId())
+                .child(playDateDetail.getOrganizadorDuenio().getFotoDuenio());
+
+        storageReference.getDownloadUrl()
+                .addOnSuccessListener(uri -> Glide.with(this).load(uri).into(ivOwnerCreator))
+                .addOnFailureListener(e -> Glide.with(this).load(playDateDetail.getOrganizadorDuenio().getFotoDuenio()).into(ivOwnerCreator));
     }
 
     private void initMap(String placeId){
@@ -184,29 +188,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         });
     }
 
-    private void getCreator(String idCreator){
-        DocumentReference userRef = db.collection(getString(R.string.collection_users))
-                .document(idCreator);
-        userRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    Duenio creator = document.toObject(Duenio.class);
-
-                    //Traer Foto del Duenio
-                    StorageReference storageReference = mStorage.getReference().child(creator.getUserId()).child(creator.getFotoDuenio());
-
-                    storageReference.getDownloadUrl()
-                            .addOnSuccessListener(uri -> Glide.with(this).load(uri).into(ivOwnerCreator))
-                            .addOnFailureListener(e -> Glide.with(this).load(creator.getFotoDuenio()).into(ivOwnerCreator));
-
-                }
-            }
-        });
-    }
-
     @Override
     public void goToProfile(String idOwner, String idPet) {
-
+        //TODO GO TO PROFILE
     }
 }

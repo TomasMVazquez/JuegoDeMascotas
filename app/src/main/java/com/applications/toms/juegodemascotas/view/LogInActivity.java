@@ -95,51 +95,39 @@ public class LogInActivity extends AppCompatActivity {
         });
 
         //Boton visibilidad
-        ivPassVisible.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch ( event.getAction() ) {
-                    case MotionEvent.ACTION_DOWN:
-                        etPassSigIn.setInputType(InputType.TYPE_CLASS_TEXT);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        etPassSigIn.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        etPassSigIn.setSelection(etPassSigIn.getText().toString().length());
-                        break;
-                }
-                return true;
+        ivPassVisible.setOnTouchListener((v, event) -> {
+            switch ( event.getAction() ) {
+                case MotionEvent.ACTION_DOWN:
+                    etPassSigIn.setInputType(InputType.TYPE_CLASS_TEXT);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    etPassSigIn.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    etPassSigIn.setSelection(etPassSigIn.getText().toString().length());
+                    break;
             }
+            return true;
         });
 
         //Boton registrar
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createEmailAccess(etEmailSigIn.getText().toString(), etPassSigIn.getText().toString());
-                etPassSigIn.setText("");
-            }
+        btnRegister.setOnClickListener(v -> {
+            createEmailAccess(etEmailSigIn.getText().toString(), etPassSigIn.getText().toString());
+            etPassSigIn.setText("");
         });
 
         //Boton olvodar contrasena
-        btnForgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!etEmailSigIn.getText().toString().equals("")){
-                    resetEmailAccess(etEmailSigIn.getText().toString());
-                    etPassSigIn.setText("");
-                }else {
-                    Toast.makeText(LogInActivity.this, "Ingrese su Email", Toast.LENGTH_SHORT).show();
-                }
+        btnForgotPass.setOnClickListener(v -> {
+            if (!etEmailSigIn.getText().toString().equals("")){
+                resetEmailAccess(etEmailSigIn.getText().toString());
+                etPassSigIn.setText("");
+            }else {
+                Toast.makeText(LogInActivity.this, "Ingrese su Email", Toast.LENGTH_SHORT).show();
             }
         });
 
         //Boton ingresar
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!etEmailSigIn.getText().toString().equals("") && !etPassSigIn.getText().toString().equals("")) {
-                    handleEmailAccess(etEmailSigIn.getText().toString(), etPassSigIn.getText().toString());
-                }
+        btnSignIn.setOnClickListener(v -> {
+            if (!etEmailSigIn.getText().toString().equals("") && !etPassSigIn.getText().toString().equals("")) {
+                handleEmailAccess(etEmailSigIn.getText().toString(), etPassSigIn.getText().toString());
             }
         });
 

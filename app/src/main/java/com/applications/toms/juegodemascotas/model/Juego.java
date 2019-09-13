@@ -12,7 +12,7 @@ public class Juego {
     private String idPlace;
     private String tamanioPerros;
     private List<Mascota> organizadorMascota;
-    private String organizadorDuenio;
+    private Duenio organizadorDuenio;
     private List<Mascota> invitados;
 
     //Constructor
@@ -20,7 +20,7 @@ public class Juego {
     public Juego() {
     }
 
-    public Juego(String idPlay, Integer privacidad, String fechaJuego, String horaJuego, String idPlace, String tamanioPerros, List<Mascota> organizadorMascota, String organizadorDuenio, List<Mascota> invitados) {
+    public Juego(String idPlay, Integer privacidad, String fechaJuego, String horaJuego, String idPlace, String tamanioPerros, List<Mascota> organizadorMascota, Duenio organizadorDuenio, List<Mascota> invitados) {
         this.idPlay = idPlay;
         this.privacidad = privacidad;
         this.fechaJuego = fechaJuego;
@@ -62,7 +62,7 @@ public class Juego {
         return organizadorMascota;
     }
 
-    public String getOrganizadorDuenio() {
+    public Duenio getOrganizadorDuenio() {
         return organizadorDuenio;
     }
 

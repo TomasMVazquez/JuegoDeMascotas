@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.model.Duenio;
 import com.applications.toms.juegodemascotas.model.Juego;
 import com.applications.toms.juegodemascotas.model.Mascota;
 import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
@@ -64,6 +65,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -98,6 +100,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private static String playFirestore;
     private static FirebaseUser currentUser;
     private static Context context;
+    private Duenio creator;
 
     //Widgets
     private PlacesClient placesClient;
@@ -127,6 +130,19 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         currentUser = mAuth.getCurrentUser();
         playFirestore = getResources().getString(R.string.collection_play);
         userFirestore = getResources().getString(R.string.collection_users);
+
+        //Traigo al creador
+        DocumentReference userRef = db.collection(getString(R.string.collection_users))
+                .document(currentUser.getUid());
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    creator = document.toObject(Duenio.class);
+                }
+            }
+        });
 
         //Traigo Mascotas Duenio
         final CollectionReference userRefMasc = db.collection(userFirestore)
@@ -228,7 +244,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                 idPlace,
                 size,
                 misMascotas,
-                currentUser.getUid(),
+                creator,
                 invitados
                 );
 
