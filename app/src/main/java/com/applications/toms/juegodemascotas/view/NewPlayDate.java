@@ -2,6 +2,7 @@ package com.applications.toms.juegodemascotas.view;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -22,6 +23,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,6 +31,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.model.Juego;
+import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
@@ -55,6 +60,11 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -70,7 +80,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = android.Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 10f;
+    private static final float DEFAULT_ZOOM = 15f;
     private static final LatLngBounds LAT_LONG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
     public static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
@@ -80,12 +90,22 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private LatLng myLocationBias;
     private String size="";
+    private String idPlace;
+    private List<Mascota> misMascotas = new ArrayList<>();
+
+    private static FirebaseFirestore db;
+    private static String userFirestore;
+    private static String playFirestore;
+    private static FirebaseUser currentUser;
+    private static Context context;
+
     //Widgets
     private PlacesClient placesClient;
     private EditText etPlayLocation;
     private static EditText etDatePlayDate;
     private EditText etHourPlayDate;
     private EditText etTitlePlayDate;
+    private Button btnNewPlayDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +116,24 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         etDatePlayDate = findViewById(R.id.etDatePlayDate);
         etHourPlayDate = findViewById(R.id.etHourPlayDate);
         etTitlePlayDate = findViewById(R.id.etTitlePlayDate);
+        btnNewPlayDate = findViewById(R.id.btnNewPlayDate);
+
         etDatePlayDate.clearFocus();
+
+        //Base De Datos
+        db = FirebaseFirestore.getInstance();
+        context = getApplicationContext();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        playFirestore = getResources().getString(R.string.collection_play);
+        userFirestore = getResources().getString(R.string.collection_users);
+
+        //Traigo Mascotas Duenio
+        final CollectionReference userRefMasc = db.collection(userFirestore)
+                .document(currentUser.getUid()).collection("misMascotas");
+
+        userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) ->
+                misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class)));
 
         //Seleccion del tamanio de mascota
         Spinner spinnerPetSizePlayDate = findViewById(R.id.spinnerPetSizePlayDate);
@@ -153,7 +190,66 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
             Places.initialize(getApplicationContext(), apiKey);
         }
         placesClient = Places.createClient(this);
+        
+        //Al clickear el boton crear juego
+        btnNewPlayDate.setOnClickListener(v -> {
+            Log.d(TAG, "onCreate: Click Crear Juego");
+            addNewPlayToDB();
+            
+        });
 
+        etPlayLocation.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus){
+                searchInMap();
+            }
+        });
+    }
+
+    //Aniadir Juego a la base de Datos
+    private void addNewPlayToDB(){
+        //Creo la collection de juegos "dentro del usuario" para agregar nuevo juego
+        CollectionReference playRefMasc = db.collection(userFirestore)
+                .document(currentUser.getUid()).collection("misJuegos");
+
+        //Tomo el ID del nuevo juego
+        String idPlay = playRefMasc.document().getId();
+
+        //Creo el nuevo juego dentro de la collection juego
+        DocumentReference playRef = db.collection(context.getResources().getString(R.string.collection_play))
+                .document(idPlay);
+
+        List<Mascota> invitados = new ArrayList<>();
+        //Creo el nuevo juego
+        Juego newPlay = new Juego(
+                idPlay,
+                0, //La privacidad es 0 para publica y 1 para privada -- por ahora no esta la funcionalidad de privada
+                etDatePlayDate.getText().toString(),
+                etHourPlayDate.getText().toString(),
+                idPlace,
+                size,
+                misMascotas,
+                currentUser.getUid(),
+                invitados
+                );
+
+        //Agrego el juego a las collectiones
+        playRefMasc.document(idPlay).set(newPlay).addOnSuccessListener(aVoid -> {
+            //TODO
+            Log.d(TAG, "addNewPlayToDB: Creado en el Duenio");
+        }).addOnFailureListener(aVoid -> {
+            //TODO
+        });
+
+        playRef.set(newPlay).addOnCompleteListener(task -> {
+           if (task.isSuccessful()){
+               //TODO
+               Log.d(TAG, "addNewPlayToDB: Creado en collection");
+               Intent i = new Intent(NewPlayDate.this,MainActivity.class);
+               startActivity(i);
+           }else {
+               //TODO
+           }
+        });
     }
 
     //DatePicker
@@ -188,32 +284,10 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private void init(){
         Log.d(TAG, "init: initializing");
 
-        ImageButton testBtn = findViewById(R.id.testBtn);
+        ImageButton searchBtn = findViewById(R.id.searchBtn);
 
-        testBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Set the fields to specify which types of place data to
-                // return after the user has made a selection.
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-
-                //Create Location Bias
-                LatLng biasLocation = null;
-                if (myLocationBias != null){
-                    biasLocation = myLocationBias;
-                }else {
-                    biasLocation = new LatLng(0,0);
-                }
-
-                // Start the autocomplete intent.
-                Intent intent = new Autocomplete.IntentBuilder(
-                        AutocompleteActivityMode.OVERLAY, fields)
-                        .setLocationBias(RectangularBounds.newInstance(
-                                biasLocation, biasLocation))
-                        .build(NewPlayDate.this);
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-
-            }
+        searchBtn.setOnClickListener(v -> {
+            searchInMap();
         });
 
         etPlayLocation.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -228,6 +302,28 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         });
 
         hideSoftKeyboard();
+    }
+
+    private void searchInMap(){
+        // Set the fields to specify which types of place data to
+        // return after the user has made a selection.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+
+        //Create Location Bias
+        LatLng biasLocation = null;
+        if (myLocationBias != null){
+            biasLocation = myLocationBias;
+        }else {
+            biasLocation = new LatLng(0,0);
+        }
+
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.OVERLAY, fields)
+                .setLocationBias(RectangularBounds.newInstance(
+                        biasLocation, biasLocation))
+                .build(NewPlayDate.this);
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
     //OnActivityResult para el search de MAPS
@@ -251,22 +347,17 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                         .build();
 
                 // Add a listener to handle the response.
-                placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
-                    @Override
-                    public void onSuccess(FetchPlaceResponse response) {
-                        Place mPlace = response.getPlace();
-                        moveCamera(mPlace.getLatLng(),DEFAULT_ZOOM,mPlace.getName());
-                        etPlayLocation.setText(mPlace.getName());
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        if (exception instanceof ApiException) {
-                            ApiException apiException = (ApiException) exception;
-                            int statusCode = apiException.getStatusCode();
-                            // Handle error with given status code.
-                            Log.e(TAG, "Place not found: " + exception.getMessage());
-                        }
+                placesClient.fetchPlace(request).addOnSuccessListener(response -> {
+                    Place mPlace = response.getPlace();
+                    moveCamera(mPlace.getLatLng(),DEFAULT_ZOOM,mPlace.getName());
+                    etPlayLocation.setText(mPlace.getName());
+                    idPlace = mPlace.getId();
+                }).addOnFailureListener(exception -> {
+                    if (exception instanceof ApiException) {
+                        ApiException apiException = (ApiException) exception;
+                        int statusCode = apiException.getStatusCode();
+                        // Handle error with given status code.
+                        Log.e(TAG, "Place not found: " + exception.getMessage());
                     }
                 });
 
@@ -406,10 +497,10 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    //DATE TIME PICKERS
+    //DATE TIME PICKERS Method
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        String time = hourOfDay+":"+minute+":"+second;
+        String time = hourOfDay+":"+minute;
         etHourPlayDate.setText(time);
     }
 
@@ -418,4 +509,5 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         String date = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
         etDatePlayDate.setText(date);
     }
+
 }

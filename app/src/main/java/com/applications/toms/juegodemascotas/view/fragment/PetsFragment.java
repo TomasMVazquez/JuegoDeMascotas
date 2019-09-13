@@ -67,13 +67,10 @@ public class PetsFragment extends Fragment implements PetsAdapter.PetsAdapterInt
             //Traigo Mascotas Duenio
             final CollectionReference petsRef = db.collection(petsFirestore);
 
-            petsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    List<Mascota> misMascotas = new ArrayList<>();
-                    misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
-                    petsAdapter.setMascotaList(misMascotas);
-                }
+            petsRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                List<Mascota> misMascotas = new ArrayList<>();
+                misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
+                petsAdapter.setMascotaList(misMascotas);
             });
 
 

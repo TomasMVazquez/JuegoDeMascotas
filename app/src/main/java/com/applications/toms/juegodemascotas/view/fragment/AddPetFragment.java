@@ -146,14 +146,11 @@ public class AddPetFragment extends Fragment {
 
         //Boton agregar mascota
         Button btnAddPet = view.findViewById(R.id.btnAddPet);
-        btnAddPet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkCompleteData()){
-                    MyPetsActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
-                } else {
-                    Toast.makeText(getActivity(), "Faltan completar datos", Toast.LENGTH_SHORT).show();
-                }
+        btnAddPet.setOnClickListener(v -> {
+            if (checkCompleteData()){
+                MyPetsActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
+            } else {
+                Toast.makeText(getActivity(), "Faltan completar datos", Toast.LENGTH_SHORT).show();
             }
         });
 

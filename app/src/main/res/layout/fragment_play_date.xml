@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.PlayDateFragment">
+    tools:context=".view.fragment.PlayDateFragment"
+    android:id="@+id/containerlayDates"
+    >
 
-    <TextView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/juegos_fragment" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerPlayDates"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabNewPlayDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:fabSize="normal"
+            android:src="@drawable/ic_add_location_black_24dp"
+            app:maxImageSize="36dp"
+            android:elevation="6dp"
+            android:background="@color/colorAccent"
+            android:layout_gravity="bottom|right"
+            />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </FrameLayout>

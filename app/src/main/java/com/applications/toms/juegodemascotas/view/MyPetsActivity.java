@@ -75,13 +75,10 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         final CollectionReference userRefMasc = db.collection(userFirestore)
                 .document(currentUser.getUid()).collection("misMascotas");
 
-        userRefMasc.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                List<Mascota> misMascotas = new ArrayList<>();
-                misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
-                myPetsAdapter.setMascotaList(misMascotas);
-            }
+        userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            List<Mascota> misMascotas = new ArrayList<>();
+            misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
+            myPetsAdapter.setMascotaList(misMascotas);
         });
 
 
@@ -136,30 +133,21 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
 
         userRefMasc.document(idPet).set(newMascota)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //TODO
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    //TODO
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //TODO
-                    }
+                .addOnFailureListener(e -> {
+                    //TODO
                 });
 
         DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
                 .document(idPet);
 
-        petsRef.set(newMascota).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    //TODO
-                }else{
-                    //TODO
-                }
+        petsRef.set(newMascota).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                //TODO
+            }else{
+                //TODO
             }
         });
     }
