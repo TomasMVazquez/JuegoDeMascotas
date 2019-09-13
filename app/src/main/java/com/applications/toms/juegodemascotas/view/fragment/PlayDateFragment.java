@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.applications.toms.juegodemascotas.model.Mascota;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.adapter.PlayDateAdapter;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -56,7 +58,7 @@ public class PlayDateFragment extends Fragment {
 
         if (currentUser != null){
             db = FirebaseFirestore.getInstance();
-            playDateAdapter = new PlayDateAdapter(context,new ArrayList<Juego>());
+            playDateAdapter = new PlayDateAdapter(context,new ArrayList<Juego>(),getFragmentManager());
             //Traigo Juegos de la base
             CollectionReference playRef = db.collection(context.getString(R.string.collection_play));
             playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
