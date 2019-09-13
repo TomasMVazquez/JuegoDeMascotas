@@ -49,11 +49,13 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
     private Context context;
     private List<Juego> playDates;
     private PlacesClient placesClient;
+    private FragmentManager fragmentManager;
 
     //Constructor
-    public PlayDateAdapter(Context context, List<Juego> playDates) {
+    public PlayDateAdapter(Context context, List<Juego> playDates,FragmentManager fragmentManager) {
         this.context = context;
         this.playDates = playDates;
+        this.fragmentManager = fragmentManager;
     }
 
     //setter
@@ -121,6 +123,8 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
         private Button btnJoinMe;
 
         private LatLng location;
+        private SupportMapFragment mapPlayDate;
+        private GoogleMap mMap;
 
         //Constructor
 
@@ -130,7 +134,11 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
             locationPlayDate = itemView.findViewById(R.id.locationPlayDate);
             dateTimePlayDate = itemView.findViewById(R.id.dateTimePlayDate);
             sizeDogsPlayDate = itemView.findViewById(R.id.sizeDogsPlayDate);
+
+            mapPlayDate = (SupportMapFragment) fragmentManager.findFragmentById(R.id.mapPlayDate);
+
             btnJoinMe = itemView.findViewById(R.id.btnJoinMe);
+
 
             btnJoinMe.setOnClickListener(v -> {
                 Toast.makeText(context, "ASISITIRE", Toast.LENGTH_SHORT).show();
@@ -161,6 +169,11 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
                 Place mPlace = response.getPlace();
                 location = mPlace.getLatLng();
                 locationPlayDate.setText(mPlace.getName());
+                mapPlayDate.getMapAsync(googleMap -> {
+                    mMap = googleMap;
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,14f));
+                    mMap.addMarker(new MarkerOptions().position(location));
+                });
             }).addOnFailureListener(exception -> {
                 if (exception instanceof ApiException) {
                     ApiException apiException = (ApiException) exception;
