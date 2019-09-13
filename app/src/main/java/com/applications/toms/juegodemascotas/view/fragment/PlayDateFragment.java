@@ -18,6 +18,7 @@ import com.applications.toms.juegodemascotas.model.Juego;
 import com.applications.toms.juegodemascotas.model.Mascota;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
+import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.PlayDateAdapter;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,7 +35,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlayDateFragment extends Fragment {
+public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDateAdapterInterface {
 
     private static Context context;
     private static FirebaseUser currentUser;
@@ -58,7 +59,7 @@ public class PlayDateFragment extends Fragment {
 
         if (currentUser != null){
             db = FirebaseFirestore.getInstance();
-            playDateAdapter = new PlayDateAdapter(context,new ArrayList<Juego>(),getFragmentManager());
+            playDateAdapter = new PlayDateAdapter(context,new ArrayList<Juego>(),getFragmentManager(),this);
             //Traigo Juegos de la base
             CollectionReference playRef = db.collection(context.getString(R.string.collection_play));
             playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
@@ -90,4 +91,12 @@ public class PlayDateFragment extends Fragment {
 
     }
 
+    @Override
+    public void goToPlayDetail(String juegoId) {
+        Intent intent = new Intent(context, PlayDateDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PlayDateDetail.KEY_PLAY_DETAIL,juegoId);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 }

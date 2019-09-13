@@ -95,12 +95,9 @@ public class PetsAdapter extends RecyclerView.Adapter {
             tvCVIdPet = itemView.findViewById(R.id.tvCVIdPet);
             tvCVIdOwner = itemView.findViewById(R.id.tvCVIdOwner);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Mascota mascotaProfile = mascotaList.get(getAdapterPosition());
-                    adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), mascotaProfile);
-                }
+            itemView.setOnClickListener(v -> {
+                Mascota mascotaProfile = mascotaList.get(getAdapterPosition());
+                adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), mascotaProfile);
             });
 
         }

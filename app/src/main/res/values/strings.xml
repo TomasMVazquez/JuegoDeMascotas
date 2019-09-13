@@ -102,4 +102,12 @@
 
     //CARD VIEW PLAY DATE
     <string name="btn_join_me">Asistir</string>
+    <string name="btn_detail">Detalles</string>
+
+    //PLAY DETAIL
+    <string name="tv_when">Cuando</string>
+    <string name="tv_for">Para perros:</string>
+    <string name="tv_creator">Organizadores</string>
+    <string name="tv_participants">Participantes</string>
+
 </resources>
