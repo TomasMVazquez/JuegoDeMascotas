@@ -1,10 +1,6 @@
 package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Duenio;
-import com.applications.toms.juegodemascotas.model.Mascota;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -82,7 +76,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
     }
 
     public interface AdapterInterfaceCirculeOwner{
-        void goToProfile(String idOwner,String idPet);
+        void goToUserProfile(String idOwner);
     }
 
     public class CirculeOwnerViewHolder extends RecyclerView.ViewHolder{
@@ -98,14 +92,11 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
 
             ivCardViewProfile = itemView.findViewById(R.id.ivCardViewProfile);
             tvUid = itemView.findViewById(R.id.tvUid);
-            tvPetId = itemView.findViewById(R.id.tvPetId);
+            tvPetId = itemView.findViewById(R.id.tvPetId); //TODO SACAR SI FUNCIONA
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    adapterInterfaceCirculeOwner.goToProfile(tvUid.getText().toString(),tvPetId.getText().toString());
-                }
-            });
+            itemView.setOnClickListener(v ->
+                    adapterInterfaceCirculeOwner.goToUserProfile(tvUid.getText().toString())
+            );
 
         }
 

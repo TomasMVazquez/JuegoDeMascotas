@@ -74,7 +74,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
     }
 
     public interface PetsAdapterInterface{
-        void goToProfileFromPets(String idOwner, Mascota mascota);
+        void goToProfileFromPets(String idOwner, Mascota mascota); //TODO REVISAR
     }
 
 
@@ -109,17 +109,9 @@ public class PetsAdapter extends RecyclerView.Adapter {
             tvCVIdOwner.setText(mascota.getMiDuenioId());
 
             StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenioId()).child(mascota.getFotoMascota());
-            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(context).load(uri).into(ivCVPets);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCVPets);
-                }
-            });
+            storageReference.getDownloadUrl()
+                    .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCVPets))
+                    .addOnFailureListener(e -> Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCVPets));
         }
 
     }

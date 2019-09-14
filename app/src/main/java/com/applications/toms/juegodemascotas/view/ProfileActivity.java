@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     public static final String KEY_PET_ID = "pet_id";
     public static final int KEY_CAMERA_OWNER_PICTURE = 301;
     public static final int KEY_CAMERA_PET_PICTURE = 302;
+    private static final String TAG = "PROFILE";
 
     //Atributos
     private static CirculePetsAdapter circulePetsAdapter;
@@ -77,10 +79,13 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private TextView tvAboutProfile;
     private TextView tvMyPetsOwner;
     private RecyclerView rvMyPetsOwner;
+    private FloatingActionButton fabImageProfile;
+    private FloatingActionButton fabEditProfile;
 
     private String type;
-    private String userId;
     private String petId;
+    private String idUser;
+    private List<Mascota> petsList = new ArrayList<>();
     private String photoPetActual;
     private String photoOwnerActual;
 
@@ -104,15 +109,8 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         tvMyPetsOwner = findViewById(R.id.tvMyPetsOwner);
         rvMyPetsOwner = findViewById(R.id.rvMyPetsOwner);
 
-        FloatingActionButton fabImageProfile = findViewById(R.id.fabImageProfile);
-        FloatingActionButton fabEditProfile = findViewById(R.id.fabEditProfile);
-
-        //intent
-        Intent intent = getIntent();
-        final Bundle bundle = intent.getExtras();
-        type = bundle.getString(KEY_TYPE);
-        userId = bundle.getString(KEY_USER_ID);
-        petId = bundle.getString(KEY_PET_ID);
+        fabImageProfile = findViewById(R.id.fabImageProfile);
+        fabEditProfile = findViewById(R.id.fabEditProfile);
 
         //Adapter
         circulePetsAdapter = new CirculePetsAdapter(new ArrayList<Mascota>(),this,this);
@@ -124,30 +122,15 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         LinearLayoutManager llm = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         rvMyPetsOwner.setLayoutManager(llm);
 
+        //intent
+        Intent intent = getIntent();
+        final Bundle bundle = intent.getExtras();
+        type = bundle.getString(KEY_TYPE);
+        idUser = bundle.getString(KEY_USER_ID);
+        petId = bundle.getString(KEY_PET_ID);
 
-        //Check Pet or Owner
-        if (type.equals("1")){
-            tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
-            fetchOwnerProfile(currentUser);
-            //adaptador
-            rvMyPetsOwner.setAdapter(circulePetsAdapter);
-            //TODO que pasa si quiere ver el profile de otro usuario
-        }else if (type.equals("2")){
-            fabEditProfile.setImageDrawable(getDrawable(R.drawable.ic_delete_forever_white_24dp));
-            tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
-            fetchMascota(userId,petId);
-            fetchOwner(userId);
-            rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
-        }else if (type.equals("3")){
-            tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
-            fabEditProfile.setVisibility(View.GONE);
-            fabImageProfile.hide();
-            fetchMascota(userId,petId);
-            fetchOwner(userId);
-            rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
-        }
-
-
+        //Get Owner Data
+        fetchOwnerData(idUser);
 
         //Boton de foto para cambiarla
         fabImageProfile.setOnClickListener(v -> {
@@ -159,21 +142,126 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         });
 
         //Boton to edit profile
-        fabEditProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (type.equals("1")) {
-                    UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
-                    fragmentTransaction.commit();
-                }else if (type.equals("2")){
-                    deletePetProfile();
-                }
+        fabEditProfile.setOnClickListener(v -> {
+            if (type.equals("1")) {
+                UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
+                fragmentTransaction.commit();
+            }else if (type.equals("2")){
+                deletePetProfile(idUser);
             }
         });
 
+    }
+
+    //Check if user is current user
+    private boolean checkCurrentUser(String userId){
+        if (!currentUser.getUid().equals(userId)){
+           return false;
+        }
+        return true;
+    }
+
+    //Fetch Owner data
+    private void fetchOwnerData(String userId){
+        DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
+                .document(userId);
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            Duenio ownerData = documentSnapshot.toObject(Duenio.class);
+
+            //Check if user is current user
+            if (checkCurrentUser(userId)){
+                //Traer info del usuario y botones para modificar
+                initCurrentUser(ownerData);
+            }else {
+                initOtherUser(ownerData);
+            }
+        });
+
+        userRef.collection("misMascotas").addSnapshotListener((queryDocumentSnapshots, e) -> {
+            petsList.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
+        });
+    }
+
+    //Init profile user = current user
+    private void initCurrentUser(Duenio owner){
+        completeDataInProfile(owner);
+    }
+
+    //Init profile if is diferent user
+    @SuppressLint("RestrictedApi")
+    private void initOtherUser(Duenio user){
+        //No mostramos botones para editar o elimiar
+        fabImageProfile.setVisibility(View.GONE);
+        fabEditProfile.setVisibility(View.GONE);
+
+        completeDataInProfile(user);
+    }
+
+    //Bring Data to profile
+    private void completeDataInProfile(Duenio profileData){
+        if (type.equals("1")){
+            //Text MyOwner or MyPets
+            tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
+            //adaptador
+            rvMyPetsOwner.setAdapter(circulePetsAdapter);
+            //My Pets
+            Log.d(TAG, "completeDataInProfile: " + petsList);
+            circulePetsAdapter.setMascotaList(petsList);
+            //Name
+            tvName.setText(profileData.getNombre());
+            //info
+            tvAboutProfile.setText(profileData.getInfoDuenio());
+            tvDir.setText(profileData.getDireccion());
+            //Photo Profile
+            if (profileData.getFotoDuenio() == null) {
+                String photo = currentUser.getPhotoUrl().toString() + "?height=500";
+                Glide.with(this).load(photo).into(ivProfile);
+            }else {
+                StorageReference storageReference = mStorage.getReference().child(profileData.getUserId()).child(profileData.getFotoDuenio());
+                storageReference.getDownloadUrl()
+                        .addOnSuccessListener(uri ->
+                                Glide.with(ProfileActivity.this).load(uri).into(ivProfile))
+                        .addOnFailureListener(e ->
+                                Glide.with(this).load(profileData.getFotoDuenio()).into(ivProfile));
+            }
+
+            photoOwnerActual = profileData.getFotoDuenio();
+
+        }else if (type.equals("2")){
+            //If is a pet and Im the owner I can delete, this is the icon
+            fabEditProfile.setImageDrawable(getDrawable(R.drawable.ic_delete_forever_white_24dp));
+            //Text MyOwner or MyPets
+            tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
+            //Adapter
+            rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
+            //Busco la mascota elegida
+            for (Mascota pet : petsList){
+                if (pet.getIdPet().equals(petId)){
+                    //Name
+                    tvName.setText(pet.getNombre());
+                    //Info
+                    String additionalInfo = pet.getRaza() + " - " + pet.getTamanio() + " - " + pet.getSexo();
+                    tvDir.setText(additionalInfo);
+                    tvAboutProfile.setText(pet.getInfoMascota());
+                    //Adapter
+                    List<Duenio> duenioList = new ArrayList<>();
+                    duenioList.add(profileData);
+                    circuleOwnerAdapter.setDuenio(duenioList);
+                    //Photo
+                    photoPetActual = pet.getFotoMascota();
+                    StorageReference storageReference = mStorage.getReference().child(profileData.getUserId()).child(pet.getFotoMascota());
+                    storageReference.getDownloadUrl()
+                            .addOnSuccessListener(uri ->
+                                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile))
+                            .addOnFailureListener(e ->
+                                    Glide.with(ProfileActivity.this).load(getDrawable(R.drawable.shadow_dog)).into(ivProfile)
+                            );
+                }
+            }
+        }
     }
 
     //Actualizar el profile y salvarlo
@@ -191,7 +279,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     }
 
     //Eliminar perfil (solo para mascotas)
-    public void deletePetProfile(){
+    public void deletePetProfile(String userId){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Confirmación");
         builder.setMessage("Por favor confirmar que usted quiere eliminar este perfil");
@@ -207,100 +295,6 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                 Toast.makeText(getApplicationContext(), "El perfil NO se elimino", Toast.LENGTH_SHORT).show());
 
         builder.show();
-    }
-
-    //Buscar datos del perfil del Duenio
-    public void fetchOwnerProfile(FirebaseUser user){
-        if (user.getPhotoUrl()!=null) {
-            String photo = user.getPhotoUrl().toString() + "?height=500";
-            Glide.with(this).load(photo).into(ivProfile);
-        }else {
-            //todo
-        }
-        tvName.setText(user.getDisplayName());
-        checkDataBaseInfo(currentUser.getUid());
-
-        final CollectionReference userRefMasc = db.collection(getResources().getString(R.string.collection_users))
-                .document(currentUser.getUid()).collection("misMascotas");
-
-        userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            List<Mascota> misMascotas = new ArrayList<>();
-            misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
-            circulePetsAdapter.setMascotaList(misMascotas);
-        });
-
-        DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
-                .document(currentUser.getUid());
-        userRef.get().addOnSuccessListener(documentSnapshot -> {
-            Duenio duenio = documentSnapshot.toObject(Duenio.class);
-            photoOwnerActual = duenio.getFotoDuenio();
-        });
-
-    }
-
-    //Buscar datos de la mascota
-    public void fetchMascota(final String idOwner, final String idPet){
-        DocumentReference mascRef = db.collection(getResources().getString(R.string.collection_users))
-                .document(idOwner).collection("misMascotas").document(idPet);
-
-        mascRef.get().addOnSuccessListener(documentSnapshot -> {
-            Mascota mascota = documentSnapshot.toObject(Mascota.class);
-            photoPetActual = mascota.getFotoMascota();
-            StorageReference storageReference = mStorage.getReference().child(idOwner).child(mascota.getFotoMascota());
-            storageReference.getDownloadUrl()
-                    .addOnSuccessListener(uri ->
-                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile))
-                    .addOnFailureListener(e ->
-                            Glide.with(ProfileActivity.this).load(getDrawable(R.drawable.shadow_dog)).into(ivProfile));
-            tvName.setText(mascota.getNombre());
-            String additionalInfo = mascota.getRaza() + " - " + mascota.getTamanio() + " - " + mascota.getSexo();
-            tvDir.setText(additionalInfo);
-            tvAboutProfile.setText(mascota.getInfoMascota());
-        });
-
-    }
-
-    //Buscar Duenio
-    public void fetchOwner(final String idOwner){
-        DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
-                .document(idOwner);
-        userRef.get().addOnSuccessListener(documentSnapshot -> {
-            Duenio duenio = documentSnapshot.toObject(Duenio.class);
-            List<Duenio> miDuenio = new ArrayList<>();
-            miDuenio.add(duenio);
-            circuleOwnerAdapter.setDuenio(miDuenio);
-        });
-
-    }
-
-    //CheckDataBaseInfo
-    public void checkDataBaseInfo(final String userID){
-        final DocumentReference userRef = db.collection(getString(R.string.collection_users))
-                .document(userID);
-
-        userRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    Duenio duenio = document.toObject(Duenio.class);
-                    if (duenio.getDireccion()!=null){
-                        tvDir.setText(duenio.getDireccion());
-                    }else {
-                        tvDir.setText(getResources().getString(R.string.address_profile));
-                    }
-                    if (duenio.getInfoDuenio()!=null){
-                        tvAboutProfile.setText(duenio.getInfoDuenio());
-                    }else {
-                        tvAboutProfile.setText(getResources().getString(R.string.about_profile));
-                    }
-                } else {
-                    Toast.makeText(ProfileActivity.this, "No Existe", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(ProfileActivity.this, "Task Unsuccesful", Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
 
     //On Activity Result de las fotos
@@ -332,23 +326,20 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setPhotoUri(uri)
                                     .build();
-                            currentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        //Cambiamos un metodo local por uno en el main
-                                        MainActivity.updateProfilePicture(photoOwnerActual,nuevaFoto.getName(),uriTemp);
-                                    }
+                            currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    //Cambiamos un metodo local por uno en el main
+                                    MainActivity.updateProfilePicture(photoOwnerActual,nuevaFoto.getName(),uriTemp);
                                 }
                             });
 
                             break;
 
                         case KEY_CAMERA_PET_PICTURE:
-                            final StorageReference nuevaFotoPet = raiz.child(userId).child(uriTemp.getLastPathSegment());
+                            final StorageReference nuevaFotoPet = raiz.child(idUser).child(uriTemp.getLastPathSegment());
                             //Poner nueva foto
                             Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
-                            MainActivity.updatePhotoPet(userId,petId,photoPetActual,uriTemp.getLastPathSegment(),uriTemp);
+                            MainActivity.updatePhotoPet(idUser,petId,photoPetActual,uriTemp.getLastPathSegment(),uriTemp);
 
                             break;
                         default:
@@ -367,18 +358,25 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     //Ir al perfil de la fotito
     @Override
-    public void goToProfile(String idOwner,String idPet) {
-        
-        if (type.equals("1")) {
-            Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(ProfileActivity.KEY_TYPE,"2"); //TODO POR AHI ACA PONER 3 PARA CUANDO HAGA click en el duenio vaya goback
-            bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-            bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }else if (type.equals("2")){
-            Toast.makeText(this, "En construccion", Toast.LENGTH_SHORT).show();
-        }
+    public void goToUserProfile(String idOwner) {
+        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileActivity.KEY_TYPE,"1");
+        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileActivity.KEY_PET_ID,"0");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
+
+    @Override
+    public void goToPetProfile(String idOwner, String idPet) {
+        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileActivity.KEY_TYPE,"2");
+        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
 }

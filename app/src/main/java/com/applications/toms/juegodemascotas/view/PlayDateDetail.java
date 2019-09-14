@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +69,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     private PlacesClient placesClient;
     private GoogleMap mMap;
+
+    private String creatorId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,11 +135,23 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
                DocumentSnapshot document = task.getResult();
                if (document.exists()) {
                    playDateDetail = document.toObject(Juego.class);
+                   creatorId = playDateDetail.getOrganizadorDuenio().getUserId();
                    getDetails(playDateDetail);
                }
            }else {
                //TODO
            }
+        });
+
+        //Go to profile in case they click it
+        ivOwnerCreator.setOnClickListener(v -> {
+            Intent intent1 = new Intent(PlayDateDetail.this,ProfileActivity.class);
+            Bundle bundle1 = new Bundle();
+            bundle1.putString(ProfileActivity.KEY_TYPE,"1");
+            bundle1.putString(ProfileActivity.KEY_USER_ID,creatorId);
+            bundle1.putString(ProfileActivity.KEY_PET_ID,"0");
+            intent1.putExtras(bundle1);
+            startActivity(intent1);
         });
 
     }
@@ -189,7 +204,13 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     }
 
     @Override
-    public void goToProfile(String idOwner, String idPet) {
-        //TODO GO TO PROFILE
+    public void goToPetProfile(String idOwner, String idPet) {
+        Intent intent = new Intent(PlayDateDetail.this,ProfileActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileActivity.KEY_TYPE,"2");
+        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

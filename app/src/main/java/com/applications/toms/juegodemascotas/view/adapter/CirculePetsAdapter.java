@@ -80,7 +80,7 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
     }
 
     public interface AdapterInterfaceCircule{
-        void goToProfile(String idOwner,String idPet);
+        void goToPetProfile(String idOwner,String idPet);
     }
 
     public class CirculePetViewHolder extends RecyclerView.ViewHolder{
@@ -98,12 +98,9 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
             tvUid = itemView.findViewById(R.id.tvUid);
             tvPetId = itemView.findViewById(R.id.tvPetId);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    adapterInterfaceCircule.goToProfile(tvUid.getText().toString(),tvPetId.getText().toString());
-                }
-            });
+            itemView.setOnClickListener(v ->
+                    adapterInterfaceCircule.goToPetProfile(tvUid.getText().toString(),tvPetId.getText().toString())
+            );
 
         }
 
@@ -112,18 +109,10 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
             tvUid.setText(mascota.getMiDuenioId());
             tvPetId.setText(mascota.getIdPet());
 
-            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(mascota.getFotoMascota());
-            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(context).load(uri).into(ivCardViewProfile);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCardViewProfile);
-                }
-            });
+            StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenioId()).child(mascota.getFotoMascota());
+            storageReference.getDownloadUrl()
+                    .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile))
+                    .addOnFailureListener(e -> Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCardViewProfile));
         }
 
     }
