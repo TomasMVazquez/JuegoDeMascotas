@@ -117,47 +117,44 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                drawerLayout.closeDrawers();
-                switch (menuItem.getItemId()){
-                    case R.id.main:
-                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
-                        return true;
-                    case R.id.my_profile:
-                        if (currentUser!=null){
-                            Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString(ProfileActivity.KEY_TYPE,"1");
-                            bundle.putString(ProfileActivity.KEY_USER_ID,"0");
-                            bundle.putString(ProfileActivity.KEY_PET_ID,"0");
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                        }else {
-                            goLogIn();
-                        }
-                        return true;
-                    case R.id.my_pets:
-                        if (currentUser!=null){
-                            Intent intent = new Intent(MainActivity.this,MyPetsActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString(MyPetsActivity.KEY_DUENIO_ID,currentUser.getUid());
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                        }else {
-                            goLogIn();
-                        }
-                        return true;
-                    case R.id.plays:
-                        Toast.makeText(MainActivity.this, "Juegos En construccion", Toast.LENGTH_SHORT).show();
-                        return true;
-                    case R.id.chat:
-                        Toast.makeText(MainActivity.this, "Chat En construccion", Toast.LENGTH_SHORT).show();
-                        return true;
-                }
-                return false;
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            drawerLayout.closeDrawers();
+            switch (menuItem.getItemId()){
+                case R.id.main:
+                    Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.my_profile:
+                    if (currentUser!=null){
+                        Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ProfileActivity.KEY_TYPE,"1");
+                        bundle.putString(ProfileActivity.KEY_USER_ID,currentUser.getUid());
+                        bundle.putString(ProfileActivity.KEY_PET_ID,"0");
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }else {
+                        goLogIn();
+                    }
+                    return true;
+                case R.id.my_pets:
+                    if (currentUser!=null){
+                        Intent intent = new Intent(MainActivity.this,MyPetsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MyPetsActivity.KEY_DUENIO_ID,currentUser.getUid());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }else {
+                        goLogIn();
+                    }
+                    return true;
+                case R.id.plays:
+                    Toast.makeText(MainActivity.this, "Juegos En construccion", Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.chat:
+                    Toast.makeText(MainActivity.this, "Chat En construccion", Toast.LENGTH_SHORT).show();
+                    return true;
             }
+            return false;
         });
 
         //TABS FRAGMENTS
@@ -449,9 +446,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    //MAPS
-
 
     //CHECK VERSION FOR MAPS
     public boolean isServicesOk (){

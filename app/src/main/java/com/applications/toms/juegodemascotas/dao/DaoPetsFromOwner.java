@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.dao;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -32,9 +33,11 @@ public class DaoPetsFromOwner {
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
                     Duenio duenio = childSnapShot.getValue(Duenio.class);
                     if (duenio.getUserId().equals(idDuenio)){
-                        if (duenio.getMisMascotas()!=null){
-                            listResultListener.finish(duenio.getMisMascotas());
-                        }
+//                        if (duenio.getMisMascotas()!=null){
+//                            listResultListener.finish(duenio.getMisMascotas());
+//                        }
+                        //TODO REVISAR este DAO
+                        Toast.makeText(context, "Aca deberia traer las mascotas que saque", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

@@ -14,8 +14,6 @@ public class Duenio implements Serializable {
     private String direccion;
     private String fotoDuenio;
     private String infoDuenio;
-    private List<Mascota> misMascotas;
-    private List<Mascota> amigos;
 
     //Constructor
 
@@ -29,7 +27,7 @@ public class Duenio implements Serializable {
         this.fotoDuenio = fotoDuenio;
     }
 
-    public Duenio(String userId, String nombre, String email,String direccion, String sexo, String fechaNacimiento, String fotoDuenio, String infoDuenio, List<Mascota> misMascotas, List<Mascota> amigos) {
+    public Duenio(String userId, String nombre, String email,String direccion, String sexo, String fechaNacimiento, String fotoDuenio, String infoDuenio) {
         this.userId = userId;
         this.nombre = nombre;
         this.email = email;
@@ -38,8 +36,6 @@ public class Duenio implements Serializable {
         this.fechaNacimiento = fechaNacimiento;
         this.fotoDuenio = fotoDuenio;
         this.infoDuenio = infoDuenio;
-        this.misMascotas = misMascotas;
-        this.amigos = amigos;
     }
 
     //getter
@@ -76,14 +72,6 @@ public class Duenio implements Serializable {
         return infoDuenio;
     }
 
-    public List<Mascota> getMisMascotas() {
-        return misMascotas;
-    }
-
-    public List<Mascota> getAmigos() {
-        return amigos;
-    }
-
     //Setter
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -106,11 +94,18 @@ public class Duenio implements Serializable {
     }
 
     //toString
+
     @Override
     public String toString() {
         return "Duenio{" +
-                "nombre='" + nombre + '\'' +
+                "userId='" + userId + '\'' +
+                ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
+                ", sexo='" + sexo + '\'' +
+                ", fechaNacimiento='" + fechaNacimiento + '\'' +
+                ", direccion='" + direccion + '\'' +
+                ", fotoDuenio='" + fotoDuenio + '\'' +
+                ", infoDuenio='" + infoDuenio + '\'' +
                 '}';
     }
 }

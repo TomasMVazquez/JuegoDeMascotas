@@ -94,7 +94,7 @@ public class PetsFragment extends Fragment implements PetsAdapter.PetsAdapterInt
     public void goToProfileFromPets(String idOwner, Mascota mascota) {
         Intent intent = new Intent(context, ProfileActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ProfileActivity.KEY_TYPE,"3");
+        bundle.putString(ProfileActivity.KEY_TYPE,"2");
         bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
         bundle.putString(ProfileActivity.KEY_PET_ID,mascota.getIdPet());
         intent.putExtras(bundle);
