@@ -5,7 +5,7 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="240dp"
     android:elevation="4dp"
     android:layout_marginTop="15dp"
     android:layout_marginStart="10dp"
@@ -16,11 +16,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="240dp">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
             >
             <Button
                 android:id="@+id/btnDetails"
@@ -31,6 +35,7 @@
                 android:textColor="@color/colorAccent"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
+                android:padding="5dp"
                 />
             <Button
                 android:id="@+id/btnJoinMe"
@@ -41,24 +46,27 @@
                 android:textColor="@color/colorAccent"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
+                android:padding="5dp"
                 />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="4dp"
+            android:padding="5dp"
+            android:elevation="8dp"
             >
             <fragment
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:id="@+id/mapPlayDate"
                 android:layout_width="match_parent"
-                android:layout_height="215dp"/>
+                android:layout_height="200dp"/>
 
 
             <LinearLayout
                 android:id="@+id/lLItem"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="30dp"
                 android:background="@color/colorPrimary_translucid"
                 android:elevation="10dp"
                 android:layout_alignParentBottom="true"

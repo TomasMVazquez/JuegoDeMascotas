@@ -5,26 +5,26 @@ import java.util.List;
 public class DuenioConteiner {
 
     //atributos
-    private List<Duenio> duenioList;
+    private List<Owner> ownerList;
 
     //constructor
     public DuenioConteiner() {
     }
 
-    public DuenioConteiner(List<Duenio> deviceList) {
-        this.duenioList = deviceList;
+    public DuenioConteiner(List<Owner> deviceList) {
+        this.ownerList = deviceList;
     }
 
     //getter
-    public List<Duenio> getDuenioList() {
-        return duenioList;
+    public List<Owner> getOwnerList() {
+        return ownerList;
     }
 
     //tostring
     @Override
     public String toString() {
         return "DuenioConteiner{" +
-                "duenioList=" + duenioList +
+                "ownerList=" + ownerList +
                 '}';
     }
 }

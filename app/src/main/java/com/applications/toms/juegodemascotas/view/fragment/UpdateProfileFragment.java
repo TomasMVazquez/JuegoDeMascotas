@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -136,26 +136,26 @@ public class UpdateProfileFragment extends Fragment {
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Duenio duenio = documentSnapshot.toObject(Duenio.class);
-                if (duenio.getSexo()!=null) {
-                    if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateMasculino))){
+                Owner owner = documentSnapshot.toObject(Owner.class);
+                if (owner.getSex()!=null) {
+                    if (owner.getSex().equals(getContext().getResources().getString(R.string.updateMasculino))){
                         rbSexMasc.setChecked(true);
                     }
-                    if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateFemenino))){
+                    if (owner.getSex().equals(getContext().getResources().getString(R.string.updateFemenino))){
                         rbSexFem.setChecked(true);
                     }
-                    if (duenio.getSexo().equals(getContext().getResources().getString(R.string.updateOtro))){
+                    if (owner.getSex().equals(getContext().getResources().getString(R.string.updateOtro))){
                         rbSexOtro.setChecked(true);
                     }
                 }
-                if (duenio.getFechaNacimiento()!=null){
-                    etUpdateBirth.setText(duenio.getFechaNacimiento());
+                if (owner.getBirthDate()!=null){
+                    etUpdateBirth.setText(owner.getBirthDate());
                 }
-                if (duenio.getDireccion()!=null){
-                    etUpdateDireccion.setText(duenio.getDireccion());
+                if (owner.getAddress()!=null){
+                    etUpdateDireccion.setText(owner.getAddress());
                 }
-                if (duenio.getInfoDuenio()!=null){
-                    etUpdateAbout.setText(duenio.getInfoDuenio());
+                if (owner.getAboutMe()!=null){
+                    etUpdateAbout.setText(owner.getAboutMe());
                 }
             }
         });

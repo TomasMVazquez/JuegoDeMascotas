@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Juego;
+import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,13 +36,13 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
 
     //Atributos
     private Context context;
-    private List<Juego> playDates;
+    private List<PlayDate> playDates;
     private PlacesClient placesClient;
     private FragmentManager fragmentManager;
     private PlayDateAdapterInterface playDateAdapterInterface;
 
     //Constructor
-    public PlayDateAdapter(Context context, List<Juego> playDates,FragmentManager fragmentManager, PlayDateAdapterInterface playDateAdapterInterface) {
+    public PlayDateAdapter(Context context, List<PlayDate> playDates, FragmentManager fragmentManager, PlayDateAdapterInterface playDateAdapterInterface) {
         this.context = context;
         this.playDates = playDates;
         this.fragmentManager = fragmentManager;
@@ -50,7 +50,7 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
     }
 
     //setter
-    public void setPlayDates(List<Juego> playDates) {
+    public void setPlayDates(List<PlayDate> playDates) {
         this.playDates = playDates;
         notifyDataSetChanged();
     }
@@ -84,7 +84,7 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         //buscamos datos
-        Juego playDate = playDates.get(position);
+        PlayDate playDate = playDates.get(position);
         //casteamos
         PlayDatesViewHolder playDateViewHolder = (PlayDatesViewHolder) holder;
         //cargamos
@@ -142,17 +142,17 @@ public class PlayDateAdapter extends RecyclerView.Adapter {
             });
 
             btnDetails.setOnClickListener(v -> {
-                Juego playDetail = playDates.get(getAdapterPosition());
+                PlayDate playDetail = playDates.get(getAdapterPosition());
                 playDateAdapterInterface.goToPlayDetail(playDetail.getIdPlay());
             });
         }
 
         //Metodos para cargar Tarjetas
-        public void cargar(Juego playDate){
+        public void cargar(PlayDate playDate){
 
-            String dateTime = playDate.getFechaJuego() + " - " + playDate.getHoraJuego();
+            String dateTime = playDate.getDatePlay() + " - " + playDate.getTimePlay();
             dateTimePlayDate.setText(dateTime);
-            sizeDogsPlayDate.setText(playDate.getTamanioPerros());
+            sizeDogsPlayDate.setText(playDate.getSize());
 
             //Get location Details
             // Specify the fields to return.

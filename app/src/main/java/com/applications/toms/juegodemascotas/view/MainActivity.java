@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.FriendsFragment;
@@ -47,7 +47,6 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -273,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             photo = currentUser.getPhotoUrl().toString() + "?height=500";
         }
 
-        final Duenio newDuenio = new Duenio(currentUser.getUid(), name, currentUser.getEmail(), photo);
+        final Owner newOwner = new Owner(currentUser.getUid(), name, currentUser.getEmail(), photo);
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setTimestampsInSnapshotsEnabled(true)
@@ -288,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (!documentSnapshot.exists()){
 //                    Toast.makeText(MainActivity.this, "Usuario No Existe Creando...", Toast.LENGTH_SHORT).show();
-                    userRef.set(newDuenio).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    userRef.set(newOwner).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){

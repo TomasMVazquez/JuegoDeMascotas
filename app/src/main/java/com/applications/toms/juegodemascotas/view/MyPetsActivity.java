@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,27 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.AdapterInterface {
 
@@ -69,16 +59,16 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         Bundle bundle = intent.getExtras();
         String idDuenio = bundle.getString(KEY_DUENIO_ID);
 
-        myPetsAdapter = new MyPetsAdapter(new ArrayList<Mascota>(),this,this);
+        myPetsAdapter = new MyPetsAdapter(new ArrayList<Pet>(),this,this);
 
-        //Traigo Mascotas Duenio
+        //Traigo Mascotas Owner
         final CollectionReference userRefMasc = db.collection(userFirestore)
                 .document(currentUser.getUid()).collection("misMascotas");
 
         userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            List<Mascota> misMascotas = new ArrayList<>();
-            misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
-            myPetsAdapter.setMascotaList(misMascotas);
+            List<Pet> misPets = new ArrayList<>();
+            misPets.addAll(queryDocumentSnapshots.toObjects(Pet.class));
+            myPetsAdapter.setPetList(misPets);
         });
 
 
@@ -113,12 +103,12 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     //ir al profile de la mascota
     @Override
-    public void goToProfile(String idOwner, Mascota mascotaProfile) {
+    public void goToProfile(String idOwner, Pet petProfile) {
         Intent intent = new Intent(MyPetsActivity.this,ProfileActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(ProfileActivity.KEY_TYPE,"2");
         bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-        bundle.putString(ProfileActivity.KEY_PET_ID,mascotaProfile.getIdPet());
+        bundle.putString(ProfileActivity.KEY_PET_ID, petProfile.getIdPet());
         intent.putExtras(bundle);
         startActivity(intent);
 
@@ -130,9 +120,9 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
                 .document(currentUser.getUid()).collection("misMascotas");
 
         final String idPet = userRefMasc.document().getId();
-        Mascota newMascota = new Mascota(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
+        Pet newPet = new Pet(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
 
-        userRefMasc.document(idPet).set(newMascota)
+        userRefMasc.document(idPet).set(newPet)
                 .addOnSuccessListener(aVoid -> {
                     //TODO
                 })
@@ -143,7 +133,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
                 .document(idPet);
 
-        petsRef.set(newMascota).addOnCompleteListener(task -> {
+        petsRef.set(newPet).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 //TODO
             }else{

@@ -1,6 +1,6 @@
 package com.applications.toms.juegodemascotas.model;
 
-public class Mascota {
+public class Pet {
 
     //atributos
     private String idPet;
@@ -15,10 +15,10 @@ public class Mascota {
 
     //Constructor
 
-    public Mascota() {
+    public Pet() {
     }
 
-    public Mascota(String idPet,String nombre, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, String miDuenio) {
+    public Pet(String idPet, String nombre, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, String miDuenio) {
         this.idPet = idPet;
         this.nombre = nombre;
         this.raza = raza;
@@ -79,7 +79,7 @@ public class Mascota {
     //toString
     @Override
     public String toString() {
-        return "Mascota{" +
+        return "Pet{" +
                 "nombre='" + nombre + '\'' +
                 ", raza='" + raza + '\'' +
                 '}';

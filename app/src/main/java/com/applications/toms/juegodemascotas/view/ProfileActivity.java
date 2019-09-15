@@ -2,7 +2,6 @@ package com.applications.toms.juegodemascotas.view;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -23,27 +22,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Duenio;
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.adapter.CirculeOwnerAdapter;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -52,8 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify,
         CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner {
@@ -85,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private String type;
     private String petId;
     private String idUser;
-    private List<Mascota> petsList = new ArrayList<>();
+    private List<Pet> petsList = new ArrayList<>();
     private String photoPetActual;
     private String photoOwnerActual;
 
@@ -113,8 +101,8 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         fabEditProfile = findViewById(R.id.fabEditProfile);
 
         //Adapter
-        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<Mascota>(),this,this);
-        circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<Duenio>(),this,this);
+        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<Pet>(),this,this);
+        circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<Owner>(),this,this);
 
         //Recycler View
         rvMyPetsOwner.hasFixedSize();
@@ -169,7 +157,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
                 .document(userId);
         userRef.get().addOnSuccessListener(documentSnapshot -> {
-            Duenio ownerData = documentSnapshot.toObject(Duenio.class);
+            Owner ownerData = documentSnapshot.toObject(Owner.class);
 
             //Check if user is current user
             if (checkCurrentUser(userId)){
@@ -181,18 +169,18 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         });
 
         userRef.collection("misMascotas").addSnapshotListener((queryDocumentSnapshots, e) -> {
-            petsList.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
+            petsList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
         });
     }
 
     //Init profile user = current user
-    private void initCurrentUser(Duenio owner){
+    private void initCurrentUser(Owner owner){
         completeDataInProfile(owner);
     }
 
     //Init profile if is diferent user
     @SuppressLint("RestrictedApi")
-    private void initOtherUser(Duenio user){
+    private void initOtherUser(Owner user){
         //No mostramos botones para editar o elimiar
         fabImageProfile.setVisibility(View.GONE);
         fabEditProfile.setVisibility(View.GONE);
@@ -201,7 +189,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     }
 
     //Bring Data to profile
-    private void completeDataInProfile(Duenio profileData){
+    private void completeDataInProfile(Owner profileData){
         if (type.equals("1")){
             //Text MyOwner or MyPets
             tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
@@ -209,26 +197,26 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             rvMyPetsOwner.setAdapter(circulePetsAdapter);
             //My Pets
             Log.d(TAG, "completeDataInProfile: " + petsList);
-            circulePetsAdapter.setMascotaList(petsList);
+            circulePetsAdapter.setPetList(petsList);
             //Name
-            tvName.setText(profileData.getNombre());
+            tvName.setText(profileData.getName());
             //info
-            tvAboutProfile.setText(profileData.getInfoDuenio());
-            tvDir.setText(profileData.getDireccion());
+            tvAboutProfile.setText(profileData.getAboutMe());
+            tvDir.setText(profileData.getAddress());
             //Photo Profile
-            if (profileData.getFotoDuenio() == null) {
+            if (profileData.getAvatar() == null) {
                 String photo = currentUser.getPhotoUrl().toString() + "?height=500";
                 Glide.with(this).load(photo).into(ivProfile);
             }else {
-                StorageReference storageReference = mStorage.getReference().child(profileData.getUserId()).child(profileData.getFotoDuenio());
+                StorageReference storageReference = mStorage.getReference().child(profileData.getUserId()).child(profileData.getAvatar());
                 storageReference.getDownloadUrl()
                         .addOnSuccessListener(uri ->
                                 Glide.with(ProfileActivity.this).load(uri).into(ivProfile))
                         .addOnFailureListener(e ->
-                                Glide.with(this).load(profileData.getFotoDuenio()).into(ivProfile));
+                                Glide.with(this).load(profileData.getAvatar()).into(ivProfile));
             }
 
-            photoOwnerActual = profileData.getFotoDuenio();
+            photoOwnerActual = profileData.getAvatar();
 
         }else if (type.equals("2")){
             //If is a pet and Im the owner I can delete, this is the icon
@@ -238,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             //Adapter
             rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
             //Busco la mascota elegida
-            for (Mascota pet : petsList){
+            for (Pet pet : petsList){
                 if (pet.getIdPet().equals(petId)){
                     //Name
                     tvName.setText(pet.getNombre());
@@ -247,9 +235,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                     tvDir.setText(additionalInfo);
                     tvAboutProfile.setText(pet.getInfoMascota());
                     //Adapter
-                    List<Duenio> duenioList = new ArrayList<>();
-                    duenioList.add(profileData);
-                    circuleOwnerAdapter.setDuenio(duenioList);
+                    List<Owner> ownerList = new ArrayList<>();
+                    ownerList.add(profileData);
+                    circuleOwnerAdapter.setOwner(ownerList);
                     //Photo
                     photoPetActual = pet.getFotoMascota();
                     StorageReference storageReference = mStorage.getReference().child(profileData.getUserId()).child(pet.getFotoMascota());

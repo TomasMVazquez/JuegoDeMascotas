@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,18 +27,18 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
     //Atributos
-    private List<Duenio> duenio;
+    private List<Owner> owner;
     private Context context;
     private AdapterInterfaceCirculeOwner adapterInterfaceCirculeOwner;
 
-    public CirculeOwnerAdapter(List<Duenio> duenio, Context context, AdapterInterfaceCirculeOwner adapterInterfaceCirculeOwner) {
-        this.duenio = duenio;
+    public CirculeOwnerAdapter(List<Owner> owner, Context context, AdapterInterfaceCirculeOwner adapterInterfaceCirculeOwner) {
+        this.owner = owner;
         this.context = context;
         this.adapterInterfaceCirculeOwner = adapterInterfaceCirculeOwner;
     }
 
-    public void setDuenio(List<Duenio> duenio) {
-        this.duenio = duenio;
+    public void setOwner(List<Owner> owner) {
+        this.owner = owner;
         notifyDataSetChanged();
     }
 
@@ -63,16 +63,16 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         //buscamos datos
-        Duenio newDuenio = duenio.get(i);
+        Owner newOwner = owner.get(i);
         //casteamos
         CirculeOwnerViewHolder ownerViewHolder = (CirculeOwnerViewHolder) viewHolder;
         //cargamos
-        ownerViewHolder.cargar(newDuenio);
+        ownerViewHolder.cargar(newOwner);
     }
 
     @Override
     public int getItemCount() {
-        return duenio.size();
+        return owner.size();
     }
 
     public interface AdapterInterfaceCirculeOwner{
@@ -101,17 +101,17 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         }
 
         //metodos
-        public void cargar(final Duenio duenio){
-            tvUid.setText(duenio.getUserId());
+        public void cargar(final Owner owner){
+            tvUid.setText(owner.getUserId());
             tvPetId.setText("");
-            if (duenio.getFotoDuenio().equals("")){
+            if (owner.getAvatar().equals("")){
                 Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewProfile);
             }else {
-                StorageReference storageReference = mStorage.getReference().child(duenio.getUserId()).child(duenio.getFotoDuenio());
+                StorageReference storageReference = mStorage.getReference().child(owner.getUserId()).child(owner.getAvatar());
                 storageReference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile)).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Glide.with(context).load(duenio.getFotoDuenio()).into(ivCardViewProfile);
+                        Glide.with(context).load(owner.getAvatar()).into(ivCardViewProfile);
                     }
                 });
             }

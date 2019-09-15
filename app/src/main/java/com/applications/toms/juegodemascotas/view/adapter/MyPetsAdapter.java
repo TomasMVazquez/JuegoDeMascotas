@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,20 +29,20 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
     //Atributos
-    private List<Mascota> mascotaList;
+    private List<Pet> petList;
     private Context context;
     private AdapterInterface adapterInterface;
 
     //Constructor
-    public MyPetsAdapter(List<Mascota> mascotaList, Context context, AdapterInterface adapterInterface) {
-        this.mascotaList = mascotaList;
+    public MyPetsAdapter(List<Pet> petList, Context context, AdapterInterface adapterInterface) {
+        this.petList = petList;
         this.context = context;
         this.adapterInterface = adapterInterface;
     }
 
     //Setter
-    public void setMascotaList(List<Mascota> mascotaList) {
-        this.mascotaList = mascotaList;
+    public void setPetList(List<Pet> petList) {
+        this.petList = petList;
         notifyDataSetChanged();
     }
 
@@ -67,20 +67,20 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         //buscamos datos
-        Mascota mascota = mascotaList.get(i);
+        Pet pet = petList.get(i);
         //casteamos
         PetViewHolder petViewHolder = (PetViewHolder) viewHolder;
         //cargamos
-        petViewHolder.cargar(mascota);
+        petViewHolder.cargar(pet);
     }
 
     @Override
     public int getItemCount() {
-        return mascotaList.size();
+        return petList.size();
     }
 
     public interface AdapterInterface{
-        void goToProfile(String idOwner, Mascota mascota);
+        void goToProfile(String idOwner, Pet pet);
     }
 
     public class PetViewHolder extends RecyclerView.ViewHolder{
@@ -103,20 +103,20 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Mascota mascotaProfile = mascotaList.get(getAdapterPosition());
-                    adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), mascotaProfile);
+                    Pet petProfile = petList.get(getAdapterPosition());
+                    adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), petProfile);
                 }
             });
 
         }
 
         //metodo cargar tarjeta
-        public void cargar(Mascota mascota){
-            tvCVNameMyPet.setText(mascota.getNombre());
-            tvCVIdMyPet.setText(mascota.getIdPet());
+        public void cargar(Pet pet){
+            tvCVNameMyPet.setText(pet.getNombre());
+            tvCVIdMyPet.setText(pet.getIdPet());
             tvCVIdMyOwner.setText(currentUser.getUid());
 
-            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(mascota.getFotoMascota());
+            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(pet.getFotoMascota());
             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
