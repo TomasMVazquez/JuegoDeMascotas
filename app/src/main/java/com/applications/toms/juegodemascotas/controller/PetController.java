@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.controller;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.applications.toms.juegodemascotas.dao.DaoPet;
 import com.applications.toms.juegodemascotas.model.Pet;
@@ -12,8 +13,14 @@ import java.util.List;
 
 public class PetController {
 
+    private DaoPet daoPet;
+
+    public PetController() {
+        daoPet = new DaoPet();
+    }
+
     public void givePetList(Context context, ResultListener<List<Pet>> resultListener){
-        DaoPet daoPet = new DaoPet();
+//        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
             daoPet.fetchPetList(context,resultado -> resultListener.finish(resultado));
         }else {
@@ -22,7 +29,7 @@ public class PetController {
     }
 
     public void givePet(String petId, Context context, ResultListener<Pet> resultListener){
-        DaoPet daoPet = new DaoPet();
+//        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
             daoPet.fetchPet(petId,context,resultado -> resultListener.finish(resultado));
         }else {
@@ -32,13 +39,15 @@ public class PetController {
     }
 
     public void giveOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> resultListener){
-        DaoPet daoPet = new DaoPet();
+//        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
             daoPet.fetchOwnerPets(ownerId,context,resultado -> resultListener.finish(resultado));
         }else {
             resultListener.finish(new ArrayList<>());
         }
-
     }
 
+    public void givePetAvatar(String ownerId, String avatar, Context context, ResultListener<Uri> resultListener){
+        daoPet.fetchPetAvatar(ownerId,avatar,context,result -> resultListener.finish(result));
+    }
 }

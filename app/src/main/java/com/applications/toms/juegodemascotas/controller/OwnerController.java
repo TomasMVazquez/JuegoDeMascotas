@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.controller;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.applications.toms.juegodemascotas.dao.DaoOwner;
 import com.applications.toms.juegodemascotas.model.Owner;
@@ -12,10 +13,16 @@ import java.util.List;
 
 public class OwnerController {
 
+    private DaoOwner daoOwner;
+
+    public OwnerController() {
+        daoOwner = new DaoOwner();
+    }
+
     public void giveOwners(Context context, ResultListener<List<Owner>> resultListener){
-        DaoOwner daoOwner = new DaoOwner();
+//        DaoOwner daoOwner = new DaoOwner();
         if (Util.isOnline(context)){
-            daoOwner.fetchOwnerList(context, resultado -> resultListener.finish(resultado));
+            daoOwner.fetchOwnerList(context, result -> resultListener.finish(result));
         }else {
             resultListener.finish(new ArrayList<>());
         }
@@ -23,14 +30,17 @@ public class OwnerController {
     }
 
     public void giveOwnerData(String ownerId, Context context, ResultListener<Owner> resultListener){
-        DaoOwner daoOwner = new DaoOwner();
+//        DaoOwner daoOwner = new DaoOwner();
         if (Util.isOnline(context)){
-            daoOwner.fetchOwner(ownerId, context, resultado -> resultListener.finish(resultado));
+            daoOwner.fetchOwner(ownerId, context, result -> resultListener.finish(result));
         }else {
             resultListener.finish(null);
         }
-
     }
 
+    public void giveOwnerAvatar(String userId, String avatar, Context context, ResultListener<Uri> resultListener){
+//        DaoOwner daoOwner = new DaoOwner();
+        daoOwner.fetchOwnerAvatar(userId,avatar,context,result -> resultListener.finish(result));
+    }
 
 }

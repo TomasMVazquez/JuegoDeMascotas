@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,8 +27,6 @@ import java.util.List;
 
 public class MyPetsAdapter extends RecyclerView.Adapter {
 
-    private FirebaseStorage mStorage;
-    private static FirebaseUser currentUser;
     //Atributos
     private List<Pet> petList;
     private Context context;
@@ -49,9 +48,6 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        mStorage = FirebaseStorage.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
 
         context = viewGroup.getContext();
         //pasamos contexto a inflador
@@ -111,23 +107,12 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         }
 
         //metodo cargar tarjeta
-        public void cargar(Pet pet){
+        private void cargar(Pet pet){
             tvCVNameMyPet.setText(pet.getNombre());
             tvCVIdMyPet.setText(pet.getIdPet());
-            tvCVIdMyOwner.setText(currentUser.getUid());
-
-            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(pet.getFotoMascota());
-            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(context).load(uri).into(ivCVMyPet);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCVMyPet);
-                }
-            });
+            tvCVIdMyOwner.setText(pet.getMiDuenioId());
+            PetController petController = new PetController();
+            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCVMyPet));
         }
 
     }
