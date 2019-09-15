@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.ProfileActivity;
 import com.applications.toms.juegodemascotas.view.adapter.PetsAdapter;
@@ -32,8 +33,6 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 public class PetsFragment extends Fragment implements PetsAdapter.PetsAdapterInterface {
 
-    private static FirebaseFirestore db;
-    private static String petsFirestore;
     private static Context context;
     private static FirebaseUser currentUser;
 
@@ -51,23 +50,14 @@ public class PetsFragment extends Fragment implements PetsAdapter.PetsAdapterInt
         View viewNologin = inflater.inflate(R.layout.fragment_no_login, container, false);
 
         context = getApplicationContext();
-        petsFirestore = getResources().getString(R.string.collection_pets);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null){
-            db = FirebaseFirestore.getInstance();
-
             petsAdapter = new PetsAdapter(new ArrayList<Pet>(),context,this);
 
             //Traigo Mascotas Owner
-            final CollectionReference petsRef = db.collection(petsFirestore);
-
-            petsRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                List<Pet> misPets = new ArrayList<>();
-                misPets.addAll(queryDocumentSnapshots.toObjects(Pet.class));
-                petsAdapter.setPetList(misPets);
-            });
-
+            PetController petController = new PetController();
+            petController.givePetList(context,result -> petsAdapter.setPetList(result));
 
             //Recycler View
             RecyclerView recyclerViewPets = view.findViewById(R.id.recyclerPets);

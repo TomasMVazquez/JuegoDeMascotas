@@ -28,9 +28,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.OwnerController;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.model.PlayDate;
+import com.applications.toms.juegodemascotas.util.Util;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -57,7 +60,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -85,11 +87,14 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private LatLng myLocationBias;
     private String size="";
     private String idPlace;
-    private List<Pet> misPets = new ArrayList<>();
+    private List<Pet> myPets = new ArrayList<>();
 
-    private static FirebaseFirestore db;
     private static String userFirestore;
     private static String playFirestore;
+
+    private OwnerController ownerController;
+    private PetController petController;
+
     private static FirebaseUser currentUser;
     private static Context context;
     private Owner creator;
@@ -115,8 +120,11 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
 
         etDatePlayDate.clearFocus();
 
+        //controller
+        ownerController = new OwnerController();
+        petController = new PetController();
+
         //Base De Datos
-        db = FirebaseFirestore.getInstance();
         context = getApplicationContext();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -124,24 +132,10 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         userFirestore = getResources().getString(R.string.collection_users);
 
         //Traigo al creador
-        DocumentReference userRef = db.collection(getString(R.string.collection_users))
-                .document(currentUser.getUid());
-
-        userRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    creator = document.toObject(Owner.class);
-                }
-            }
-        });
+        ownerController.giveOwnerData(currentUser.getUid(),this,resultado -> creator=resultado);
 
         //Traigo Mascotas Owner
-        final CollectionReference userRefMasc = db.collection(userFirestore)
-                .document(currentUser.getUid()).collection("misPets");
-
-        userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) ->
-                misPets.addAll(queryDocumentSnapshots.toObjects(Pet.class)));
+        petController.giveOwnerPets(currentUser.getUid(),this,resultado -> myPets.addAll(resultado));
 
         //Seleccion del tamanio de mascota
         Spinner spinnerPetSizePlayDate = findViewById(R.id.spinnerPetSizePlayDate);
@@ -187,15 +181,9 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         getLocationPermission();
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        String apiKey = getString(R.string.google_maps_key);
-        if(apiKey.isEmpty()){
-            Toast.makeText(this, "Not API Found", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         // Setup Places Client
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), apiKey);
+            Places.initialize(getApplicationContext(), Util.googleMapsApiKey(this));
         }
         placesClient = Places.createClient(this);
         
@@ -215,9 +203,11 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
 
     //Aniadir PlayDate a la base de Datos
     private void addNewPlayToDB(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         //Creo la collection de juegos "dentro del usuario" para agregar nuevo juego
         CollectionReference playRefMasc = db.collection(userFirestore)
-                .document(currentUser.getUid()).collection("misJuegos");
+                .document(currentUser.getUid()).collection(getString(R.string.collection_my_plays));
 
         //Tomo el ID del nuevo juego
         String idPlay = playRefMasc.document().getId();
@@ -235,7 +225,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                 etHourPlayDate.getText().toString(),
                 idPlace,
                 size,
-                misPets,
+                myPets,
                 creator,
                 invitados
                 );

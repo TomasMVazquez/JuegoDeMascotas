@@ -84,13 +84,10 @@ public class AddPetFragment extends Fragment {
         etAddPetInfo = view.findViewById(R.id.etAddPetInfo);
 
         //Fecha nacimiento mascota
-        etAddPetBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-                    //TODO mejorar el date picker
-                    showTruitonDatePickerDialog(v);
-                }
+        etAddPetBirth.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus){
+                //TODO mejorar el date picker
+                showTruitonDatePickerDialog(v);
             }
         });
 
@@ -121,15 +118,12 @@ public class AddPetFragment extends Fragment {
         final RadioButton rbAddPetSexFem = view.findViewById(R.id.rbAddPetSexFem);
 
         RadioGroup radioGroup = view.findViewById(R.id.rgAddPetSex);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (rbAddPetSexMasc.isChecked()){
-                    sex = Objects.requireNonNull(getContext()).getResources().getString(R.string.add_pet_sex_m);
-                }
-                if (rbAddPetSexFem.isChecked()){
-                    sex = Objects.requireNonNull(getContext()).getResources().getString(R.string.add_pet_sex_h);
-                }
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (rbAddPetSexMasc.isChecked()){
+                sex = Objects.requireNonNull(getContext()).getResources().getString(R.string.add_pet_sex_m);
+            }
+            if (rbAddPetSexFem.isChecked()){
+                sex = Objects.requireNonNull(getContext()).getResources().getString(R.string.add_pet_sex_h);
             }
         });
 
@@ -137,18 +131,14 @@ public class AddPetFragment extends Fragment {
         ivAddPetPhoto = view.findViewById(R.id.ivAddPetPhoto);
 
         FloatingActionButton fabAddPetPhoto = view.findViewById(R.id.fabAddPetPhoto);
-        ivAddPetPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EasyImage.openChooserWithGallery(AddPetFragment.this,"Elige la mejor foto", KEY_CAMERA_PET);
-            }
-        });
+        ivAddPetPhoto.setOnClickListener(v -> EasyImage.openChooserWithGallery(AddPetFragment.this,"Elige la mejor foto", KEY_CAMERA_PET));
 
         //Boton agregar mascota
         Button btnAddPet = view.findViewById(R.id.btnAddPet);
         btnAddPet.setOnClickListener(v -> {
             if (checkCompleteData()){
                 MyPetsActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
+                getActivity().getSupportFragmentManager().beginTransaction().remove(AddPetFragment.this).commit();
             } else {
                 Toast.makeText(getActivity(), "Faltan completar datos", Toast.LENGTH_SHORT).show();
             }
@@ -211,17 +201,9 @@ public class AddPetFragment extends Fragment {
 
                             final StorageReference oneFoto = raiz.child(mAuth.getCurrentUser().getUid()).child(uriTemp.getLastPathSegment());
                             UploadTask uploadTask = oneFoto.putFile(uriTemp);
-                            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                    uploadingPhoto = false;
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    uploadingPhoto = true;
-                                }
-                            });
+                            uploadTask
+                                    .addOnProgressListener(taskSnapshot -> uploadingPhoto = false)
+                                    .addOnSuccessListener(taskSnapshot -> uploadingPhoto = true);
                             break;
                     }
                 }
@@ -241,7 +223,7 @@ public class AddPetFragment extends Fragment {
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
 
-    //Date Picker Comands - for purchase date
+    //Date Picker Comands
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 

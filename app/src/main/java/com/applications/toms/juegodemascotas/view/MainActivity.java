@@ -54,7 +54,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private static final int ERROR_DIALOG_REQUEST = 9001;
+
 
     public static final int KEY_LOGIN=101;
     public static final String KEY_DUENIO = "duenio";
@@ -89,8 +89,7 @@ public class MainActivity extends AppCompatActivity {
         //crush
 //        new UCEHandler.Builder(this).build();
 
-        if (isServicesOk()){
-//            Toast.makeText(this, "finish checking", Toast.LENGTH_SHORT).show();
+        if (Util.isServicesOk(this)){
             Log.d(TAG, "onCreate: Check Service OK!");
         }
 
@@ -275,32 +274,26 @@ public class MainActivity extends AppCompatActivity {
         final Owner newOwner = new Owner(currentUser.getUid(), name, currentUser.getEmail(), photo);
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
                 .build();
+
         db.setFirestoreSettings(settings);
 
         final DocumentReference userRef = db.collection(getString(R.string.collection_users))
                 .document(currentUser.getUid());
 
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (!documentSnapshot.exists()){
-//                    Toast.makeText(MainActivity.this, "Usuario No Existe Creando...", Toast.LENGTH_SHORT).show();
-                    userRef.set(newOwner).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(MainActivity.this, "LogInSuccesful", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(MainActivity.this, userRef.getId(), Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(MainActivity.this, "Error Log In", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }else {
-//                    Toast.makeText(MainActivity.this, "El usuario ya existe", Toast.LENGTH_SHORT).show();
-                }
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (!documentSnapshot.exists()){
+//              Usuario No Existe Creando...
+                userRef.set(newOwner).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Toast.makeText(MainActivity.this, "LogInSuccesful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, userRef.getId(), Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(MainActivity.this, "Error Log In", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else {
+//              El usuario ya existe
             }
         });
 
@@ -444,27 +437,6 @@ public class MainActivity extends AppCompatActivity {
                 //todo
             }
         });
-    }
-
-    //CHECK VERSION FOR MAPS
-    public boolean isServicesOk (){
-        Log.d(TAG, "isServicesOk: checking google services version");
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
-        if (available == ConnectionResult.SUCCESS){
-            //Everything is find and user can do maps request
-            Log.d(TAG, "isServicesOk: Google Play services is working");
-//            Toast.makeText(this, " Service ok ", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-            //Error occurred but can be resolved
-            Log.d(TAG, "isServicesOk: an error occured but can be fixed");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this,available,ERROR_DIALOG_REQUEST);
-            dialog.show();
-        }else {
-            Toast.makeText(this, "You cannot make map request", Toast.LENGTH_SHORT).show();
-        }
-        return false;
     }
 
 }

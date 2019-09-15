@@ -22,8 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.OwnerController;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.adapter.CirculeOwnerAdapter;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
@@ -57,9 +60,11 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private static CirculePetsAdapter circulePetsAdapter;
     private static CirculeOwnerAdapter circuleOwnerAdapter;
 
+    private OwnerController ownerController;
+    private PetController petController;
+
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
-    private FirebaseFirestore db;
 
     private ImageView ivProfile;
     private TextView tvName;
@@ -83,12 +88,14 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //Controllers
+        ownerController = new OwnerController();
+        petController = new PetController();
+
         //Auth
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
-
-        db = FirebaseFirestore.getInstance();
 
         ivProfile = findViewById(R.id.ivProfile);
         tvName = findViewById(R.id.tvName);
@@ -154,23 +161,20 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
     //Fetch Owner data
     private void fetchOwnerData(String userId){
-        DocumentReference userRef = db.collection(getResources().getString(R.string.collection_users))
-                .document(userId);
-        userRef.get().addOnSuccessListener(documentSnapshot -> {
-            Owner ownerData = documentSnapshot.toObject(Owner.class);
-
+        ownerController.giveOwnerData(userId, this, resultado -> {
             //Check if user is current user
             if (checkCurrentUser(userId)){
                 //Traer info del usuario y botones para modificar
-                initCurrentUser(ownerData);
+                initCurrentUser(resultado);
             }else {
-                initOtherUser(ownerData);
+                initOtherUser(resultado);
             }
         });
 
-        userRef.collection("misMascotas").addSnapshotListener((queryDocumentSnapshots, e) -> {
-            petsList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
+        petController.giveOwnerPets(userId,this,resultado -> {
+            petsList.addAll(resultado);
         });
+
     }
 
     //Init profile user = current user

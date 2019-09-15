@@ -108,12 +108,9 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
                 Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewProfile);
             }else {
                 StorageReference storageReference = mStorage.getReference().child(owner.getUserId()).child(owner.getAvatar());
-                storageReference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile)).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Glide.with(context).load(owner.getAvatar()).into(ivCardViewProfile);
-                    }
-                });
+                storageReference.getDownloadUrl()
+                        .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile))
+                        .addOnFailureListener(e -> Glide.with(context).load(owner.getAvatar()).into(ivCardViewProfile));
             }
         }
     }

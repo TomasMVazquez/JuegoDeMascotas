@@ -18,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +37,6 @@ public class UpdateProfileFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
-    private static FirebaseFirestore db;
 
     private static EditText etUpdateBirth;
     private EditText etUpdateName;
@@ -59,7 +60,6 @@ public class UpdateProfileFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        db = FirebaseFirestore.getInstance();
 
         etUpdateBirth = view.findViewById(R.id.etUpdateBirth);
         etUpdateName = view.findViewById(R.id.etUpdateName);
@@ -78,47 +78,38 @@ public class UpdateProfileFragment extends Fragment {
         }
 
         //fecha de nacimiento
-        etUpdateBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-                    showTruitonDatePickerDialog(v);
-                }
+        etUpdateBirth.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus){
+                showTruitonDatePickerDialog(v);
             }
         });
 
         //El genero de la persona
         RadioGroup radioGroup = view.findViewById(R.id.rgSex);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (rbSexMasc.isChecked()){
-                    sex = getContext().getResources().getString(R.string.updateMasculino);
-                }
-                if (rbSexFem.isChecked()){
-                    sex = getContext().getResources().getString(R.string.updateFemenino);
-                }
-                if (rbSexOtro.isChecked()){
-                    sex = getContext().getResources().getString(R.string.updateOtro);
-                }
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (rbSexMasc.isChecked()){
+                sex = Objects.requireNonNull(getContext()).getString(R.string.updateMasculino);
+            }
+            if (rbSexFem.isChecked()){
+                sex = Objects.requireNonNull(getContext()).getString(R.string.updateFemenino);
+            }
+            if (rbSexOtro.isChecked()){
+                sex = Objects.requireNonNull(getContext()).getString(R.string.updateOtro);
             }
         });
 
 
         //Boton actualizar
         Button btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
-        btnUpdateProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OnFragmentNotify onFragmentFNotify= (OnFragmentNotify) getContext();
-                onFragmentFNotify.saveAndCompleteProfileUpdates(etUpdateName.getText().toString(),
-                        etUpdateDireccion.getText().toString(),
-                        etUpdateBirth.getText().toString(),
-                        sex,
-                        etUpdateAbout.getText().toString());
+        btnUpdateProfile.setOnClickListener(v -> {
+            OnFragmentNotify onFragmentFNotify= (OnFragmentNotify) getContext();
+            onFragmentFNotify.saveAndCompleteProfileUpdates(etUpdateName.getText().toString(),
+                    etUpdateDireccion.getText().toString(),
+                    etUpdateBirth.getText().toString(),
+                    sex,
+                    etUpdateAbout.getText().toString());
 
-                getActivity().getSupportFragmentManager().beginTransaction().remove(UpdateProfileFragment.this).commit();
-            }
+            getActivity().getSupportFragmentManager().beginTransaction().remove(UpdateProfileFragment.this).commit();
         });
         return view;
     }
@@ -130,37 +121,33 @@ public class UpdateProfileFragment extends Fragment {
 
     //CheckDataBaseInfo
     public void checkDataBaseInfo(final String userID){
-        DocumentReference userRef = db.collection("Owners")
-                .document(userID);
-
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Owner owner = documentSnapshot.toObject(Owner.class);
-                if (owner.getSex()!=null) {
-                    if (owner.getSex().equals(getContext().getResources().getString(R.string.updateMasculino))){
-                        rbSexMasc.setChecked(true);
-                    }
-                    if (owner.getSex().equals(getContext().getResources().getString(R.string.updateFemenino))){
-                        rbSexFem.setChecked(true);
-                    }
-                    if (owner.getSex().equals(getContext().getResources().getString(R.string.updateOtro))){
-                        rbSexOtro.setChecked(true);
-                    }
+        OwnerController ownerController = new OwnerController();
+        ownerController.giveOwnerData(userID,getContext(),resultado -> {
+            if (resultado.getSex()!=null) {
+                if (resultado.getSex().equals(getContext().getString(R.string.updateMasculino))){
+                    rbSexMasc.setChecked(true);
                 }
-                if (owner.getBirthDate()!=null){
-                    etUpdateBirth.setText(owner.getBirthDate());
+                if (resultado.getSex().equals(getContext().getString(R.string.updateFemenino))){
+                    rbSexFem.setChecked(true);
                 }
-                if (owner.getAddress()!=null){
-                    etUpdateDireccion.setText(owner.getAddress());
+                if (resultado.getSex().equals(getContext().getString(R.string.updateOtro))){
+                    rbSexOtro.setChecked(true);
                 }
-                if (owner.getAboutMe()!=null){
-                    etUpdateAbout.setText(owner.getAboutMe());
-                }
+            }
+            if (resultado.getBirthDate()!=null){
+                etUpdateBirth.setText(resultado.getBirthDate());
+            }
+            if (resultado.getAddress()!=null){
+                etUpdateDireccion.setText(resultado.getAddress());
+            }
+            if (resultado.getAboutMe()!=null){
+                etUpdateAbout.setText(resultado.getAboutMe());
             }
         });
     }
 
+
+    //TODO DATE PICKER
     //Date picker
     public void showTruitonDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();

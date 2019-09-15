@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PlayController;
 import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.PlayDateDetail;
@@ -36,8 +37,6 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
 
     private static Context context;
     private static FirebaseUser currentUser;
-    private PlayDateAdapter playDateAdapter;
-    private static FirebaseFirestore db;
 
     public PlayDateFragment() {
         // Required empty public constructor
@@ -55,16 +54,10 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null){
-            db = FirebaseFirestore.getInstance();
-            playDateAdapter = new PlayDateAdapter(context,new ArrayList<PlayDate>(),getFragmentManager(),this);
-            //Traigo Juegos de la base
-            CollectionReference playRef = db.collection(context.getString(R.string.collection_play));
-            playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                List<PlayDate> playDates = new ArrayList<>();
-                Log.d("MAP", "onCreateView: " + queryDocumentSnapshots.getDocuments().toString());
-                playDates.addAll(queryDocumentSnapshots.toObjects(PlayDate.class));
-                playDateAdapter.setPlayDates(playDates);
-            });
+            PlayDateAdapter playDateAdapter = new PlayDateAdapter(context,new ArrayList<>(),getFragmentManager(),this);
+
+            PlayController playController = new PlayController();
+            playController.givePlayDateList(context,result -> playDateAdapter.setPlayDates(result));
 
             FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
 
