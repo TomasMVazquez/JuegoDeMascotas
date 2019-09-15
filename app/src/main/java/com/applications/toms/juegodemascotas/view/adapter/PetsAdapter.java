@@ -1,7 +1,6 @@
 package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -26,20 +23,20 @@ public class PetsAdapter extends RecyclerView.Adapter {
     private FirebaseStorage mStorage;
 
     //Atributos
-    private List<Mascota> mascotaList;
+    private List<Pet> petList;
     private Context context;
     private PetsAdapterInterface adapterInterface;
 
     //constructor
-    public PetsAdapter(List<Mascota> mascotaList, Context context, PetsAdapterInterface adapterInterface) {
-        this.mascotaList = mascotaList;
+    public PetsAdapter(List<Pet> petList, Context context, PetsAdapterInterface adapterInterface) {
+        this.petList = petList;
         this.context = context;
         this.adapterInterface = adapterInterface;
     }
 
     //Setter
-    public void setMascotaList(List<Mascota> mascotaList) {
-        this.mascotaList = mascotaList;
+    public void setPetList(List<Pet> petList) {
+        this.petList = petList;
         notifyDataSetChanged();
     }
 
@@ -61,20 +58,20 @@ public class PetsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         //buscamos datos
-        Mascota mascota = mascotaList.get(i);
+        Pet pet = petList.get(i);
         //casteamos
         PetsViewHolder petViewHolder = (PetsViewHolder) viewHolder;
         //cargamos
-        petViewHolder.cargar(mascota);
+        petViewHolder.cargar(pet);
     }
 
     @Override
     public int getItemCount() {
-        return mascotaList.size();
+        return petList.size();
     }
 
     public interface PetsAdapterInterface{
-        void goToProfileFromPets(String idOwner, Mascota mascota); //TODO REVISAR
+        void goToProfileFromPets(String idOwner, Pet pet); //TODO REVISAR
     }
 
 
@@ -96,19 +93,19 @@ public class PetsAdapter extends RecyclerView.Adapter {
             tvCVIdOwner = itemView.findViewById(R.id.tvCVIdOwner);
 
             itemView.setOnClickListener(v -> {
-                Mascota mascotaProfile = mascotaList.get(getAdapterPosition());
-                adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), mascotaProfile);
+                Pet petProfile = petList.get(getAdapterPosition());
+                adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), petProfile);
             });
 
         }
 
         //metodo cargar tarjeta
-        public void cargar(Mascota mascota){
-            tvCVNamePets.setText(mascota.getNombre());
-            tvCVIdPet.setText(mascota.getIdPet());
-            tvCVIdOwner.setText(mascota.getMiDuenioId());
+        public void cargar(Pet pet){
+            tvCVNamePets.setText(pet.getNombre());
+            tvCVIdPet.setText(pet.getIdPet());
+            tvCVIdOwner.setText(pet.getMiDuenioId());
 
-            StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenioId()).child(mascota.getFotoMascota());
+            StorageReference storageReference = mStorage.getReference().child(pet.getMiDuenioId()).child(pet.getFotoMascota());
             storageReference.getDownloadUrl()
                     .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCVPets))
                     .addOnFailureListener(e -> Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCVPets));

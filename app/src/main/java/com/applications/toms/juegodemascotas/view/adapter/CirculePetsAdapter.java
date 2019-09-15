@@ -1,7 +1,6 @@
 package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -29,20 +26,20 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
     //Atributos
-    private List<Mascota> mascotaList;
+    private List<Pet> petList;
     private Context context;
     private AdapterInterfaceCircule adapterInterfaceCircule;
 
     //constructor
-    public CirculePetsAdapter(List<Mascota> mascotaList, Context context, AdapterInterfaceCircule adapterInterfaceCircule) {
-        this.mascotaList = mascotaList;
+    public CirculePetsAdapter(List<Pet> petList, Context context, AdapterInterfaceCircule adapterInterfaceCircule) {
+        this.petList = petList;
         this.context = context;
         this.adapterInterfaceCircule = adapterInterfaceCircule;
     }
 
     //Setter
-    public void setMascotaList(List<Mascota> mascotaList) {
-        this.mascotaList = mascotaList;
+    public void setPetList(List<Pet> petList) {
+        this.petList = petList;
         notifyDataSetChanged();
     }
 
@@ -67,16 +64,16 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         //buscamos datos
-        Mascota mascota = mascotaList.get(i);
+        Pet pet = petList.get(i);
         //casteamos
         CirculePetViewHolder petViewHolder = (CirculePetViewHolder) viewHolder;
         //cargamos
-        petViewHolder.cargar(mascota);
+        petViewHolder.cargar(pet);
     }
 
     @Override
     public int getItemCount() {
-        return mascotaList.size();
+        return petList.size();
     }
 
     public interface AdapterInterfaceCircule{
@@ -105,11 +102,11 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         }
 
         //metodos
-        public void cargar(Mascota mascota){
-            tvUid.setText(mascota.getMiDuenioId());
-            tvPetId.setText(mascota.getIdPet());
+        public void cargar(Pet pet){
+            tvUid.setText(pet.getMiDuenioId());
+            tvPetId.setText(pet.getIdPet());
 
-            StorageReference storageReference = mStorage.getReference().child(mascota.getMiDuenioId()).child(mascota.getFotoMascota());
+            StorageReference storageReference = mStorage.getReference().child(pet.getMiDuenioId()).child(pet.getFotoMascota());
             storageReference.getDownloadUrl()
                     .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile))
                     .addOnFailureListener(e -> Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCardViewProfile));

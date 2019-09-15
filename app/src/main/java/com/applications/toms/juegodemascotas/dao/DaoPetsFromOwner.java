@@ -5,8 +5,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.applications.toms.juegodemascotas.model.Duenio;
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,10 +20,10 @@ import java.util.List;
 public class DaoPetsFromOwner {
 
     //Atributos
-    private List<Mascota> mascotaList = new ArrayList<>();
+    private List<Pet> petList = new ArrayList<>();
 
     //Constructor
-    public void giveMyPets(final String idDuenio, Context context, final ResultListener<List<Mascota>> listResultListener){
+    public void giveMyPets(final String idDuenio, Context context, final ResultListener<List<Pet>> listResultListener){
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReference  = mDatabase.getReference();
 
@@ -31,10 +31,10 @@ public class DaoPetsFromOwner {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    if (duenio.getUserId().equals(idDuenio)){
-//                        if (duenio.getMisMascotas()!=null){
-//                            listResultListener.finish(duenio.getMisMascotas());
+                    Owner owner = childSnapShot.getValue(Owner.class);
+                    if (owner.getUserId().equals(idDuenio)){
+//                        if (owner.getMisMascotas()!=null){
+//                            listResultListener.finish(owner.getMisMascotas());
 //                        }
                         //TODO REVISAR este DAO
                         Toast.makeText(context, "Aca deberia traer las mascotas que saque", Toast.LENGTH_SHORT).show();

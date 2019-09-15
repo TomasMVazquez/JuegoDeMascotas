@@ -1,7 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,18 +22,15 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Duenio;
-import com.applications.toms.juegodemascotas.model.Juego;
-import com.applications.toms.juegodemascotas.model.Mascota;
-import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
-import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
+import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -48,15 +43,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -93,14 +85,14 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private LatLng myLocationBias;
     private String size="";
     private String idPlace;
-    private List<Mascota> misMascotas = new ArrayList<>();
+    private List<Pet> misPets = new ArrayList<>();
 
     private static FirebaseFirestore db;
     private static String userFirestore;
     private static String playFirestore;
     private static FirebaseUser currentUser;
     private static Context context;
-    private Duenio creator;
+    private Owner creator;
 
     //Widgets
     private PlacesClient placesClient;
@@ -139,17 +131,17 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    creator = document.toObject(Duenio.class);
+                    creator = document.toObject(Owner.class);
                 }
             }
         });
 
-        //Traigo Mascotas Duenio
+        //Traigo Mascotas Owner
         final CollectionReference userRefMasc = db.collection(userFirestore)
-                .document(currentUser.getUid()).collection("misMascotas");
+                .document(currentUser.getUid()).collection("misPets");
 
         userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) ->
-                misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class)));
+                misPets.addAll(queryDocumentSnapshots.toObjects(Pet.class)));
 
         //Seleccion del tamanio de mascota
         Spinner spinnerPetSizePlayDate = findViewById(R.id.spinnerPetSizePlayDate);
@@ -177,14 +169,14 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        //Fecha del Juego
+        //Fecha del PlayDate
         etDatePlayDate.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus){
                 datePicker();
             }
         });
 
-        //Hora del Juego
+        //Hora del PlayDate
         etHourPlayDate.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus){
                 timePicker();
@@ -209,7 +201,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         
         //Al clickear el boton crear juego
         btnNewPlayDate.setOnClickListener(v -> {
-            Log.d(TAG, "onCreate: Click Crear Juego");
+            Log.d(TAG, "onCreate: Click Crear PlayDate");
             addNewPlayToDB();
             
         });
@@ -221,7 +213,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         });
     }
 
-    //Aniadir Juego a la base de Datos
+    //Aniadir PlayDate a la base de Datos
     private void addNewPlayToDB(){
         //Creo la collection de juegos "dentro del usuario" para agregar nuevo juego
         CollectionReference playRefMasc = db.collection(userFirestore)
@@ -234,16 +226,16 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         DocumentReference playRef = db.collection(context.getResources().getString(R.string.collection_play))
                 .document(idPlay);
 
-        List<Mascota> invitados = new ArrayList<>();
+        List<Pet> invitados = new ArrayList<>();
         //Creo el nuevo juego
-        Juego newPlay = new Juego(
+        PlayDate newPlay = new PlayDate(
                 idPlay,
                 0, //La privacidad es 0 para publica y 1 para privada -- por ahora no esta la funcionalidad de privada
                 etDatePlayDate.getText().toString(),
                 etHourPlayDate.getText().toString(),
                 idPlace,
                 size,
-                misMascotas,
+                misPets,
                 creator,
                 invitados
                 );
@@ -251,7 +243,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         //Agrego el juego a las collectiones
         playRefMasc.document(idPlay).set(newPlay).addOnSuccessListener(aVoid -> {
             //TODO
-            Log.d(TAG, "addNewPlayToDB: Creado en el Duenio");
+            Log.d(TAG, "addNewPlayToDB: Creado en el Owner");
         }).addOnFailureListener(aVoid -> {
             //TODO
         });

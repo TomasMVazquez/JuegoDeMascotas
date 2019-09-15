@@ -14,21 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.ProfileActivity;
 import com.applications.toms.juegodemascotas.view.adapter.PetsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -62,15 +57,15 @@ public class PetsFragment extends Fragment implements PetsAdapter.PetsAdapterInt
         if (currentUser != null){
             db = FirebaseFirestore.getInstance();
 
-            petsAdapter = new PetsAdapter(new ArrayList<Mascota>(),context,this);
+            petsAdapter = new PetsAdapter(new ArrayList<Pet>(),context,this);
 
-            //Traigo Mascotas Duenio
+            //Traigo Mascotas Owner
             final CollectionReference petsRef = db.collection(petsFirestore);
 
             petsRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                List<Mascota> misMascotas = new ArrayList<>();
-                misMascotas.addAll(queryDocumentSnapshots.toObjects(Mascota.class));
-                petsAdapter.setMascotaList(misMascotas);
+                List<Pet> misPets = new ArrayList<>();
+                misPets.addAll(queryDocumentSnapshots.toObjects(Pet.class));
+                petsAdapter.setPetList(misPets);
             });
 
 
@@ -91,12 +86,12 @@ public class PetsFragment extends Fragment implements PetsAdapter.PetsAdapterInt
     }
 
     @Override
-    public void goToProfileFromPets(String idOwner, Mascota mascota) {
+    public void goToProfileFromPets(String idOwner, Pet pet) {
         Intent intent = new Intent(context, ProfileActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(ProfileActivity.KEY_TYPE,"2");
         bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-        bundle.putString(ProfileActivity.KEY_PET_ID,mascota.getIdPet());
+        bundle.putString(ProfileActivity.KEY_PET_ID, pet.getIdPet());
         intent.putExtras(bundle);
         startActivity(intent);
     }

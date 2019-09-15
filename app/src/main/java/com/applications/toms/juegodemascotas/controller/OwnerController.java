@@ -3,22 +3,22 @@ package com.applications.toms.juegodemascotas.controller;
 import android.content.Context;
 
 import com.applications.toms.juegodemascotas.dao.DaoOwner;
-import com.applications.toms.juegodemascotas.model.Duenio;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DuenioController {
+public class OwnerController {
 
-    private List<Duenio> duenioList = new ArrayList<>();
+    private List<Owner> ownerList = new ArrayList<>();
 
-    public void giveDuenios(Context context, final ResultListener<List<Duenio>> listResultListener){
+    public void giveDuenios(Context context, final ResultListener<List<Owner>> listResultListener){
 
         DaoOwner daoOwner = new DaoOwner();
-        daoOwner.giveDuenios(context, new ResultListener<List<Duenio>>() {
+        daoOwner.giveDuenios(context, new ResultListener<List<Owner>>() {
             @Override
-            public void finish(List<Duenio> resultado) {
+            public void finish(List<Owner> resultado) {
                 listResultListener.finish(resultado);
             }
         });

@@ -4,9 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Duenio;
-import com.applications.toms.juegodemascotas.model.DuenioConteiner;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,9 +17,9 @@ import java.util.List;
 
 public class DaoOwner {
 
-    private List<Duenio> duenioList = new ArrayList<>();
+    private List<Owner> ownerList = new ArrayList<>();
 
-    public void giveDuenios(Context context, final ResultListener<List<Duenio>> listResultListener){
+    public void giveDuenios(Context context, final ResultListener<List<Owner>> listResultListener){
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mReference  = mDatabase.getReference();
 
@@ -29,10 +27,10 @@ public class DaoOwner {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()){
-                    Duenio duenio = childSnapShot.getValue(Duenio.class);
-                    duenioList.add(duenio);
+                    Owner owner = childSnapShot.getValue(Owner.class);
+                    ownerList.add(owner);
                 }
-                listResultListener.finish(duenioList);
+                listResultListener.finish(ownerList);
             }
 
             @Override

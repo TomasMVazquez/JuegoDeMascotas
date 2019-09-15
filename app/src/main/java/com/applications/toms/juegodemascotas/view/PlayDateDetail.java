@@ -1,33 +1,25 @@
 package com.applications.toms.juegodemascotas.view;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Duenio;
-import com.applications.toms.juegodemascotas.model.Juego;
-import com.applications.toms.juegodemascotas.model.Mascota;
-import com.applications.toms.juegodemascotas.view.adapter.CirculeOwnerAdapter;
+import com.applications.toms.juegodemascotas.model.PlayDate;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -65,7 +57,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private ImageView ivOwnerCreator;
     private RecyclerView rvPetsCreator;
     private RecyclerView rvPetsParticipants;
-    private Juego playDateDetail;
+    private PlayDate playDateDetail;
 
     private PlacesClient placesClient;
     private GoogleMap mMap;
@@ -99,8 +91,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         rvPetsParticipants = findViewById(R.id.rvPetsParticipants);
 
         //Adapter
-        circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<Mascota>(),this,this);
-        circulePetsParticipantsAdapter = new CirculePetsAdapter(new ArrayList<Mascota>(),this,this);
+        circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<Pet>(),this,this);
+        circulePetsParticipantsAdapter = new CirculePetsAdapter(new ArrayList<Pet>(),this,this);
 
         //Recycler View
         rvPetsCreator.hasFixedSize();
@@ -134,8 +126,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
            if (task.isSuccessful()){
                DocumentSnapshot document = task.getResult();
                if (document.exists()) {
-                   playDateDetail = document.toObject(Juego.class);
-                   creatorId = playDateDetail.getOrganizadorDuenio().getUserId();
+                   playDateDetail = document.toObject(PlayDate.class);
+                   creatorId = playDateDetail.getCreator().getUserId();
                    getDetails(playDateDetail);
                }
            }else {
@@ -156,21 +148,21 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     }
 
-    private void getDetails(Juego playDateDetail){
+    private void getDetails(PlayDate playDateDetail){
         initMap(playDateDetail.getIdPlace());
-        String dateTime = playDateDetail.getFechaJuego() + " - " + playDateDetail.getHoraJuego();
+        String dateTime = playDateDetail.getDatePlay() + " - " + playDateDetail.getTimePlay();
         tvDateTimePlayDetail.setText(dateTime);
-        tvSizePlayDetail.setText(playDateDetail.getTamanioPerros());
-        circulePetsCreatorsAdapter.setMascotaList(playDateDetail.getOrganizadorMascota());
-        circulePetsParticipantsAdapter.setMascotaList(playDateDetail.getInvitados());
-        //Traer Foto del Duenio
+        tvSizePlayDetail.setText(playDateDetail.getSize());
+        circulePetsCreatorsAdapter.setPetList(playDateDetail.getCreatorPets());
+        circulePetsParticipantsAdapter.setPetList(playDateDetail.getParticipants());
+        //Traer Foto del Owner
         StorageReference storageReference = mStorage.getReference()
-                .child(playDateDetail.getOrganizadorDuenio().getUserId())
-                .child(playDateDetail.getOrganizadorDuenio().getFotoDuenio());
+                .child(playDateDetail.getCreator().getUserId())
+                .child(playDateDetail.getCreator().getAvatar());
 
         storageReference.getDownloadUrl()
                 .addOnSuccessListener(uri -> Glide.with(this).load(uri).into(ivOwnerCreator))
-                .addOnFailureListener(e -> Glide.with(this).load(playDateDetail.getOrganizadorDuenio().getFotoDuenio()).into(ivOwnerCreator));
+                .addOnFailureListener(e -> Glide.with(this).load(playDateDetail.getCreator().getAvatar()).into(ivOwnerCreator));
     }
 
     private void initMap(String placeId){

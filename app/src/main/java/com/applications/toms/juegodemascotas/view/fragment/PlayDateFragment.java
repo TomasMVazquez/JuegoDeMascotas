@@ -10,18 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Juego;
-import com.applications.toms.juegodemascotas.model.Mascota;
-import com.applications.toms.juegodemascotas.view.MainActivity;
+import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.PlayDateAdapter;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,14 +56,14 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
 
         if (currentUser != null){
             db = FirebaseFirestore.getInstance();
-            playDateAdapter = new PlayDateAdapter(context,new ArrayList<Juego>(),getFragmentManager(),this);
+            playDateAdapter = new PlayDateAdapter(context,new ArrayList<PlayDate>(),getFragmentManager(),this);
             //Traigo Juegos de la base
             CollectionReference playRef = db.collection(context.getString(R.string.collection_play));
             playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                List<Juego> juegos = new ArrayList<>();
+                List<PlayDate> playDates = new ArrayList<>();
                 Log.d("MAP", "onCreateView: " + queryDocumentSnapshots.getDocuments().toString());
-                juegos.addAll(queryDocumentSnapshots.toObjects(Juego.class));
-                playDateAdapter.setPlayDates(juegos);
+                playDates.addAll(queryDocumentSnapshots.toObjects(PlayDate.class));
+                playDateAdapter.setPlayDates(playDates);
             });
 
             FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);

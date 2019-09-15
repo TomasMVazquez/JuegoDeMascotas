@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applications.toms.juegodemascotas.model.Mascota;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -18,12 +18,12 @@ public class ProfileAdapter extends RecyclerView.Adapter{
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
     //Atributos
-    private List<Mascota> mascotaList;
+    private List<Pet> petList;
     private Context context;
     private ProfileAdapterInterface adapterInterface;
 
-    public ProfileAdapter(List<Mascota> mascotaList, Context context, ProfileAdapterInterface adapterInterface) {
-        this.mascotaList = mascotaList;
+    public ProfileAdapter(List<Pet> petList, Context context, ProfileAdapterInterface adapterInterface) {
+        this.petList = petList;
         this.context = context;
         this.adapterInterface = adapterInterface;
     }
@@ -42,7 +42,7 @@ public class ProfileAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        return mascotaList.size();
+        return petList.size();
     }
 
     public interface ProfileAdapterInterface{
