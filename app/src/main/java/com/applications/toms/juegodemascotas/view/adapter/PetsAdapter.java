@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
@@ -19,8 +20,6 @@ import com.google.firebase.storage.StorageReference;
 import java.util.List;
 
 public class PetsAdapter extends RecyclerView.Adapter {
-
-    private FirebaseStorage mStorage;
 
     //Atributos
     private List<Pet> petList;
@@ -43,7 +42,6 @@ public class PetsAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        mStorage = FirebaseStorage.getInstance();
         context = viewGroup.getContext();
         //pasamos contexto a inflador
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -105,10 +103,9 @@ public class PetsAdapter extends RecyclerView.Adapter {
             tvCVIdPet.setText(pet.getIdPet());
             tvCVIdOwner.setText(pet.getMiDuenioId());
 
-            StorageReference storageReference = mStorage.getReference().child(pet.getMiDuenioId()).child(pet.getFotoMascota());
-            storageReference.getDownloadUrl()
-                    .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCVPets))
-                    .addOnFailureListener(e -> Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCVPets));
+            PetController petController = new PetController();
+            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCVPets));
+
         }
 
     }

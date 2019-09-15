@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             name = currentUser.getEmail();
         }
-        String photo = "";
+        String photo = null;
         if (currentUser.getPhotoUrl() != null) {
             photo = currentUser.getPhotoUrl().toString() + "?height=500";
         }
@@ -306,31 +306,22 @@ public class MainActivity extends AppCompatActivity {
         final DocumentReference userRef = db.collection("Owners")
                 .document(currentUser.getUid());
 
-        StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(oldPhoto);
-        storageReference.delete();
+        if (oldPhoto != null) {
+            StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(oldPhoto);
+            storageReference.delete();
+        }
 
         userRef.update("fotoDuenio",newPhoto)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //TODO
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    //TODO
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //TODO
-                    }
+                .addOnFailureListener(e -> {
+                    //TODO
                 });
 
 
         final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(context, "Profile Foto OK!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        uploadTask.addOnSuccessListener(taskSnapshot -> Toast.makeText(context, "Profile Foto OK!", Toast.LENGTH_SHORT).show());
     }
 
     //Actualizar el perfil de la persona

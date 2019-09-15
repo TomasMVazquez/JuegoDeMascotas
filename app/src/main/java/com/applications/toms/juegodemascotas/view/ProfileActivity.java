@@ -200,7 +200,6 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             //adaptador
             rvMyPetsOwner.setAdapter(circulePetsAdapter);
             //My Pets
-            Log.d(TAG, "completeDataInProfile: " + petsList);
             circulePetsAdapter.setPetList(petsList);
             //Name
             tvName.setText(profileData.getName());
@@ -208,19 +207,20 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             tvAboutProfile.setText(profileData.getAboutMe());
             tvDir.setText(profileData.getAddress());
             //Photo Profile
-            if (profileData.getAvatar() == null) {
-                String photo = currentUser.getPhotoUrl().toString() + "?height=500";
-                Glide.with(this).load(photo).into(ivProfile);
+            if (profileData.getAvatar() != null ) {
+                String [] avatar = profileData.getAvatar().split("=");
+                if (avatar.length > 1){
+                    Glide.with(this).load(profileData.getAvatar()).into(ivProfile);
+                }else {
+                    ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), this, result -> {
+                        Log.d(TAG, "completeDataInProfile: uri: " + result);
+                        Glide.with(ProfileActivity.this).load(result).into(ivProfile);
+                    });
+                }
+                photoOwnerActual = profileData.getAvatar();
             }else {
-                StorageReference storageReference = mStorage.getReference().child(profileData.getUserId()).child(profileData.getAvatar());
-                storageReference.getDownloadUrl()
-                        .addOnSuccessListener(uri ->
-                                Glide.with(ProfileActivity.this).load(uri).into(ivProfile))
-                        .addOnFailureListener(e ->
-                                Glide.with(this).load(profileData.getAvatar()).into(ivProfile));
+                //TODO
             }
-
-            photoOwnerActual = profileData.getAvatar();
 
         }else if (type.equals("2")){
             //If is a pet and Im the owner I can delete, this is the icon
@@ -244,13 +244,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                     circuleOwnerAdapter.setOwner(ownerList);
                     //Photo
                     photoPetActual = pet.getFotoMascota();
-                    StorageReference storageReference = mStorage.getReference().child(profileData.getUserId()).child(pet.getFotoMascota());
-                    storageReference.getDownloadUrl()
-                            .addOnSuccessListener(uri ->
-                                    Glide.with(ProfileActivity.this).load(uri).into(ivProfile))
-                            .addOnFailureListener(e ->
-                                    Glide.with(ProfileActivity.this).load(getDrawable(R.drawable.shadow_dog)).into(ivProfile)
-                            );
+                    petController.givePetAvatar(profileData.getUserId(),pet.getFotoMascota(),this,result -> Glide.with(ProfileActivity.this).load(result).into(ivProfile));
                 }
             }
         }

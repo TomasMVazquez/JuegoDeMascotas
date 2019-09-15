@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,8 +24,6 @@ import java.util.List;
 
 public class CirculePetsAdapter extends RecyclerView.Adapter {
 
-    private FirebaseStorage mStorage;
-    private static FirebaseUser currentUser;
     //Atributos
     private List<Pet> petList;
     private Context context;
@@ -46,10 +45,6 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        mStorage = FirebaseStorage.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-
         context = viewGroup.getContext();
         //pasamos contexto a inflador
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -105,11 +100,8 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         public void cargar(Pet pet){
             tvUid.setText(pet.getMiDuenioId());
             tvPetId.setText(pet.getIdPet());
-
-            StorageReference storageReference = mStorage.getReference().child(pet.getMiDuenioId()).child(pet.getFotoMascota());
-            storageReference.getDownloadUrl()
-                    .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile))
-                    .addOnFailureListener(e -> Glide.with(context).load(context.getDrawable(R.drawable.shadow_dog)).into(ivCardViewProfile));
+            PetController petController = new PetController();
+            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCardViewProfile));
         }
 
     }

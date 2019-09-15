@@ -2,6 +2,7 @@ package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.view.ProfileActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,8 +27,6 @@ import java.util.List;
 
 public class CirculeOwnerAdapter extends RecyclerView.Adapter {
 
-    private FirebaseStorage mStorage;
-    private static FirebaseUser currentUser;
     //Atributos
     private List<Owner> owner;
     private Context context;
@@ -45,9 +46,6 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        mStorage = FirebaseStorage.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
 
         context = viewGroup.getContext();
         //pasamos contexto a inflador
@@ -92,7 +90,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
 
             ivCardViewProfile = itemView.findViewById(R.id.ivCardViewProfile);
             tvUid = itemView.findViewById(R.id.tvUid);
-            tvPetId = itemView.findViewById(R.id.tvPetId); //TODO SACAR SI FUNCIONA
+            tvPetId = itemView.findViewById(R.id.tvPetId);
 
             itemView.setOnClickListener(v ->
                     adapterInterfaceCirculeOwner.goToUserProfile(tvUid.getText().toString())
@@ -104,13 +102,16 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         public void cargar(final Owner owner){
             tvUid.setText(owner.getUserId());
             tvPetId.setText("");
-            if (owner.getAvatar().equals("")){
+            if (owner.getAvatar() == null){
                 Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewProfile);
             }else {
-                StorageReference storageReference = mStorage.getReference().child(owner.getUserId()).child(owner.getAvatar());
-                storageReference.getDownloadUrl()
-                        .addOnSuccessListener(uri -> Glide.with(context).load(uri).into(ivCardViewProfile))
-                        .addOnFailureListener(e -> Glide.with(context).load(owner.getAvatar()).into(ivCardViewProfile));
+                String [] avatar = owner.getAvatar().split("=");
+                if (avatar.length > 1){
+                    Glide.with(context).load(owner.getAvatar()).into(ivCardViewProfile);
+                }else {
+                    OwnerController ownerController = new OwnerController();
+                    ownerController.giveOwnerAvatar(owner.getUserId(),owner.getAvatar(),context,result -> Glide.with(context).load(result).into(ivCardViewProfile));
+                }
             }
         }
     }
