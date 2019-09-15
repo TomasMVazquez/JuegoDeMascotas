@@ -1,5 +1,7 @@
 package com.applications.toms.juegodemascotas.util;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,11 +10,21 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.view.MainActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Util {
+
+    private static final String TAG = "Util";
+    private static final int ERROR_DIALOG_REQUEST = 9001;
+
     public static Boolean isOnline(Context context){
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -45,6 +57,35 @@ public class Util {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+    }
+
+    //CHECK VERSION FOR MAPS
+    public static boolean isServicesOk (Context context){
+        Log.d(TAG, "isServicesOk: checking google services version");
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
+        if (available == ConnectionResult.SUCCESS){
+            //Everything is find and user can do maps request
+            Log.d(TAG, "isServicesOk: Google Play services is working");
+//            Toast.makeText(this, " Service ok ", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            //Error occurred but can be resolved
+            Log.d(TAG, "isServicesOk: an error occured but can be fixed");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog((Activity) context,available,ERROR_DIALOG_REQUEST);
+            dialog.show();
+        }else {
+            Toast.makeText(context, "You cannot make map request", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    public static String googleMapsApiKey(Context context){
+        String apiKey = context.getString(R.string.google_maps_key);
+        if(apiKey.isEmpty()){
+            return null;
+        }
+        return apiKey;
     }
 }
 

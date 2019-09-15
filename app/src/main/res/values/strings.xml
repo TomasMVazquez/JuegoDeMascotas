@@ -50,7 +50,8 @@
     <string name="collection_users">Owners</string>
     <string name="collection_play">Plays</string>
     <string name="collection_pets">Pets</string>
-    <string name="collection_my_pets">misPets</string>
+    <string name="collection_my_pets">myPets</string>
+    <string name="collection_my_plays">myPlays</string>
 
     //Facebook
     <string name="facebook_app_id">309019083071764</string>

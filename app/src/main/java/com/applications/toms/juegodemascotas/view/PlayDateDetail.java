@@ -11,8 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PlayController;
 import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.ResultListener;
+import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.ApiException;
@@ -48,7 +51,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
-    private FirebaseFirestore db;
+
+    private PlayController playController;
 
     private SupportMapFragment mapPlayDetail;
     private TextView tvLocationPlayDetail;
@@ -69,6 +73,9 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_date_detail);
 
+        //Controller
+        playController = new PlayController();
+
         //intent
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
@@ -78,8 +85,6 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
-
-        db = FirebaseFirestore.getInstance();
 
         //Busco los objetos
         mapPlayDetail = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapPlayDetail);
@@ -106,33 +111,16 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         rvPetsCreator.setAdapter(circulePetsCreatorsAdapter);
         rvPetsParticipants.setAdapter(circulePetsParticipantsAdapter);
 
-        String apiKey = getString(R.string.google_maps_key);
-        if(apiKey.isEmpty()){
-            Toast.makeText(this, "Not API Found", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         // Setup Places Client
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), apiKey);
+            Places.initialize(getApplicationContext(), Util.googleMapsApiKey(this));
         }
         placesClient = Places.createClient(this);
 
         //Busco info en la base de datos
-        DocumentReference playRef = db.collection(getString(R.string.collection_play))
-                .document(playId);
-
-        playRef.get().addOnCompleteListener(task -> {
-           if (task.isSuccessful()){
-               DocumentSnapshot document = task.getResult();
-               if (document.exists()) {
-                   playDateDetail = document.toObject(PlayDate.class);
-                   creatorId = playDateDetail.getCreator().getUserId();
-                   getDetails(playDateDetail);
-               }
-           }else {
-               //TODO
-           }
+        playController.givePlayDate(playId, this, resultado -> {
+            creatorId = resultado.getCreator().getUserId();
+            getDetails(resultado);
         });
 
         //Go to profile in case they click it

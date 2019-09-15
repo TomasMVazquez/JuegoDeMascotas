@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.OwnerController;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
@@ -31,8 +33,8 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     public static final String KEY_DUENIO_ID = "duenio";
 
-    private static FirebaseFirestore db;
     private static String userFirestore;
+    private static String myPetsFirestore;
 
     private static FirebaseUser currentUser;
     private static Context context;
@@ -50,8 +52,8 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        db = FirebaseFirestore.getInstance();
         userFirestore = getResources().getString(R.string.collection_users);
+        myPetsFirestore = getResources().getString(R.string.collection_my_pets);
 
         FloatingActionButton fabAddPet = findViewById(R.id.fabAddPet);
 
@@ -62,15 +64,8 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         myPetsAdapter = new MyPetsAdapter(new ArrayList<Pet>(),this,this);
 
         //Traigo Mascotas Owner
-        final CollectionReference userRefMasc = db.collection(userFirestore)
-                .document(currentUser.getUid()).collection("misMascotas");
-
-        userRefMasc.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            List<Pet> misPets = new ArrayList<>();
-            misPets.addAll(queryDocumentSnapshots.toObjects(Pet.class));
-            myPetsAdapter.setPetList(misPets);
-        });
-
+        PetController petController = new PetController();
+        petController.giveOwnerPets(currentUser.getUid(),this,resultado -> myPetsAdapter.setPetList(resultado));
 
         //Recycler View
         RecyclerView recyclerViewPets = findViewById(R.id.recyclerMyPets);
@@ -82,15 +77,12 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         recyclerViewPets.setAdapter(myPetsAdapter);
 
         //Boton agregar mascota
-        fabAddPet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddPetFragment addPetFragment = new AddPetFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerPets,addPetFragment);
-                fragmentTransaction.commit();
-            }
+        fabAddPet.setOnClickListener(v -> {
+            AddPetFragment addPetFragment = new AddPetFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.containerPets,addPetFragment);
+            fragmentTransaction.commit();
         });
 
     }
@@ -116,8 +108,10 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     //Aniadir mascota a la base de datos
     public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         final CollectionReference userRefMasc = db.collection(userFirestore)
-                .document(currentUser.getUid()).collection("misMascotas");
+                .document(currentUser.getUid()).collection(myPetsFirestore);
 
         final String idPet = userRefMasc.document().getId();
         Pet newPet = new Pet(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());

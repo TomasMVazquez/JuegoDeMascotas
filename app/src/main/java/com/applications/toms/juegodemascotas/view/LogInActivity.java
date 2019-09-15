@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 
@@ -43,12 +44,11 @@ public class LogInActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
 
-//    private GoogleSignInClient mGoogleSignInClient;
-
     private TextInputLayout tiPassSignIn;
     private EditText etEmailSigIn;
     private EditText etPassSigIn;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,8 +179,6 @@ public class LogInActivity extends AppCompatActivity {
             switch (requestCode){
                 case GOOGLE_SIGN_IN:
                     Toast.makeText(LogInActivity.this, "Validando cuenta", Toast.LENGTH_SHORT).show();
-//                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-//                    handleSignInResult(task);
                     break;
             }
         }else {
@@ -205,37 +203,27 @@ public class LogInActivity extends AppCompatActivity {
     //Crear acceso con EMAIL
     private void createEmailAccess(final String email, final String pass){
         mAuth.createUserWithEmailAndPassword(email,pass)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            //Confirm Email access
-                            resetEmailAccess(email);
-                            //Update prifile name when creating
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(email)
-                                    .build();
-                            mAuth.getCurrentUser().updateProfile(profileUpdates);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        //Confirm Email access
+                        resetEmailAccess(email);
+                        //Update prifile name when creating
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(email)
+                                .build();
+                        mAuth.getCurrentUser().updateProfile(profileUpdates);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(LogInActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                })
+                .addOnFailureListener(e -> Toast.makeText(LogInActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
     }
 
     //Reset pass con acceso con email
     private void resetEmailAccess(String email){
         mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(LogInActivity.this, getResources().getString(R.string.btn_register_toast), Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Toast.makeText(LogInActivity.this, getResources().getString(R.string.btn_register_toast), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -243,16 +231,13 @@ public class LogInActivity extends AppCompatActivity {
     //Manejando el resultado del acceso con email
     private void handleEmailAccess(final String email, final String pass){
         mAuth.signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            Toast.makeText(LogInActivity.this, getResources().getString(R.string.no_account_toast), Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI(user);
+                    } else {
+                        Toast.makeText(LogInActivity.this, getResources().getString(R.string.no_account_toast), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -261,17 +246,14 @@ public class LogInActivity extends AppCompatActivity {
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            final FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            updateUI(null);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        final FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI(user);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        updateUI(null);
                     }
                 });
     }
