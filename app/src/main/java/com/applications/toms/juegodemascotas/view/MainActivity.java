@@ -29,6 +29,7 @@ import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.FriendsFragment;
 import com.applications.toms.juegodemascotas.view.fragment.PlayDateFragment;
 import com.applications.toms.juegodemascotas.view.fragment.PetsFragment;
+import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransformer;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -159,12 +160,14 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new PlayDateFragment());
         fragmentList.add(new FriendsFragment());
-        fragmentList.add(new PetsFragment());
+//        fragmentList.add(new PetsFragment());
+
         //Titulos del tab
         List<String> titulos = new ArrayList<>();
         titulos.add("Juegos");
         titulos.add("Amigos");
         titulos.add("Mascotas");
+
         //ViewPager
         ViewPager viewPager = findViewById(R.id.viewPager);
         //TabLayout
@@ -178,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(0);
         //viewPager.setPageMargin(30);
         //viewPager.setClipToPadding(false);
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
