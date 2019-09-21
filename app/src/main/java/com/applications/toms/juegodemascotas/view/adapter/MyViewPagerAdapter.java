@@ -37,17 +37,5 @@ public class MyViewPagerAdapter extends FragmentPagerAdapter {
 
         return titulos.get(position);
 
-       /*
-       switch (position){
-            case 0:
-                return "Rojo";
-            case 1:
-                return "Verde";
-            case 2:
-                return "Azul";
-        }
-
-        return "Nada";
-        */
     }
 }
