@@ -33,16 +33,15 @@ public class FriendsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
-        View viewNologin = inflater.inflate(R.layout.fragment_no_login, container, false);
 
         context = getApplicationContext();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null){
-            return view;
-        }else {
-            return viewNologin;
+
         }
+
+        return view;
     }
 
 }

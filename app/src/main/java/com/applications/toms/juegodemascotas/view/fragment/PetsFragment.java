@@ -47,32 +47,29 @@ public class PetsFragment extends Fragment implements PetsAdapter.PetsAdapterInt
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pets, container, false);
-        View viewNologin = inflater.inflate(R.layout.fragment_no_login, container, false);
 
         context = getApplicationContext();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        PetController petController = new PetController();
+
+        petsAdapter = new PetsAdapter(new ArrayList<Pet>(),context,this);
+
+        //Recycler View
+        RecyclerView recyclerViewPets = view.findViewById(R.id.recyclerPets);
+        recyclerViewPets.hasFixedSize();
+        //LayoutManager
+        LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
+        recyclerViewPets.setLayoutManager(llm);
+        //adaptador
+        recyclerViewPets.setAdapter(petsAdapter);
+
         if (currentUser != null){
-            petsAdapter = new PetsAdapter(new ArrayList<Pet>(),context,this);
-
             //Traigo Mascotas Owner
-            PetController petController = new PetController();
             petController.givePetList(context,result -> petsAdapter.setPetList(result));
-
-            //Recycler View
-            RecyclerView recyclerViewPets = view.findViewById(R.id.recyclerPets);
-            recyclerViewPets.hasFixedSize();
-            //LayoutManager
-            LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
-            recyclerViewPets.setLayoutManager(llm);
-            //adaptador
-            recyclerViewPets.setAdapter(petsAdapter);
-
-            return view;
-        }else {
-
-            return viewNologin;
         }
+
+        return view;
     }
 
     @Override

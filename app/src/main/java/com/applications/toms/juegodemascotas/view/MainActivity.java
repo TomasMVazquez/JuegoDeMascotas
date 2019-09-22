@@ -55,10 +55,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-
-
     public static final int KEY_LOGIN=101;
-    public static final String KEY_DUENIO = "duenio";
 
     private FirebaseAuth mAuth;
     private static FirebaseUser currentUser;
@@ -72,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Menu menuToolbar;
     private MenuItem item_toolbar;
+
+    private MyViewPagerAdapter adapter;
 
     @Override
     protected void onStart() {
@@ -175,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         //Asociar al view pager
         tabLayout.setupWithViewPager(viewPager);
         //Adapter
-        MyViewPagerAdapter adapter = new MyViewPagerAdapter(getSupportFragmentManager(),fragmentList, titulos);
+        adapter = new MyViewPagerAdapter(getSupportFragmentManager(),fragmentList, titulos);
         viewPager.setAdapter(adapter);
         //Inicializado
         viewPager.setCurrentItem(0);
@@ -278,7 +277,8 @@ public class MainActivity extends AppCompatActivity {
 
         final Owner newOwner = new Owner(currentUser.getUid(), name, currentUser.getEmail(), photo);
 
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings
+                .Builder()
                 .build();
 
         db.setFirestoreSettings(settings);
@@ -291,14 +291,15 @@ public class MainActivity extends AppCompatActivity {
 //              Usuario No Existe Creando...
                 userRef.set(newOwner).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        Toast.makeText(MainActivity.this, "LogInSuccesful", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(MainActivity.this, userRef.getId(), Toast.LENGTH_SHORT).show();
+                        //TODO HOW TO MANAGE Fragment if log in or not -> si creamos usuarios fantasmas no seria necesario
+                        //TODO SEria necesario actualizar el usuario fantasma por el usuario real
                     }else{
                         Toast.makeText(MainActivity.this, "Error Log In", Toast.LENGTH_SHORT).show();
                     }
                 });
             }else {
 //              El usuario ya existe
+
             }
         });
 
