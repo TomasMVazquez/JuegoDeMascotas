@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_login"
             android:layout_marginTop="15dp"
-            android:background="@color/colorAccent"
+            android:background="@drawable/btn_rounded"
             android:textColor="@color/colorWhite"
             android:textSize="18sp"
             />
@@ -145,11 +145,12 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp" />
 
-        <!--<com.google.android.gms.common.SignInButton-->
-            <!--android:id="@+id/btnGoogleSignIn"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="match_parent"-->
-            <!--/>-->
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_sig_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
     </LinearLayout>
 
 

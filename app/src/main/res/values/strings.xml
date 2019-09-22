@@ -56,7 +56,8 @@
     //Facebook
     <string name="facebook_app_id">309019083071764</string>
     <string name="fb_login_protocol_scheme">fb309019083071764</string>
-
+    //Google SignIn
+    <string name="default_web_client_id">1019232112841-qukol2t2cnlphjtcg18gtoknv416h19j.apps.googleusercontent.com</string>
     //Profile
     <string name="about_profile">En esta seccion puedes escribir un poco sobre vos, tus intereses, hobbies y otros. De esta manera cuando asistas a un juego el resto puede conocerte un poco</string>
     <string name="updateAbout">Escribe un poco sobre vos, tus intereses, hobbies y otros.</string>

@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,20 +28,32 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    public static final int GOOGLE_SIGN_IN = 103;
+    public static final int RC_SIGN_IN = 103;
+    private static final String TAG = "LOGIN";
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
@@ -47,6 +61,8 @@ public class LogInActivity extends AppCompatActivity {
     private TextInputLayout tiPassSignIn;
     private EditText etEmailSigIn;
     private EditText etPassSigIn;
+
+    private GoogleSignInClient mGoogleSignInClient;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -66,7 +82,9 @@ public class LogInActivity extends AppCompatActivity {
         Button btnRegister = findViewById(R.id.btnRegister);
         ImageButton ivPassVisible = findViewById(R.id.ivPassVisible);
 
-//        SignInButton btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
+        SignInButton google_sig_in = findViewById(R.id.google_sig_in);
+        google_sig_in.setSize(SignInButton.SIZE_STANDARD);
+
         LoginButton loginButton = findViewById(R.id.login_button_facebook);
 
         //revisar contrasenia
@@ -146,6 +164,15 @@ public class LogInActivity extends AppCompatActivity {
         });
 
         //TODO SIGNIN GOOGLE
+        // Configure Google Sign In
+        google_sig_in.setOnClickListener(v -> signIn());
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
 
@@ -177,8 +204,9 @@ public class LogInActivity extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK){
             switch (requestCode){
-                case GOOGLE_SIGN_IN:
-                    Toast.makeText(LogInActivity.this, "Validando cuenta", Toast.LENGTH_SHORT).show();
+                case RC_SIGN_IN:
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    handleSignInResult(task);
                     break;
             }
         }else {
@@ -258,4 +286,55 @@ public class LogInActivity extends AppCompatActivity {
                 });
     }
 
+    //Acceso con Google
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            //updateUI(account);
+            firebaseAuthWithGoogle(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            //updateUI(null);
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(LogInActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+//                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }
