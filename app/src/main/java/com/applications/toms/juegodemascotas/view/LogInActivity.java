@@ -219,7 +219,6 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         if (user != null) {
             setResult(Activity.RESULT_OK);
             finish();
-
         }else {
             FirebaseAuth.getInstance().signOut();
             LoginManager.getInstance().logOut();

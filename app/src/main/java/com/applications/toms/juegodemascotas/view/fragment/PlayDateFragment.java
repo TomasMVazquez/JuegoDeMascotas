@@ -48,38 +48,35 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_play_date, container, false);
-        View viewNologin = inflater.inflate(R.layout.fragment_no_login, container, false);
 
         context = getApplicationContext();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        PlayDateAdapter playDateAdapter = new PlayDateAdapter(context,new ArrayList<>(),getFragmentManager(),this);
+        PlayController playController = new PlayController();
+
+        FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
+
+        //Recycler View
+        RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerPlayDates);
+        recyclerPlayDates.hasFixedSize();
+        //LayoutManager
+        LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
+        recyclerPlayDates.setLayoutManager(llm);
+        //adaptador
+        recyclerPlayDates.setAdapter(playDateAdapter);
+
         if (currentUser != null){
-            PlayDateAdapter playDateAdapter = new PlayDateAdapter(context,new ArrayList<>(),getFragmentManager(),this);
-
-            PlayController playController = new PlayController();
+            //Traigo los juegos
             playController.givePlayDateList(context,result -> playDateAdapter.setPlayDates(result));
-
-            FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
-
-            //Recycler View
-            RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerPlayDates);
-            recyclerPlayDates.hasFixedSize();
-            //LayoutManager
-            LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
-            recyclerPlayDates.setLayoutManager(llm);
-            //adaptador
-            recyclerPlayDates.setAdapter(playDateAdapter);
 
             fabNewPlayDate.setOnClickListener(v -> {
                 Intent intentMap = new Intent(context, NewPlayDate.class);
                 startActivity(intentMap);
             });
-
-            return view;
-        }else {
-            return viewNologin;
         }
 
+        return view;
     }
 
     @Override

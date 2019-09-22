@@ -34,8 +34,11 @@ public class MyViewPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-
         return titulos.get(position);
+    }
 
+    public void setFragmentList(List<Fragment> fragmentList) {
+        this.fragmentList = fragmentList;
+        notifyDataSetChanged();
     }
 }
