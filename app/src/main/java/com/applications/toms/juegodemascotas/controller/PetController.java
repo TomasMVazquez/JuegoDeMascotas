@@ -2,6 +2,7 @@ package com.applications.toms.juegodemascotas.controller;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.applications.toms.juegodemascotas.dao.DaoPet;
 import com.applications.toms.juegodemascotas.model.Pet;
@@ -41,13 +42,21 @@ public class PetController {
     public void giveOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> resultListener){
 //        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
-            daoPet.fetchOwnerPets(ownerId,context,resultado -> resultListener.finish(resultado));
-        }else {
-            resultListener.finish(new ArrayList<>());
+            daoPet.fetchOwnerPets(ownerId,context,resultado -> {
+                resultListener.finish(resultado);
+            });
         }
     }
 
     public void givePetAvatar(String ownerId, String avatar, Context context, ResultListener<Uri> resultListener){
         daoPet.fetchPetAvatar(ownerId,avatar,context,result -> resultListener.finish(result));
+    }
+
+    public void giveResultSearch(String search, Context context, ResultListener<List<Pet>> resultListener){
+        if (Util.isOnline(context)){
+            daoPet.searchPet(search,context,result -> resultListener.finish(result));
+        }else {
+            resultListener.finish(new ArrayList<>());
+        }
     }
 }

@@ -2,6 +2,9 @@ package com.applications.toms.juegodemascotas.dao;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Owner;
@@ -9,9 +12,14 @@ import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.ProfileActivity;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -50,6 +58,17 @@ public class DaoPet {
             Pet pet = documentSnapshot.toObject(Pet.class);
             petResultListener.finish(pet);
         });
+    }
+
+    public void searchPet(String search,Context context, ResultListener<List<Pet>> listResultListener){
+        mDatabase.collection(context.getString(R.string.collection_pets))
+                .whereGreaterThanOrEqualTo("nombre",search)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        listResultListener.finish(task.getResult().toObjects(Pet.class));
+                    }
+                });
     }
 
     public void fetchOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> listResultListener){
