@@ -1,7 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,21 +27,15 @@ import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.FriendsFragment;
 import com.applications.toms.juegodemascotas.view.fragment.PlayDateFragment;
-import com.applications.toms.juegodemascotas.view.fragment.PetsFragment;
 import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransformer;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
@@ -150,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.chat:
                     Toast.makeText(MainActivity.this, "Chat En construccion", Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.searchDog:
+                    Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
+                    startActivity(searchIntent);
                     return true;
             }
             return false;

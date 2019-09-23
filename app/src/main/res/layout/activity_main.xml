@@ -36,11 +36,6 @@
             android:layout_height="match_parent"
             />
 
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -52,6 +47,5 @@
         android:layout_gravity="start"
         android:elevation="8dp"
         />
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
