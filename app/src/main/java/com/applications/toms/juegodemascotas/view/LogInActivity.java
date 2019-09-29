@@ -53,14 +53,11 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class LogInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final int RC_SIGN_IN = 103;
+    public static final int KEY_SIGN_IN = 102;
     private static final String TAG = "LOGIN";
 
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
-
-    private TextInputLayout tiPassSignIn;
-    private EditText etEmailSigIn;
-    private EditText etPassSigIn;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -73,73 +70,31 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
 
-        TextInputLayout tiEmailSignIn = findViewById(R.id.tiEmailSignIn);
-        tiPassSignIn = findViewById(R.id.tiPassSignIn);
-        etEmailSigIn = findViewById(R.id.etEmailSigIn);
-        etPassSigIn = findViewById(R.id.etPassSigIn);
-        Button btnSignIn = findViewById(R.id.btnSignIn);
-        Button btnForgotPass = findViewById(R.id.btnForgotPass);
-        Button btnRegister = findViewById(R.id.btnRegister);
-        ImageButton ivPassVisible = findViewById(R.id.ivPassVisible);
-
+        //Google Sign in
         SignInButton google_sig_in = findViewById(R.id.google_sig_in);
         google_sig_in.setSize(SignInButton.SIZE_STANDARD);
 
+        //FaceBook Sign in
         LoginButton loginButton = findViewById(R.id.login_button_facebook);
 
-        //revisar contrasenia
-        etPassSigIn.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        //email Sign In
+        Button btnGoSignUp = findViewById(R.id.btnGoSignUp);
+        Button btnGoSignIn = findViewById(R.id.btnGoSignIn);
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                checkPass(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+        btnGoSignUp.setOnClickListener(v -> {
+            Intent intentSignUp = new Intent(LogInActivity.this,SignInUpActivity.class);
+            Bundle bundleSignUp = new Bundle();
+            bundleSignUp.putString(SignInUpActivity.SIGN,getString(R.string.key_sign_up));
+            intentSignUp.putExtras(bundleSignUp);
+            startActivityForResult(intentSignUp,KEY_SIGN_IN);
         });
 
-        //Boton visibilidad
-        ivPassVisible.setOnTouchListener((v, event) -> {
-            switch ( event.getAction() ) {
-                case MotionEvent.ACTION_DOWN:
-                    etPassSigIn.setInputType(InputType.TYPE_CLASS_TEXT);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    etPassSigIn.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    etPassSigIn.setSelection(etPassSigIn.getText().toString().length());
-                    break;
-            }
-            return true;
-        });
-
-        //Boton registrar
-        btnRegister.setOnClickListener(v -> {
-            createEmailAccess(etEmailSigIn.getText().toString(), etPassSigIn.getText().toString());
-            etPassSigIn.setText("");
-        });
-
-        //Boton olvodar contrasena
-        btnForgotPass.setOnClickListener(v -> {
-            if (!etEmailSigIn.getText().toString().equals("")){
-                resetEmailAccess(etEmailSigIn.getText().toString());
-                etPassSigIn.setText("");
-            }else {
-                Toast.makeText(LogInActivity.this, "Ingrese su Email", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        //Boton ingresar
-        btnSignIn.setOnClickListener(v -> {
-            if (!etEmailSigIn.getText().toString().equals("") && !etPassSigIn.getText().toString().equals("")) {
-                handleEmailAccess(etEmailSigIn.getText().toString(), etPassSigIn.getText().toString());
-            }
+        btnGoSignIn.setOnClickListener(v -> {
+            Intent intentSignIn = new Intent(LogInActivity.this,SignInUpActivity.class);
+            Bundle bundleSignIn = new Bundle();
+            bundleSignIn.putString(SignInUpActivity.SIGN,getString(R.string.key_sign_in));
+            intentSignIn.putExtras(bundleSignIn);
+            startActivityForResult(intentSignIn,KEY_SIGN_IN);
         });
 
         //SIGN IN CON Facebook
@@ -163,8 +118,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        //TODO SIGNIN GOOGLE
-        // Configure Google Sign In
+        //SIGNIN GOOGLE
         google_sig_in.setOnClickListener(v -> signIn());
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -177,25 +131,6 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     //Metodos
-    public void checkPass(CharSequence sequence){
-        if (sequence.length()>5){
-            tiPassSignIn.setError(getResources().getString(R.string.pass_error_2));
-            String pass = sequence.toString();
-            for (int i = 1; i < sequence.length(); i++) {
-                char a = pass.charAt(i);
-                if (isNumeric(String.valueOf(a))){
-                    tiPassSignIn.setError("");
-                    break;
-                }
-            }
-        }else {
-            tiPassSignIn.setError(getResources().getString(R.string.pass_error_1));
-        }
-    }
-
-    public static boolean isNumeric(String inputData) {
-        return inputData.matches("[-+]?\\d+(\\.\\d+)?");
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -207,6 +142,9 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                 case RC_SIGN_IN:
                     Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                     handleSignInResult(task);
+                    break;
+                case KEY_SIGN_IN:
+                    updateUI(mAuth.getCurrentUser());
                     break;
             }
         }else {
@@ -227,47 +165,6 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    //Crear acceso con EMAIL
-    private void createEmailAccess(final String email, final String pass){
-        mAuth.createUserWithEmailAndPassword(email,pass)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        //Confirm Email access
-                        resetEmailAccess(email);
-                        //Update prifile name when creating
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setDisplayName(email)
-                                .build();
-                        mAuth.getCurrentUser().updateProfile(profileUpdates);
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(LogInActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
-    }
-
-    //Reset pass con acceso con email
-    private void resetEmailAccess(String email){
-        mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Toast.makeText(LogInActivity.this, getResources().getString(R.string.btn_register_toast), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    //Manejando el resultado del acceso con email
-    private void handleEmailAccess(final String email, final String pass){
-        mAuth.signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        updateUI(user);
-                    } else {
-                        Toast.makeText(LogInActivity.this, getResources().getString(R.string.no_account_toast), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
     //Manejando acceso con facebook
     private void handleFacebookAccessToken(AccessToken token) {
@@ -294,7 +191,6 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
             firebaseAuthWithGoogle(account);
@@ -336,4 +232,5 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
 }

@@ -16,12 +16,6 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -96,12 +90,9 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
             tvCVIdMyPet = itemView.findViewById(R.id.tvCVIdMyPet);
             tvCVIdMyOwner = itemView.findViewById(R.id.tvCVIdMyOwner);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Pet petProfile = petList.get(getAdapterPosition());
-                    adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), petProfile);
-                }
+            itemView.setOnClickListener(v -> {
+                Pet petProfile = petList.get(getAdapterPosition());
+                adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), petProfile);
             });
 
         }
