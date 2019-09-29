@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -232,10 +233,11 @@ public class MainActivity extends AppCompatActivity {
     public void goLogIn(){
         if (currentUser!=null){
             FirebaseAuth.getInstance().signOut();
-            LoginManager.getInstance().logOut();
+//            LoginManager.getInstance().logOut();
             currentUser = null;
             Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
             item_toolbar.setIcon(getDrawable(R.drawable.ic_person_black_24dp));
+//            recreate();
         }else {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivityForResult(intent, KEY_LOGIN);
@@ -261,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO FUNCIONA PERO MEJORAR ESTA PARTE
         currentUser = mAuth.getCurrentUser();
+
         String name = "";
         if (currentUser.getDisplayName() != null) {
             name = currentUser.getDisplayName();
@@ -288,15 +291,14 @@ public class MainActivity extends AppCompatActivity {
 //              Usuario No Existe Creando...
                 userRef.set(newOwner).addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        //TODO HOW TO MANAGE Fragment if log in or not -> si creamos usuarios fantasmas no seria necesario
-                        //TODO SEria necesario actualizar el usuario fantasma por el usuario real
+                        recreate();
                     }else{
                         Toast.makeText(MainActivity.this, "Error Log In", Toast.LENGTH_SHORT).show();
                     }
                 });
             }else {
 //              El usuario ya existe
-
+                recreate();
             }
         });
 

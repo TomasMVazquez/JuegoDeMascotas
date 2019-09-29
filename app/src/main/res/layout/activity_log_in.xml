@@ -8,7 +8,6 @@
     tools:context=".view.LogInActivity"
     android:background="@drawable/border_dark_primary"
     >
-<!--    android:background="@color/colorTeal_light"-->
 
     <LinearLayout
         android:id="@+id/llEmailLogIn"
@@ -16,73 +15,57 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:padding="10dp"
         android:background="@drawable/border_dark_primary"
         >
-<!--        android:background="@color/colorTeal_down"-->
 
-        <com.google.android.material.textfield.TextInputLayout
+        <TextView
             android:layout_marginTop="55dp"
-            android:id="@+id/tiEmailSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
-            <EditText
-                android:id="@+id/etEmailSigIn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/email_login"
-                android:inputType="textEmailAddress"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
+            android:text="@string/msg_welcome"
+            android:textAlignment="center"
+            android:textSize="22sp"
+            android:textColor="@color/colorPrimaryDark"
+            />
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_marginTop="15dp"
-                android:id="@+id/tiPassSignIn"
-                android:layout_width="0dp"
-                android:layout_weight="90"
-                android:layout_height="wrap_content"
-                >
-                <EditText
-                    android:id="@+id/etPassSigIn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/pass_login"
-                    android:inputType="textPassword"
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <ImageButton
-                android:id="@+id/ivPassVisible"
-                android:layout_gravity="center"
-                android:background="@color/noBackground"
-                android:layout_width="36dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_visibility_black_24dp"
-                android:scaleType="fitCenter"
-                />
-
-        </LinearLayout>
-
+            android:text="@string/msg_welcome_sub_first"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/colorPrimaryDark"
+            />
 
         <Button
-            android:id="@+id/btnSignIn"
+            android:id="@+id/btnGoSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_login"
+            android:text="@string/btn_sign_up"
             android:layout_marginTop="15dp"
             android:background="@drawable/btn_rounded"
             android:textColor="@color/colorWhite"
             android:textSize="18sp"
+            android:layout_marginBottom="15dp"
+            />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button_facebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18sp"
+            android:layout_marginBottom="15dp" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_sig_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             />
 
         <RelativeLayout
@@ -90,22 +73,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btnForgotPass"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_forgot"
-                android:background="@color/noBackground"
-                android:layout_alignParentStart="true"
-                android:textSize="12sp"
-                android:textColor="@color/colorBlueGray"
+                android:text="@string/msg_sign_in"
+                android:layout_alignBaseline="@id/btnGoSignIn"
                 />
 
             <Button
-                android:id="@+id/btnRegister"
+                android:id="@+id/btnGoSignIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_register"
+                android:text="@string/btn_sign_in"
                 android:background="@color/noBackground"
                 android:layout_alignParentEnd="true"
                 android:textSize="12sp"
@@ -115,54 +94,16 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvTmbIngrsarCon"
-        android:layout_below="@id/llEmailLogIn"
-        android:layout_marginTop="10dp"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_weight="60"
-        android:layout_height="wrap_content"
-        android:text="@string/or"
-        android:textColor="@color/colorBlack"
-        android:layout_marginBottom="15dp"
-        />
-
-    <LinearLayout
-        android:id="@+id/llOtherLogIn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/tvTmbIngrsarCon"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        >
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button_facebook"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="15dp" />
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/google_sig_in"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-    </LinearLayout>
-
 
     <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/ivLogo"
+        android:id="@+id/ivLogoLogIn"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/juego_mascota"
         android:scaleType="centerInside"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="50dp"
         />
 
 </RelativeLayout>

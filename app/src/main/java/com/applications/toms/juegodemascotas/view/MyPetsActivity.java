@@ -38,6 +38,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     private static FirebaseUser currentUser;
     private static Context context;
+    private static PetController petController;
 
     //Atributos
     private static MyPetsAdapter myPetsAdapter;
@@ -61,11 +62,10 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         Bundle bundle = intent.getExtras();
         String idDuenio = bundle.getString(KEY_DUENIO_ID);
 
-        myPetsAdapter = new MyPetsAdapter(new ArrayList<Pet>(),this,this);
+        myPetsAdapter = new MyPetsAdapter(new ArrayList<>(),this,this);
 
         //Traigo Mascotas Owner
-        PetController petController = new PetController();
-        petController.giveOwnerPets(currentUser.getUid(),this,resultado -> myPetsAdapter.setPetList(resultado));
+        petController = new PetController();
 
         //Recycler View
         RecyclerView recyclerViewPets = findViewById(R.id.recyclerMyPets);
@@ -75,6 +75,8 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         recyclerViewPets.setLayoutManager(llm);
         //adaptador
         recyclerViewPets.setAdapter(myPetsAdapter);
+
+        refreshPets();
 
         //Boton agregar mascota
         fabAddPet.setOnClickListener(v -> {
@@ -90,7 +92,11 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        misMascotas.clear();
+    }
+
+    //Refresh Recycler
+    private static void refreshPets(){
+        petController.giveOwnerPets(currentUser.getUid(),context,resultado -> myPetsAdapter.setPetList(resultado));
     }
 
     //ir al profile de la mascota

@@ -42,9 +42,7 @@ public class PetController {
     public void giveOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> resultListener){
 //        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
-            daoPet.fetchOwnerPets(ownerId,context,resultado -> {
-                resultListener.finish(resultado);
-            });
+            daoPet.fetchOwnerPets(ownerId,context,resultado -> resultListener.finish(resultado));
         }
     }
 

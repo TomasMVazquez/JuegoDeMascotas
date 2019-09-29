@@ -72,9 +72,7 @@ public class DaoPet {
     }
 
     public void fetchOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> listResultListener){
-        //DataBase instance
-//        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
-        //extract single owner pet data
+
         CollectionReference ownerRef = mDatabase.collection(context.getString(R.string.collection_users))
                 .document(ownerId).collection(context.getString(R.string.collection_my_pets));
 

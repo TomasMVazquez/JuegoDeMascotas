@@ -35,17 +35,26 @@
     </string>
 
     //LogIn
-    <string name="choose_login">Eligí como ingresar:</string>
     <string name="email_login">Ingresá tu Email</string>
     <string name="pass_login">Ingresá tu Contraseña</string>
     <string name="pass_error_1">La contraseña debe contener más de 6 caracteres</string>
     <string name="pass_error_2">La contraseña debe contener al menos un número</string>
-    <string name="btn_login">Ingresar</string>
-    <string name="btn_forgot">Olvidaste tu contraseña?</string>
-    <string name="btn_register">Registrate</string>
+    <string name="btn_sign_up">Crear una cuenta</string>
+    <string name="msg_sign_up">¿No tienes cuenta?</string>
+    <string name="msg_forgot">¿Olvidaste tu contraseña?</string>
+    <string name="btn_retrieve">Recuperar</string>
+    <string name="btn_register">Crear Cuenta</string>
+    <string name="btn_sign_in">Iniciar sesión</string>
+    <string name="msg_sign_in">¿Ya tienes una cuenta?</string>
     <string name="btn_register_toast">Un email se envió para ingresar una contraseña</string>
-    <string name="no_account_toast">Usuario y contraseña no coinciden, si no estas registrado haga click en registrar</string>
-    <string name="or">También puedes ingresar con:</string>
+    <string name="no_account_toast">Usuario y contraseña no coinciden, si no estas registrado vaya a crear cuenta</string>
+    <string name="msg_welcome_back">Bienvenido de Vuelta!</string>
+    <string name="msg_welcome">Bienvenido!</string>
+    <string name="msg_welcome_back_sub">Entrá y empezá a disfrutar con tus mascotas</string>
+    <string name="msg_welcome_sub">Crea una cuenta y disfrutá con tus mascotas</string>
+    <string name="msg_welcome_sub_first">Registrate y empezá a disfrutar con tus mascotas</string>
+    <string name="key_sign_in">sign_in</string>
+    <string name="key_sign_up">sign_up</string>
 
     //Firestore Strings
     <string name="collection_users">Owners</string>
@@ -112,5 +121,8 @@
     <string name="tv_for">Para perros:</string>
     <string name="tv_creator">Organizadores</string>
     <string name="tv_participants">Participantes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
