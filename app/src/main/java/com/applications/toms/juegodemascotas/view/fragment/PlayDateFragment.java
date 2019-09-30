@@ -4,7 +4,6 @@ package com.applications.toms.juegodemascotas.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,33 +14,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PlayController;
-import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.PlayDateDetail;
-import com.applications.toms.juegodemascotas.view.adapter.PlayDateAdapter;
+import com.applications.toms.juegodemascotas.view.adapter.MapAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDateAdapterInterface {
+public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterInterface {
 
     private static Context context;
     private static FirebaseUser currentUser;
+    private MapAdapter mapAdapter;
 
     public PlayDateFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +47,7 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
         context = getApplicationContext();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        PlayDateAdapter playDateAdapter = new PlayDateAdapter(context,new ArrayList<>(),getFragmentManager(),this);
+        mapAdapter = new MapAdapter(new ArrayList<>(),this);
         PlayController playController = new PlayController();
 
         FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
@@ -64,11 +59,11 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
         LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
         recyclerPlayDates.setLayoutManager(llm);
         //adaptador
-        recyclerPlayDates.setAdapter(playDateAdapter);
+        recyclerPlayDates.setAdapter(mapAdapter);
 
         if (currentUser != null){
             //Traigo los juegos
-            playController.givePlayDateList(context,result -> playDateAdapter.setPlayDates(result));
+            playController.givePlayDateList(context,result -> mapAdapter.setPlayDates(result));
 
             fabNewPlayDate.setOnClickListener(v -> {
                 Intent intentMap = new Intent(context, NewPlayDate.class);
@@ -78,6 +73,7 @@ public class PlayDateFragment extends Fragment implements PlayDateAdapter.PlayDa
 
         return view;
     }
+
 
     @Override
     public void goToPlayDetail(String juegoId) {

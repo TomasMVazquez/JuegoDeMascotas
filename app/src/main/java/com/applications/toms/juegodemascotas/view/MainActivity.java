@@ -23,6 +23,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.util.AdminStorage;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.FriendsFragment;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         Util.printHash(this);
         //crush
 //        new UCEHandler.Builder(this).build();
+        //Delete Old Play Dates
+        AdminStorage.deleteOldPlayDates(this);
 
         if (Util.isServicesOk(this)){
             Log.d(TAG, "onCreate: Check Service OK!");
@@ -233,11 +236,10 @@ public class MainActivity extends AppCompatActivity {
     public void goLogIn(){
         if (currentUser!=null){
             FirebaseAuth.getInstance().signOut();
-//            LoginManager.getInstance().logOut();
+            LoginManager.getInstance().logOut();
             currentUser = null;
             Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
             item_toolbar.setIcon(getDrawable(R.drawable.ic_person_black_24dp));
-//            recreate();
         }else {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivityForResult(intent, KEY_LOGIN);
