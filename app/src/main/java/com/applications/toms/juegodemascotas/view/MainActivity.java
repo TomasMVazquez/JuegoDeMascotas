@@ -71,8 +71,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
+        //Delete Old Play Dates
+        AdminStorage.deleteOldPlayDates(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (currentUser != null){
+            AdminStorage.deleteMyOldPlayDates(context,currentUser.getUid());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
         Util.printHash(this);
         //crush
 //        new UCEHandler.Builder(this).build();
-        //Delete Old Play Dates
-        AdminStorage.deleteOldPlayDates(this);
 
         if (Util.isServicesOk(this)){
             Log.d(TAG, "onCreate: Check Service OK!");

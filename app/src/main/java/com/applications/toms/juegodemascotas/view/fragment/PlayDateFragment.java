@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PlayController;
+import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.MapAdapter;
@@ -22,6 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -63,11 +66,15 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
 
         if (currentUser != null){
             //Traigo los juegos
-            playController.givePlayDateList(context,result -> mapAdapter.setPlayDates(result));
+            playController.givePlayDateList(context,result -> {
+                Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
+                mapAdapter.setPlayDates(result);
+            });
 
             fabNewPlayDate.setOnClickListener(v -> {
                 Intent intentMap = new Intent(context, NewPlayDate.class);
                 startActivity(intentMap);
+                getActivity().finish();
             });
         }
 

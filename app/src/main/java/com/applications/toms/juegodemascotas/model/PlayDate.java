@@ -1,8 +1,11 @@
 package com.applications.toms.juegodemascotas.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-public class PlayDate {
+public class PlayDate implements Comparable<PlayDate> {
 
     //atributos
     private String idPlay;
@@ -78,5 +81,21 @@ public class PlayDate {
                 ", timePlay=" + timePlay +
                 ", idPlace='" + idPlace + '\'' +
                 '}';
+    }
+
+    public Date getDateTime(){
+        try {
+            Date date=new SimpleDateFormat("dd/MM/yyyy hh:mm")
+                    .parse(getDatePlay() + " " + getTimePlay());
+            return date;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public int compareTo(PlayDate o) {
+        return getDateTime().compareTo(o.getDateTime());
     }
 }

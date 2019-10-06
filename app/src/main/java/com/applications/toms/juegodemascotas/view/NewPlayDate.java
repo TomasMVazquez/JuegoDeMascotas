@@ -244,10 +244,18 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                Log.d(TAG, "addNewPlayToDB: Creado en collection");
                Intent i = new Intent(NewPlayDate.this,MainActivity.class);
                startActivity(i);
+               finish();
            }else {
                //TODO
            }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(NewPlayDate.this,MainActivity.class);
+        startActivity(i);
     }
 
     //DatePicker
