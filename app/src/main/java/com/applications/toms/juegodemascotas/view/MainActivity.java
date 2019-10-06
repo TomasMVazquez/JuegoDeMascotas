@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
             currentUser = null;
             Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
             item_toolbar.setIcon(getDrawable(R.drawable.ic_person_black_24dp));
+            recreate();
         }else {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivityForResult(intent, KEY_LOGIN);

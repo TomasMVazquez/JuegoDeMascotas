@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.dao;
 
+import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DaoPet {
+    private static final String TAG = "DaoPet";
 
     private List<Pet> petList = new ArrayList<>();
     private FirebaseFirestore mDatabase;
@@ -77,8 +79,13 @@ public class DaoPet {
                 .document(ownerId).collection(context.getString(R.string.collection_my_pets));
 
         ownerRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            petList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
-            listResultListener.finish(petList);
+            try {
+                petList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
+                listResultListener.finish(petList);
+            }catch (Exception exp){
+                Thread.currentThread().interrupt();
+                Log.d(TAG, "fetchOwnerPets: Error Thread interrupted");
+            }
         });
     }
 
