@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.OwnerController;
+import com.applications.toms.juegodemascotas.controller.PetController;
+import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.model.PlayDate;
+import com.applications.toms.juegodemascotas.util.ResultListener;
+import com.applications.toms.juegodemascotas.view.MainActivity;
+import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,12 +30,24 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -100,9 +120,9 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
         private TextView dateTimePlayDate;
         private TextView sizeDogsPlayDate;
         private Button btnJoinMe;
-        private Button btnDetails;
 
         private String idPlay;
+        private String idCreator;
 
         private ViewHolder(View itemView) {
             super(itemView);
@@ -120,13 +140,36 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
             }
 
             btnJoinMe = layout.findViewById(R.id.btnJoinMe);
-            btnDetails = layout.findViewById(R.id.btnDetails);
-
             btnJoinMe.setOnClickListener(v -> {
-                Toast.makeText(context, "ASISITIRE a " + idPlay, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Se agrego la cita a tus juegos", Toast.LENGTH_SHORT).show();
+                joinToPlayDate();
             });
 
+            Button btnDetails = layout.findViewById(R.id.btnDetails);
             btnDetails.setOnClickListener(v -> mapAdapterInterface.goToPlayDetail(idPlay));
+        }
+
+        private void joinToPlayDate(){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            DocumentReference playRef = db.collection(context.getString(R.string.collection_play))
+                    .document(idPlay);
+
+            List<Pet> invitados = new ArrayList<>();
+
+            playRef.get().addOnSuccessListener(documentSnapshot -> {
+                PlayDate playClicked = documentSnapshot.toObject(PlayDate.class);
+                invitados.addAll(playClicked.getParticipants());
+            });
+
+            PetController petController = new PetController();
+            if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                petController.giveOwnerPets(FirebaseAuth.getInstance().getCurrentUser().getUid(), context, result -> {
+                    invitados.addAll(result);
+                    playRef.update(context.getString(R.string.collection_participants), invitados);
+                    Log.d(TAG, "joinToPlayDate: DONE");
+                });
+            }
         }
 
         public void onResume(){
@@ -205,6 +248,14 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
             dateTimePlayDate.setText(dateTime);
             sizeDogsPlayDate.setText(item.getSize());
             idPlay = item.getIdPlay();
+            idCreator = item.getCreator().getUserId();
+
+            if (!idCreator.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                btnJoinMe.setVisibility(View.VISIBLE);
+            }else {
+                btnJoinMe.setVisibility(View.GONE);
+            }
+
             onResume();
         }
 

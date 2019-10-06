@@ -47,7 +47,9 @@ public class PetController {
     }
 
     public void givePetAvatar(String ownerId, String avatar, Context context, ResultListener<Uri> resultListener){
-        daoPet.fetchPetAvatar(ownerId,avatar,context,result -> resultListener.finish(result));
+        if (Util.isOnline(context)) {
+            daoPet.fetchPetAvatar(ownerId, avatar, context, result -> resultListener.finish(result));
+        }
     }
 
     public void giveResultSearch(String search, Context context, ResultListener<List<Pet>> resultListener){

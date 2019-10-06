@@ -62,6 +62,9 @@
     <string name="collection_pets">Pets</string>
     <string name="collection_my_pets">myPets</string>
     <string name="collection_my_plays">myPlays</string>
+    <string name="collection_creator">creator</string>
+    <string name="collection_creator_user_id">userId</string>
+    <string name="collection_participants">participants</string>
 
     //Facebook
     <string name="facebook_app_id">309019083071764</string>

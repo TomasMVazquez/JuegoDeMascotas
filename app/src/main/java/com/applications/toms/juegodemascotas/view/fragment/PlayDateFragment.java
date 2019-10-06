@@ -51,6 +51,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         mapAdapter = new MapAdapter(new ArrayList<>(),this);
+
         PlayController playController = new PlayController();
 
         FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
