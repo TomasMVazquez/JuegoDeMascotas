@@ -59,12 +59,6 @@
                 android:id="@+id/mapPlayDate"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"/>
-<!--            <fragment-->
-<!--                class="com.google.android.gms.maps.SupportMapFragment"-->
-<!--                android:id="@+id/mapPlayDate"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="200dp"/>-->
-
 
             <LinearLayout
                 android:id="@+id/lLItem"

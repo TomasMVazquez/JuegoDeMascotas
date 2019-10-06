@@ -45,10 +45,13 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
         this.mapAdapterInterface = mapAdapterInterface;
     }
 
-    public void setPlayDates(List<PlayDate> playDates) {
-        this.playDates = playDates;
+    public void setPlayDates(List<PlayDate> plays) {
+//        this.playDates = playDates;
+        playDates.clear();
+        playDates.addAll(plays);
         notifyDataSetChanged();
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -143,7 +146,6 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
          * Adds a marker and centers the camera on the NamedLocation with the normal map type.
          */
         private void setMapLocation() {
-            Log.d(TAG, "setMapLocation: Init");
             if (map == null) return;
 
             PlayDate data = (PlayDate) mapView.getTag();
@@ -172,7 +174,6 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
 
             // Add a listener to handle the response.
             placesClient.fetchPlace(request).addOnSuccessListener(response -> {
-                Log.d(TAG, "setMapLocation: fetching place succes");
                 Place mPlace = response.getPlace();
                 location = mPlace.getLatLng();
                 locationPlayDate.setText(mPlace.getName());
@@ -183,7 +184,6 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
                 // Set the map type back to normal.
                 map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             }).addOnFailureListener(exception -> {
-                Log.d(TAG, "setMapLocation: fetching place fail: " + exception.getMessage());
                 if (exception instanceof ApiException) {
                     ApiException apiException = (ApiException) exception;
                     int statusCode = apiException.getStatusCode();
@@ -195,7 +195,6 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
 
         private void bindView(int pos) {
             PlayDate item = playDates.get(pos);
-            Log.d(TAG, "bindView: play date" + item.getIdPlay());
             // Store a reference of the ViewHolder object in the layout.
             layout.setTag(this);
             // Store a reference to the item in the mapView's tag. We use it to get the
