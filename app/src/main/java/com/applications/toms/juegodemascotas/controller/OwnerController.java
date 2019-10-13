@@ -15,10 +15,12 @@ public class OwnerController {
 
     private DaoOwner daoOwner;
 
+    //Provide Owners data from DataBase
     public OwnerController() {
         daoOwner = new DaoOwner();
     }
 
+    //return all owners
     public void giveOwners(Context context, ResultListener<List<Owner>> resultListener){
 //        DaoOwner daoOwner = new DaoOwner();
         if (Util.isOnline(context)){
@@ -29,6 +31,7 @@ public class OwnerController {
 
     }
 
+    //return one owner
     public void giveOwnerData(String ownerId, Context context, ResultListener<Owner> resultListener){
 //        DaoOwner daoOwner = new DaoOwner();
         if (Util.isOnline(context)){
@@ -38,6 +41,7 @@ public class OwnerController {
         }
     }
 
+    //return owners avatar
     public void giveOwnerAvatar(String userId, String avatar, Context context, ResultListener<Uri> resultListener){
 //        DaoOwner daoOwner = new DaoOwner();
         daoOwner.fetchOwnerAvatar(userId,avatar,context,result -> resultListener.finish(result));

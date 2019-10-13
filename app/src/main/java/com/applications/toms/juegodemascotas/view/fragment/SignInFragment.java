@@ -47,9 +47,7 @@ public class SignInFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
-        context = getContext();
-        activity = getActivity();
-
+        //Interface
         onSignInNotify signInNotify = (SignInFragment.onSignInNotify) getContext();
 
         //Atributos
@@ -60,7 +58,7 @@ public class SignInFragment extends Fragment {
         etSigInPass  = view.findViewById(R.id.etSigInPass);
         etSigIn = view.findViewById(R.id.etSigIn);
 
-        //show pass on while touch
+        //show password while touch image view
         ivVisiblePass.setOnTouchListener((v, event) -> {
             switch ( event.getAction() ) {
                 case MotionEvent.ACTION_DOWN:
@@ -74,14 +72,14 @@ public class SignInFragment extends Fragment {
             return true;
         });
 
-        //Button SignIn
+        //Button SignIn to sign in
         btnSignIn.setOnClickListener(v -> {
             if (!etSigIn.getText().toString().equals("") && !etSigInPass.getText().toString().equals("")) {
                 signInNotify.signIn(etSigIn.getText().toString(), etSigInPass.getText().toString());
             }
         });
 
-        //Button Get Pass
+        //Button to reset password if forgotten
         btnRetrieve.setOnClickListener(v -> {
             if (!etSigIn.getText().toString().equals("")){
                 signInNotify.resetPass(etSigIn.getText().toString());
@@ -90,6 +88,7 @@ public class SignInFragment extends Fragment {
             }
         });
 
+        //go to sign up if enter into sign in by mistake
         btnCreateAccountSignIn.setOnClickListener(v -> {
             signInNotify.goSignUp();
             getActivity().getSupportFragmentManager().beginTransaction().remove(SignInFragment.this).commit();

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,8 +38,9 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
     }
 
     //Setter
-    public void setPetList(List<Pet> petList) {
-        this.petList = petList;
+    public void setPetList(List<Pet> newPetList) {
+        petList.clear();
+        petList.addAll(newPetList);
         notifyDataSetChanged();
     }
 

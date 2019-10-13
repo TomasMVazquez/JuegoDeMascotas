@@ -5,8 +5,6 @@ import android.content.Intent;
 
 import android.os.Bundle;
 
-import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
@@ -27,7 +24,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.AdapterInterface {
 
@@ -48,23 +44,28 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pets);
 
+        //Get application context
         context = getApplicationContext();
 
+        //Get Firebase instances
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        //String text to get to an specific database
         userFirestore = getResources().getString(R.string.collection_users);
         myPetsFirestore = getResources().getString(R.string.collection_my_pets);
 
+        //view FAB
         FloatingActionButton fabAddPet = findViewById(R.id.fabAddPet);
 
+        //Intent and bundle
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        String idDuenio = bundle.getString(KEY_DUENIO_ID);
 
+        //Adapter
         myPetsAdapter = new MyPetsAdapter(new ArrayList<>(),this,this);
 
-        //Traigo Mascotas Owner
+        //Controller of Pet
         petController = new PetController();
 
         //Recycler View
@@ -78,7 +79,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
         refreshPets();
 
-        //Boton agregar mascota
+        //add pet btn FAB
         fabAddPet.setOnClickListener(v -> {
             AddPetFragment addPetFragment = new AddPetFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -99,7 +100,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         petController.giveOwnerPets(currentUser.getUid(),context,resultado -> myPetsAdapter.setPetList(resultado));
     }
 
-    //ir al profile de la mascota
+    //Go to pet profile when clicking the card
     @Override
     public void goToProfile(String idOwner, Pet petProfile) {
         Intent intent = new Intent(MyPetsActivity.this,ProfileActivity.class);
@@ -112,7 +113,7 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
 
     }
 
-    //Aniadir mascota a la base de datos
+    //Add pet to database
     public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

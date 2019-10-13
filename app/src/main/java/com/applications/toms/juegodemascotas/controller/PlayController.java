@@ -12,8 +12,15 @@ import java.util.List;
 
 public class PlayController {
 
+    private DaoPlay daoPlay;
+
+    //Provide Plays data from DataBase
+    public PlayController() {
+        this.daoPlay = daoPlay;
+    }
+
+    //return all plays
     public void givePlayDateList(Context context, ResultListener<List<PlayDate>> resultListener){
-        DaoPlay daoPlay = new DaoPlay();
         if (Util.isOnline(context)){
             daoPlay.fetchPlayDateList(context,resultado -> resultListener.finish(resultado));
         }else {
@@ -22,8 +29,8 @@ public class PlayController {
 
     }
 
+    //return one Play
     public void givePlayDate(String playId,Context context, ResultListener<PlayDate> resultListener){
-        DaoPlay daoPlay = new DaoPlay();
         if (Util.isOnline(context)){
             daoPlay.fetchPlayDate(playId,context,resultado -> resultListener.finish(resultado));
         }else {
@@ -32,8 +39,8 @@ public class PlayController {
 
     }
 
+    //return owners plays
     public void giveOwnerPlayDateList(String ownerId, Context context, ResultListener<List<PlayDate>> resultListener){
-        DaoPlay daoPlay = new DaoPlay();
         if (Util.isOnline(context)){
             daoPlay.fetchOwnerPlays(ownerId,context,resultado -> resultListener.finish(resultado));
         }else {

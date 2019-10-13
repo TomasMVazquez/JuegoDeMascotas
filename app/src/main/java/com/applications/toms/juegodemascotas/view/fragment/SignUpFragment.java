@@ -44,6 +44,7 @@ public class SignUpFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
 
+        //interface
         onSignUpNotify signUpNotify = (SignUpFragment.onSignUpNotify) getContext();
 
         //Atributos
@@ -54,7 +55,7 @@ public class SignUpFragment extends Fragment {
         etEmailSigUp = view.findViewById(R.id.etEmailSigUp);
         tiPassSignUp = view.findViewById(R.id.tiPassSignUp);
 
-        //show pass on while touch
+        //show password while touch image view
         ivVisiblePassUp.setOnTouchListener((v, event) -> {
             switch ( event.getAction() ) {
                 case MotionEvent.ACTION_DOWN:
@@ -68,7 +69,7 @@ public class SignUpFragment extends Fragment {
             return true;
         });
 
-        //Check Pass
+        //Password validation while writing for a secure one
         etPassSigUp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -86,21 +87,23 @@ public class SignUpFragment extends Fragment {
             }
         });
 
-        //Boton registrar
+        //Create account btn
         btnSignUp.setOnClickListener(v -> {
             signUpNotify.signUp(etEmailSigUp.getText().toString(), etPassSigUp.getText().toString());
             etPassSigUp.setText("");
         });
 
-        //go Sign In
+        //go Sign In if enter to sign up by mistake
         btnSignInFromSignUp.setOnClickListener(v -> {
             signUpNotify.goSignIn();
             getActivity().getSupportFragmentManager().beginTransaction().remove(SignUpFragment.this).commit();
         });
+
         return view;
     }
 
     //Metodo
+    //Validation of the password
     private void checkPass(CharSequence sequence){
         if (sequence.length()>5){
             tiPassSignUp.setError(getResources().getString(R.string.pass_error_2));
@@ -117,6 +120,7 @@ public class SignUpFragment extends Fragment {
         }
     }
 
+    //Check if there is a numeric character
     private static boolean isNumeric(String inputData) {
         return inputData.matches("[-+]?\\d+(\\.\\d+)?");
     }

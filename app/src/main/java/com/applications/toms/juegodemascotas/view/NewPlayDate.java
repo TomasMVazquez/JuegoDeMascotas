@@ -87,7 +87,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private LatLng myLocationBias;
     private String size="";
     private String idPlace;
-    private List<Pet> myPets = new ArrayList<>();
+    private List<Pet> myPets = new ArrayList<Pet>();
 
     private static String userFirestore;
     private static String playFirestore;
@@ -216,7 +216,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         DocumentReference playRef = db.collection(context.getResources().getString(R.string.collection_play))
                 .document(idPlay);
 
-        List<Pet> invitados = new ArrayList<>();
+        List<String> invitados = new ArrayList<>();
         //Creo el nuevo juego
         PlayDate newPlay = new PlayDate(
                 idPlay,

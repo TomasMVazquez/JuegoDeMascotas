@@ -27,10 +27,15 @@ import java.util.List;
 public class DaoOwner {
 
     private List<Owner> ownerList = new ArrayList<>();
+    private FirebaseFirestore mDatabase;
 
+    //DAO to look for owners and owners data
+    public DaoOwner() {
+        this.mDatabase = mDatabase;
+    }
+
+    //return all owners from DataBase
     public void fetchOwnerList(Context context, ResultListener<List<Owner>> listResultListener){
-        //Data Base Instance
-        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
         //DataBase Collection of owners/users
         CollectionReference ownerRef = mDatabase.collection(context.getString(R.string.collection_users));
         //extract list of owners
@@ -40,9 +45,8 @@ public class DaoOwner {
         });
     }
 
+    //return one owner based on their user id
     public void fetchOwner(String ownerId,Context context, ResultListener<Owner> ownerResultListener){
-        //DataBase instance
-        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
         //extract single owner data
         DocumentReference ownerRef = mDatabase.collection(context.getString(R.string.collection_users))
                 .document(ownerId);
@@ -53,6 +57,7 @@ public class DaoOwner {
         });
     }
 
+    //return avatars owner from storage
     public void fetchOwnerAvatar(String userId, String avatar, Context context, ResultListener<Uri> uriResultListener){
         FirebaseStorage mStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = mStorage.getReference().child(userId).child(avatar);

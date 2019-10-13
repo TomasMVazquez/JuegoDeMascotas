@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.controller.PlayController;
 import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.model.Pet;
@@ -42,6 +44,7 @@ import java.util.List;
 
 public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAdapter.AdapterInterfaceCircule {
 
+    private static final String TAG = "PlayDateDetail";
     public static final String KEY_PLAY_DETAIL = "play";
 
     //Atributos
@@ -62,6 +65,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private RecyclerView rvPetsCreator;
     private RecyclerView rvPetsParticipants;
     private PlayDate playDateDetail;
+
+    private List<Pet> participantsList = new ArrayList<>();
 
     private PlacesClient placesClient;
     private GoogleMap mMap;
@@ -96,8 +101,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         rvPetsParticipants = findViewById(R.id.rvPetsParticipants);
 
         //Adapter
-        circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<Pet>(),this,this);
-        circulePetsParticipantsAdapter = new CirculePetsAdapter(new ArrayList<Pet>(),this,this);
+        circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
+        circulePetsParticipantsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
 
         //Recycler View
         rvPetsCreator.hasFixedSize();
@@ -142,7 +147,17 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         tvDateTimePlayDetail.setText(dateTime);
         tvSizePlayDetail.setText(playDateDetail.getSize());
         circulePetsCreatorsAdapter.setPetList(playDateDetail.getCreatorPets());
-        circulePetsParticipantsAdapter.setPetList(playDateDetail.getParticipants());
+
+        PetController petController = new PetController();
+        if (playDateDetail.getParticipants().size()>0) {
+            for (String participant : playDateDetail.getParticipants()) {
+                petController.giveOwnerPets(participant, this, result -> {
+                    participantsList.addAll(result);
+                    circulePetsParticipantsAdapter.setPetList(participantsList);
+                });
+            }
+        }
+
         //Traer Foto del Owner
         StorageReference storageReference = mStorage.getReference()
                 .child(playDateDetail.getCreator().getUserId())
