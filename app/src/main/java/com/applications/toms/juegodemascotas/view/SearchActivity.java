@@ -4,25 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
-import com.applications.toms.juegodemascotas.dao.DaoPet;
 import com.applications.toms.juegodemascotas.model.Pet;
-import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.adapter.PetsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SearchActivity extends AppCompatActivity implements PetsAdapter.PetsAdapterInterface {
@@ -40,19 +34,25 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
 
         SearchView searchView = findViewById(R.id.searchView);
 
+        //Toolbar with the search
         Toolbar myToolbar = findViewById(R.id.searchToolbar);
         setSupportActionBar(myToolbar);
 
+        //ActionBar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        //intenti with bundle //TODO SearchActivity bundle with nothing
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
+        //Get Firebase User instance
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        //Get Pet controller
         petController = new PetController();
 
+        //Get Pet Adapter for recycler
         petsAdapter = new PetsAdapter(new ArrayList<>(),this,this);
 
         //Recycler View
@@ -64,11 +64,12 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
         //adaptador
         recyclerViewPets.setAdapter(petsAdapter);
 
+        //If the user is logged then get all pets from DataBase
         if (currentUser != null){
-            //Traigo Mascotas Owner
             petController.givePetList(this,result -> petsAdapter.setPetList(result));
         }
 
+        //For search Logic while writing or when enter
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -86,6 +87,7 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
 
     }
 
+    //Get results from search
     private void searchResult(String searchText){
         Log.d(TAG, "searchResult: search: " + searchText);
         petController.giveResultSearch(searchText, this, result -> {
@@ -95,6 +97,7 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
         });
     }
 
+    //Go to a profile when clicking the card of a pet. TODO SearchActivity goToProfileFromPets
     @Override
     public void goToProfileFromPets(String idOwner, Pet pet) {
 

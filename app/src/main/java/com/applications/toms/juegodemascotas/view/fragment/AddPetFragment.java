@@ -28,14 +28,11 @@ import androidx.fragment.app.Fragment;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.view.MyPetsActivity;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.wdullaer.materialdatetimepicker.date.DatePickerController;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,23 +72,24 @@ public class AddPetFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_pet, container, false);
+        //instances from DataBase
         mStorage = FirebaseStorage.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        //view from layout
         etAddPetName = view.findViewById(R.id.etAddPetName);
         etAddPetBirth = view.findViewById(R.id.etAddPetBirth);
         etAddPetRaza = view.findViewById(R.id.etAddPetRaza);
         etAddPetInfo = view.findViewById(R.id.etAddPetInfo);
 
-        //Fecha nacimiento mascota
+        //Birth date picker
         etAddPetBirth.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus){
-                //TODO mejorar el date picker
                 showTruitonDatePickerDialog(v);
             }
         });
 
-        //Seleccion del tamanio de mascota
+        //Spinner to select the size of the Dog
         Spinner spinnerAddPetSize = view.findViewById(R.id.spinnerAddPetSize);
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(getResources().getString(R.string.add_pet_size));
@@ -113,7 +111,7 @@ public class AddPetFragment extends Fragment {
             }
         });
 
-        //botones del genero
+        //Genre Radio Btn
         final RadioButton rbAddPetSexMasc = view.findViewById(R.id.rbAddPetSexMasc);
         final RadioButton rbAddPetSexFem = view.findViewById(R.id.rbAddPetSexFem);
 
@@ -127,13 +125,13 @@ public class AddPetFragment extends Fragment {
             }
         });
 
-        //foto para la mascota
+        //Pet Avatar
         ivAddPetPhoto = view.findViewById(R.id.ivAddPetPhoto);
 
         FloatingActionButton fabAddPetPhoto = view.findViewById(R.id.fabAddPetPhoto);
         ivAddPetPhoto.setOnClickListener(v -> EasyImage.openChooserWithGallery(AddPetFragment.this,"Elige la mejor foto", KEY_CAMERA_PET));
 
-        //Boton agregar mascota
+        //Btn Add pet
         Button btnAddPet = view.findViewById(R.id.btnAddPet);
         btnAddPet.setOnClickListener(v -> {
             if (checkCompleteData()){
@@ -147,7 +145,7 @@ public class AddPetFragment extends Fragment {
         return view;
     }
 
-    //Checkear que to do este comeplto
+    //Verification that all data is complete
     public Boolean checkCompleteData(){
 
         if (etAddPetName.getText().equals("")){
@@ -174,7 +172,7 @@ public class AddPetFragment extends Fragment {
         return true;
     }
 
-    //Activity resullt de la imagen
+    //Avatar image Activity result
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

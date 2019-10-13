@@ -17,11 +17,15 @@ import java.util.List;
 public class DaoPlay {
 
     private List<PlayDate> playDateList = new ArrayList<>();
+    private FirebaseFirestore mDatabase;
 
+    //DAO to look for plays and plays data
+    public DaoPlay() {
+        this.mDatabase = mDatabase;
+    }
+
+    //return all plays from DataBase
     public void fetchPlayDateList(Context context, ResultListener<List<PlayDate>> listResultListener){
-        //Data Base Instance
-        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
-
         CollectionReference playRef = mDatabase.collection(context.getString(R.string.collection_play));
 
         playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
@@ -34,10 +38,8 @@ public class DaoPlay {
         });
     }
 
+    //Return an specific play with it play id
     public void fetchPlayDate(String playId,Context context,ResultListener<PlayDate> playDateResultListener){
-        //Data Base Instance
-        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
-
         //extract single Pet data
         DocumentReference playRef = mDatabase.collection(context.getString(R.string.collection_play))
                 .document(playId);
@@ -48,10 +50,8 @@ public class DaoPlay {
         });
     }
 
+    //return an owner plays with their user id
     public void fetchOwnerPlays(String ownerId, Context context, ResultListener<List<PlayDate>> listResultListener){
-        //Data Base Instance
-        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
-
         //extract single owner play data
         CollectionReference ownerRef = mDatabase.collection(context.getString(R.string.collection_users))
                 .document(ownerId).collection(context.getString(R.string.collection_my_plays));

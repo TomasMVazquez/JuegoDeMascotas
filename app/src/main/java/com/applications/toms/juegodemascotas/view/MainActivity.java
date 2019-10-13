@@ -34,7 +34,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -60,12 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private static Context context;
 
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
 
-    private Menu menuToolbar;
     private MenuItem item_toolbar;
-
-    private MyViewPagerAdapter adapter;
 
     @Override
     protected void onStart() {
@@ -79,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (currentUser != null){
+            //Delete old plays from the user database
             AdminStorage.deleteMyOldPlayDates(context,currentUser.getUid());
         }
     }
@@ -88,21 +84,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //print hash
+        //print hash --
         Util.printHash(this);
-        //crush
+        //crush -- this is useful to test the app so a QA can send the error report
 //        new UCEHandler.Builder(this).build();
 
+        //Check if service is ok for Maps
         if (Util.isServicesOk(this)){
             Log.d(TAG, "onCreate: Check Service OK!");
-        }
+        } // TODO Main Util.isServicesOk add what happend if not
 
-        //Auth
+        //get instance from Firebase
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
         raiz = mStorage.getReference();
-
         db = FirebaseFirestore.getInstance();
+
+        //Contect from Application
         context = getApplicationContext();
 
         //Toolbar
@@ -112,13 +110,14 @@ public class MainActivity extends AppCompatActivity {
 
         //NavigationView
         drawerLayout = findViewById(R.id.drawer);
-        navigationView = findViewById(R.id.navigation);
+        NavigationView navigationView = findViewById(R.id.navigation);
 
         //Btn Hamburguesa
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Setting the navigation View
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
             switch (menuItem.getItemId()){
@@ -167,13 +166,11 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new PlayDateFragment());
         fragmentList.add(new FriendsFragment());
-//        fragmentList.add(new PetsFragment());
 
         //Titulos del tab
         List<String> titulos = new ArrayList<>();
         titulos.add("Juegos");
         titulos.add("Amigos");
-        titulos.add("Mascotas");
 
         //ViewPager
         ViewPager viewPager = findViewById(R.id.viewPager);
@@ -182,15 +179,14 @@ public class MainActivity extends AppCompatActivity {
         //Asociar al view pager
         tabLayout.setupWithViewPager(viewPager);
         //Adapter
-        adapter = new MyViewPagerAdapter(getSupportFragmentManager(),fragmentList, titulos);
+        MyViewPagerAdapter adapter = new MyViewPagerAdapter(getSupportFragmentManager(), fragmentList, titulos);
         viewPager.setAdapter(adapter);
         //Inicializado
         viewPager.setCurrentItem(0);
-        //viewPager.setPageMargin(30);
-        //viewPager.setClipToPadding(false);
+        //Page transformer when you change fragment by sliding
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
-
+        //ViewPager Listener TODO ViewPager Lisetner doing nothing, is it necessary?
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -210,10 +206,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //Inflar Menu para ver el boton de ir al Login
+    //Inflate Menu where is showing the Login btn
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menuToolbar = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu,menu);
         item_toolbar = menu.findItem(R.id.login_toolbar);
@@ -227,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    //On item Click del Menu
+    //On item Click Menu go to login
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -239,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Ir al Login
+    //Go to Login
     public void goLogIn(){
         if (currentUser!=null){
             FirebaseAuth.getInstance().signOut();
@@ -254,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Resultado del activity Result
+    //Activity Result if succesful create DataBase for the user
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -268,10 +263,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Crear la base de datos
+    //Create DataBase if first time or not if not
     public void createDataBaseOwner(){
 
-        //TODO FUNCIONA PERO MEJORAR ESTA PARTE
+        //TODO createDataBaseOwner FUNCIONA PERO MEJORAR ESTA PARTE ??
         currentUser = mAuth.getCurrentUser();
 
         String name = "";
@@ -314,24 +309,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //Actualizar la foto de perfil de la persona
+    //Update Owner profile Avatar
     public static void updateProfilePicture(String oldPhoto,final String newPhoto, Uri uriTemp){
         StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(newPhoto);
 
         final DocumentReference userRef = db.collection("Owners")
                 .document(currentUser.getUid());
 
+        //Delete old photo
         if (oldPhoto != null) {
             StorageReference storageReference = mStorage.getReference().child(currentUser.getUid()).child(oldPhoto);
             storageReference.delete();
         }
 
+        //Update new Photo
         userRef.update("fotoDuenio",newPhoto)
                 .addOnSuccessListener(aVoid -> {
-                    //TODO
+                    //TODO updateProfilePicture addOnSuccessListener is it necessary?
                 })
                 .addOnFailureListener(e -> {
-                    //TODO
+                    //TODO updateProfilePicture addOnFailureListener is it necessary?
                 });
 
 
@@ -339,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(taskSnapshot -> Toast.makeText(context, "Profile Foto OK!", Toast.LENGTH_SHORT).show());
     }
 
-    //Actualizar el perfil de la persona
+    //Update owner profile info
     public static void updateProfile(final String name, final String dir, final String birth, final String sex, final String about){
         DocumentReference userRef = db.collection("Owners")
                 .document(currentUser.getUid());
@@ -351,21 +348,15 @@ public class MainActivity extends AppCompatActivity {
                 "direccion",dir,
                 "infoDuenio",about
                 )
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //TODO
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    //TODO updateProfile addOnSuccessListener is it necessary?
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //TODO
-                    }
+                .addOnFailureListener(e -> {
+                    //TODO updateProfile addOnFailureListener is it necessary?
                 });
     }
 
-    //Actualizar la foto de perfil de la mascota
+    //Update pet profile info
     public static void updatePhotoPet(final String idOwner, final String idPet, String oldPhoto , final String newPhoto,Uri uriTemp){
         StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
         storageReference.delete();
@@ -411,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //Borrar el perfil de la mascota
+    //Delete pet
     public static void deleteProfilePet(final String idOwner, final String idPet){
 
         DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))

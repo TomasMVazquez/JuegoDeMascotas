@@ -58,9 +58,11 @@ public class UpdateProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_update_profile, container, false);
 
+        //Instances from DataBase
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        //Views from Layout
         etUpdateBirth = view.findViewById(R.id.etUpdateBirth);
         etUpdateName = view.findViewById(R.id.etUpdateName);
         etUpdateDireccion = view.findViewById(R.id.etUpdateDireccion);
@@ -69,22 +71,22 @@ public class UpdateProfileFragment extends Fragment {
         rbSexFem = view.findViewById(R.id.rbSexFem);
         rbSexOtro = view.findViewById(R.id.rbSexOtro);
 
-        //buscar info a la base de datos
+        //Check current info from Database
         checkDataBaseInfo(currentUser.getUid());
 
-        //Si no tiene nombre poner vacio
+        //If the login had no name then empty
         if (!currentUser.getDisplayName().equals("")){
             etUpdateName.setText(currentUser.getDisplayName());
         }
 
-        //fecha de nacimiento
+        //Birth date
         etUpdateBirth.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus){
                 showTruitonDatePickerDialog(v);
             }
         });
 
-        //El genero de la persona
+        //genre
         RadioGroup radioGroup = view.findViewById(R.id.rgSex);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (rbSexMasc.isChecked()){
@@ -99,7 +101,7 @@ public class UpdateProfileFragment extends Fragment {
         });
 
 
-        //Boton actualizar
+        //Boton Update
         Button btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
         btnUpdateProfile.setOnClickListener(v -> {
             OnFragmentNotify onFragmentFNotify= (OnFragmentNotify) getContext();
@@ -147,14 +149,14 @@ public class UpdateProfileFragment extends Fragment {
     }
 
 
-    //TODO DATE PICKER
+    //TODO UpdateProfileFragment new DATE PICKER??
     //Date picker
     public void showTruitonDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
 
-    //Date Picker Comands - for purchase date
+    //Date Picker Comands
     public static class DatePickerFragment extends DialogFragment implements
             DatePickerDialog.OnDateSetListener {
 

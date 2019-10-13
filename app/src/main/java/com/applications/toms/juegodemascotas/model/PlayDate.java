@@ -16,14 +16,14 @@ public class PlayDate implements Comparable<PlayDate> {
     private String size;
     private List<Pet> creatorPets;
     private Owner creator;
-    private List<Pet> participants;
+    private List<String> participants;
 
     //Constructor
 
     public PlayDate() {
     }
 
-    public PlayDate(String idPlay, Integer privacy, String datePlay, String timePlay, String idPlace, String size, List<Pet> creatorPets, Owner creator, List<Pet> participants) {
+    public PlayDate(String idPlay, Integer privacy, String datePlay, String timePlay, String idPlace, String size, List<Pet> creatorPets, Owner creator, List<String> participants) {
         this.idPlay = idPlay;
         this.privacy = privacy;
         this.datePlay = datePlay;
@@ -69,7 +69,7 @@ public class PlayDate implements Comparable<PlayDate> {
         return creator;
     }
 
-    public List<Pet> getParticipants() {
+    public List<String> getParticipants() {
         return participants;
     }
 

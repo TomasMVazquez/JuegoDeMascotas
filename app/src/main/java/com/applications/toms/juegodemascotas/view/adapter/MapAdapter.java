@@ -46,10 +46,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
 
@@ -59,6 +62,11 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
     private Context context;
     private MapAdapterInterface mapAdapterInterface;
 
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
+    }
+
     public MapAdapter(List<PlayDate> playDates, MapAdapterInterface mapAdapterInterface) {
         super();
         this.playDates = playDates;
@@ -66,7 +74,6 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
     }
 
     public void setPlayDates(List<PlayDate> plays) {
-//        this.playDates = playDates;
         playDates.clear();
         playDates.addAll(plays);
         notifyDataSetChanged();
@@ -99,6 +106,7 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
 
     public interface MapAdapterInterface{
         void goToPlayDetail(String juegoId);
+        void updatePlayDate(String juegoId);
     }
 
     /*
@@ -110,7 +118,7 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
      * MapView. This ensures that the map is initialised with the latest data that it should
      * display.
      */
-    class ViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback {
+    public class ViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback {
 
         private MapView mapView;
         private GoogleMap map;
@@ -140,36 +148,10 @@ public class MapAdapter extends RecyclerView.Adapter<MapAdapter.ViewHolder>  {
             }
 
             btnJoinMe = layout.findViewById(R.id.btnJoinMe);
-            btnJoinMe.setOnClickListener(v -> {
-                Toast.makeText(context, "Se agrego la cita a tus juegos", Toast.LENGTH_SHORT).show();
-                joinToPlayDate();
-            });
+            btnJoinMe.setOnClickListener(v -> mapAdapterInterface.updatePlayDate(idPlay));
 
             Button btnDetails = layout.findViewById(R.id.btnDetails);
             btnDetails.setOnClickListener(v -> mapAdapterInterface.goToPlayDetail(idPlay));
-        }
-
-        private void joinToPlayDate(){
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-            DocumentReference playRef = db.collection(context.getString(R.string.collection_play))
-                    .document(idPlay);
-
-            List<Pet> invitados = new ArrayList<>();
-
-            playRef.get().addOnSuccessListener(documentSnapshot -> {
-                PlayDate playClicked = documentSnapshot.toObject(PlayDate.class);
-                invitados.addAll(playClicked.getParticipants());
-            });
-
-            PetController petController = new PetController();
-            if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
-                petController.giveOwnerPets(FirebaseAuth.getInstance().getCurrentUser().getUid(), context, result -> {
-                    invitados.addAll(result);
-                    playRef.update(context.getString(R.string.collection_participants), invitados);
-                    Log.d(TAG, "joinToPlayDate: DONE");
-                });
-            }
         }
 
         public void onResume(){

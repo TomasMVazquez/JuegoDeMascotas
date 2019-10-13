@@ -34,6 +34,7 @@ public class FriendsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
+        //TODO FriendsFragment all of it
         context = getApplicationContext();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 

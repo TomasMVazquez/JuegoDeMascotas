@@ -26,7 +26,6 @@ import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
-import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.adapter.CirculeOwnerAdapter;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
@@ -35,8 +34,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -78,7 +75,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private String type;
     private String petId;
     private String idUser;
-    private List<Pet> petsList = new ArrayList<>();
+    private List<Pet> petsList = new ArrayList<Pet>();
     private String photoPetActual;
     private String photoOwnerActual;
 
@@ -92,11 +89,12 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         ownerController = new OwnerController();
         petController = new PetController();
 
-        //Auth
+        //Instance of FireBase
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
 
+        //views from Layout
         ivProfile = findViewById(R.id.ivProfile);
         tvName = findViewById(R.id.tvName);
         tvDir = findViewById(R.id.tvDir);
@@ -108,7 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         fabEditProfile = findViewById(R.id.fabEditProfile);
 
         //Adapter
-        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<Pet>(),this,this);
+        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
         circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<Owner>(),this,this);
 
         //Recycler View
@@ -117,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         LinearLayoutManager llm = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         rvMyPetsOwner.setLayoutManager(llm);
 
-        //intent
+        //intent and bundle
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         type = bundle.getString(KEY_TYPE);
@@ -127,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         //Get Owner Data
         fetchOwnerData(idUser);
 
-        //Boton de foto para cambiarla
+        //edit btn for avatar
         fabImageProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
                 EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
@@ -136,7 +134,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             }
         });
 
-        //Boton to edit profile
+        //edit btn profile info
         fabEditProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
                 UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();

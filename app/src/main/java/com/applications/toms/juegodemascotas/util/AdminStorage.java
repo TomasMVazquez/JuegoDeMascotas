@@ -1,34 +1,26 @@
 package com.applications.toms.juegodemascotas.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.PlayDate;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.Date;
 
 public class AdminStorage {
 
     private static final String TAG = "AdminStorage";
 
+    //When any user starts the app, the general database erease the old games
     public static void deleteOldPlayDates(Context context){
         Log.d(TAG, "deleteOldPlayDates");
         //Data Base Instance
@@ -49,6 +41,7 @@ public class AdminStorage {
 
     }
 
+    //When a spicific user starts the app, the old plays of that user are ereased
     public static void deleteMyOldPlayDates(Context context, String userId){
         //Data Base Instance
         FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
@@ -71,6 +64,7 @@ public class AdminStorage {
         });
     }
 
+    //Delete one play
     private static void deleteDocument(Context context,String playId){
         DocumentReference docRef = FirebaseFirestore
                 .getInstance()
@@ -93,6 +87,7 @@ public class AdminStorage {
                 });
     }
 
+    //delete user play
     private static void deleteMyDocument(Context context,String userId,String playId){
         DocumentReference docRef = FirebaseFirestore
                 .getInstance()
@@ -117,6 +112,7 @@ public class AdminStorage {
                 });
     }
 
+    //Verification of today vs play date
     private static Boolean isOldPlayDate(PlayDate playDate){
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         try {

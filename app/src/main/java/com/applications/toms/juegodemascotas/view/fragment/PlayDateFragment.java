@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +22,9 @@ import com.applications.toms.juegodemascotas.view.adapter.MapAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,5 +94,38 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         bundle.putString(PlayDateDetail.KEY_PLAY_DETAIL,juegoId);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void updatePlayDate(String juegoId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        DocumentReference playRef = db.collection(context.getString(R.string.collection_play))
+                .document(juegoId);
+
+        playRef.get().addOnSuccessListener(documentSnapshot -> {
+            PlayDate playClicked = documentSnapshot.toObject(PlayDate.class);
+            if (!playClicked.getParticipants().contains(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                playRef.update(context.getString(R.string.collection_participants), FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+                Toast.makeText(context, "Se agrego la cita a tus juegos", Toast.LENGTH_SHORT).show();
+                joinToCreatorPlayDate(playClicked.getCreator().getUserId(),juegoId);
+            }else {
+                Toast.makeText(context, "Ya te encuentras unido a este juego", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void joinToCreatorPlayDate(String creatorId, String juegoId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference playRefMasc = db.collection(context.getString(R.string.collection_users))
+                .document(creatorId)
+                .collection(context.getString(R.string.collection_my_plays)).document(juegoId);
+
+        playRefMasc.get().addOnSuccessListener(documentSnapshotTwo -> {
+            PlayDate ownerPlay = documentSnapshotTwo.toObject(PlayDate.class);
+            if (!ownerPlay.getParticipants().contains(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                playRefMasc.update(context.getString(R.string.collection_participants), FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+            }
+        });
     }
 }

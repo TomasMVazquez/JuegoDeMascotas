@@ -25,19 +25,20 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
     private static FirebaseAuth mAuth;
     private Context context;
 
-    private Intent intent;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_up);
-
+        //Get application context
         context = getApplicationContext();
+        //Firebase Instance for DataBase
         mAuth = FirebaseAuth.getInstance();
 
-        intent = getIntent();
+        //Get extras from the intent to understand if we need to create Sign in Fragment or Sign up fragment
+        Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
+        //Result from the bundle and creation of the fragment
         if (bundle.getString(SIGN).equals(getString(R.string.key_sign_in))){
             SignInFragment signInFragment = new SignInFragment();
             createFragment(signInFragment);
@@ -102,8 +103,8 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
                 .addOnFailureListener(e -> Toast.makeText(SignInUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
     }
 
+    //Set result for the intent for result from the login
     private void setSignInUpResult(Boolean result){
-
         if (result){
             setResult(Activity.RESULT_OK);
             finish();
@@ -113,29 +114,34 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
         }
     }
 
-    //Interface Sign in
+    //Interfaces from the Sign in
+    //Method to sign in
     @Override
     public void signIn(String email, String pass) {
         handleEmailAccess(email,pass);
     }
 
+    //Reset my pass if forgot it
     @Override
     public void resetPass(String email) {
         resetEmailAccess(email);
     }
 
+    //if we went to sing in by mistake and want to change to sign up
     @Override
     public void goSignUp() {
         SignUpFragment signUpFragment = new SignUpFragment();
         createFragment(signUpFragment);
     }
 
-    //Interface Sign up
+    //Interfaces from the Sign up
+    //Method to sign up
     @Override
     public void signUp(String email, String pass) {
         createEmailAccess(email,pass);
     }
 
+    //if we went to sing up by mistake and want to change to sign in
     @Override
     public void goSignIn() {
         SignInFragment signInFragment = new SignInFragment();

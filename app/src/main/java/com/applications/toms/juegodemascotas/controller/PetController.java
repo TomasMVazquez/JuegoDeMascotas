@@ -16,10 +16,12 @@ public class PetController {
 
     private DaoPet daoPet;
 
+    //Provide Pets data from DataBase
     public PetController() {
         daoPet = new DaoPet();
     }
 
+    //Return pets list
     public void givePetList(Context context, ResultListener<List<Pet>> resultListener){
 //        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
@@ -29,6 +31,7 @@ public class PetController {
         }
     }
 
+    //return one pet
     public void givePet(String petId, Context context, ResultListener<Pet> resultListener){
 //        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
@@ -39,6 +42,7 @@ public class PetController {
 
     }
 
+    //return owners pets
     public void giveOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> resultListener){
 //        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)){
@@ -46,12 +50,14 @@ public class PetController {
         }
     }
 
+    //Return pets avatar
     public void givePetAvatar(String ownerId, String avatar, Context context, ResultListener<Uri> resultListener){
         if (Util.isOnline(context)) {
             daoPet.fetchPetAvatar(ownerId, avatar, context, result -> resultListener.finish(result));
         }
     }
 
+    //Search result
     public void giveResultSearch(String search, Context context, ResultListener<List<Pet>> resultListener){
         if (Util.isOnline(context)){
             daoPet.searchPet(search,context,result -> resultListener.finish(result));
