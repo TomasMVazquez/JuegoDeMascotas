@@ -18,22 +18,6 @@
     <string name="amigos_fragment">Amigos</string>
     <string name="mascotas_fragment">Mascotas</string>
 
-    <string name="welcome_guide">
-        Bienvenido a "Juego de Mascotas", en esta sección econtraras una pequeña guia que te orientará como usar la App.
-    </string>
-    <string name="guide">
-        Una vez logeado podrás ver y navegar entre las principales 3 pantallas:
-    </string>
-    <string name="guide_play">
-        En la sección Juegos encontrarás todos los playDates organizados para que vos y tus mascotas puedan sumarse.
-    </string>
-    <string name="guide_friends">
-        En la sección Amigos encontrarás a todas las mascotas amigas de las tuyas.
-    </string>
-    <string name="guide_pets">
-        En la sección Mascotas podrás ver a todas las mascotas registradas en nuestra App.
-    </string>
-
     //LogIn
     <string name="email_login">Ingresá tu Email</string>
     <string name="pass_login">Ingresá tu Contraseña</string>
@@ -60,6 +44,8 @@
     <string name="collection_users">Owners</string>
     <string name="collection_play">Plays</string>
     <string name="collection_pets">Pets</string>
+    <string name="collection_chats">Chats</string>
+    <string name="collection_my_chats">myChats</string>
     <string name="collection_my_pets">myPets</string>
     <string name="collection_my_plays">myPlays</string>
     <string name="collection_creator">creator</string>
@@ -125,7 +111,11 @@
     <string name="tv_creator">Organizadores</string>
     <string name="tv_participants">Participantes</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    //CHATS
+    <string name="messege_area">Escribe un mensaje…</string>
+    <string name="collection_chat_id">ChatId</string>
+    <string name="id_chat">idChat</string>
+    <string name="collection_messages">Messages</string>
+
 
 </resources>

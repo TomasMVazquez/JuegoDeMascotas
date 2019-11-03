@@ -21,11 +21,12 @@ public class DaoPlay {
 
     //DAO to look for plays and plays data
     public DaoPlay() {
-        this.mDatabase = mDatabase;
+        mDatabase = FirebaseFirestore.getInstance();
     }
 
     //return all plays from DataBase
     public void fetchPlayDateList(Context context, ResultListener<List<PlayDate>> listResultListener){
+
         CollectionReference playRef = mDatabase.collection(context.getString(R.string.collection_play));
 
         playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {

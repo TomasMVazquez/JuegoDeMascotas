@@ -152,7 +152,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Juegos En construccion", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.chat:
-                    Toast.makeText(MainActivity.this, "Chat En construccion", Toast.LENGTH_SHORT).show();
+                    Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ChatActivity.KEY_CHAT,"1");
+                    chatIntent.putExtras(bundle);
+                    startActivity(chatIntent);
                     return true;
                 case R.id.searchDog:
                     Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);

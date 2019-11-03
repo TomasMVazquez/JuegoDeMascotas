@@ -3,7 +3,7 @@ package com.applications.toms.juegodemascotas.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -33,6 +33,7 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
         setContentView(R.layout.activity_search);
 
         SearchView searchView = findViewById(R.id.searchView);
+        searchView.setQueryHint(getString(R.string.search));
 
         //Toolbar with the search
         Toolbar myToolbar = findViewById(R.id.searchToolbar);
@@ -73,14 +74,14 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchResult(query);
+                searchResult(query.toUpperCase());
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d(TAG, "onQueryTextChange: search: " + newText);
-                searchResult(newText);
+                searchResult(newText.toUpperCase());
                 return false;
             }
         });
@@ -93,13 +94,28 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
         petController.giveResultSearch(searchText, this, result -> {
             petsAdapter.setPetList(result);
             Log.d(TAG, "searchResult: result: " + result);
-            Toast.makeText(this, result.toString(), Toast.LENGTH_SHORT).show();
         });
     }
 
-    //Go to a profile when clicking the card of a pet. TODO SearchActivity goToProfileFromPets
+    //Go to a profile when clicking the card of a pet.
     @Override
     public void goToProfileFromPets(String idOwner, Pet pet) {
+        Intent intent = new Intent(SearchActivity.this,ProfileActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileActivity.KEY_TYPE,"2");
+        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileActivity.KEY_PET_ID, pet.getIdPet());
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 
+    @Override
+    public void goToChat(String userToChat) {
+        Intent intent = new Intent(SearchActivity.this,ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ChatActivity.KEY_CHAT,"2");
+        bundle.putString(ChatActivity.KEY_USER_TO_CHAT, userToChat);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

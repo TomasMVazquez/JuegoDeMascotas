@@ -22,7 +22,6 @@ public class OwnerController {
 
     //return all owners
     public void giveOwners(Context context, ResultListener<List<Owner>> resultListener){
-//        DaoOwner daoOwner = new DaoOwner();
         if (Util.isOnline(context)){
             daoOwner.fetchOwnerList(context, result -> resultListener.finish(result));
         }else {
@@ -33,7 +32,6 @@ public class OwnerController {
 
     //return one owner
     public void giveOwnerData(String ownerId, Context context, ResultListener<Owner> resultListener){
-//        DaoOwner daoOwner = new DaoOwner();
         if (Util.isOnline(context)){
             daoOwner.fetchOwner(ownerId, context, result -> resultListener.finish(result));
         }else {
