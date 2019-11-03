@@ -24,6 +24,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.FactoryConfigurationError;
+
 public class DaoOwner {
 
     private List<Owner> ownerList = new ArrayList<>();
@@ -31,7 +33,7 @@ public class DaoOwner {
 
     //DAO to look for owners and owners data
     public DaoOwner() {
-        this.mDatabase = mDatabase;
+        mDatabase = FirebaseFirestore.getInstance();
     }
 
     //return all owners from DataBase

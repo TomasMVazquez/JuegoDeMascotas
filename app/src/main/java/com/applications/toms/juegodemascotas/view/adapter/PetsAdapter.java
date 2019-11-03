@@ -70,6 +70,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
 
     public interface PetsAdapterInterface{
         void goToProfileFromPets(String idOwner, Pet pet); //TODO REVISAR
+        void goToChat(String userToChat);
     }
 
 
@@ -77,6 +78,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
 
         //Atributos
         private ImageView ivCVPets;
+        private ImageView chatCardView;
         private TextView tvCVNamePets;
         private TextView tvCVIdPet;
         private TextView tvCVIdOwner;
@@ -89,10 +91,18 @@ public class PetsAdapter extends RecyclerView.Adapter {
             tvCVNamePets = itemView.findViewById(R.id.tvCVNamePets);
             tvCVIdPet = itemView.findViewById(R.id.tvCVIdPet);
             tvCVIdOwner = itemView.findViewById(R.id.tvCVIdOwner);
+            chatCardView = itemView.findViewById(R.id.chatCardView);
 
+            //Go to Profile on Click
             itemView.setOnClickListener(v -> {
                 Pet petProfile = petList.get(getAdapterPosition());
                 adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), petProfile);
+            });
+
+            //Go to chat on Click
+            chatCardView.setOnClickListener(v -> {
+                Pet pet = petList.get(getAdapterPosition());
+                adapterInterface.goToChat(pet.getMiDuenioId());
             });
 
         }

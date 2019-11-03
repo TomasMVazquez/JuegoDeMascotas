@@ -28,7 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -38,7 +37,6 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterInterface {
 
     private static Context context;
-    private static FirebaseUser currentUser;
     private MapAdapter mapAdapter;
 
     public PlayDateFragment() {
@@ -51,13 +49,18 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_play_date, container, false);
 
+        //Application conext
         context = getApplicationContext();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        //Firebase User
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        //Adapter
         mapAdapter = new MapAdapter(new ArrayList<>(),this);
 
+        //Controller
         PlayController playController = new PlayController();
 
+        //FAB view btn
         FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
 
         //Recycler View
@@ -69,8 +72,8 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         //adaptador
         recyclerPlayDates.setAdapter(mapAdapter);
 
+        //If user is not loged in then not bring anything else get plays and addbtn
         if (currentUser != null){
-            //Traigo los juegos
             playController.givePlayDateList(context,result -> {
                 Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
                 mapAdapter.setPlayDates(result);
@@ -87,6 +90,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
     }
 
 
+    //On Click in detail go to play detail
     @Override
     public void goToPlayDetail(String juegoId) {
         Intent intent = new Intent(context, PlayDateDetail.class);
@@ -96,6 +100,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         startActivity(intent);
     }
 
+    //Add participant to play
     @Override
     public void updatePlayDate(String juegoId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -115,6 +120,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         });
     }
 
+    //Join user to play
     private void joinToCreatorPlayDate(String creatorId, String juegoId){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference playRefMasc = db.collection(context.getString(R.string.collection_users))

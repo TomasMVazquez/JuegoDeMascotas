@@ -16,13 +16,13 @@ public class PlayController {
 
     //Provide Plays data from DataBase
     public PlayController() {
-        this.daoPlay = daoPlay;
+        daoPlay = new DaoPlay();
     }
 
     //return all plays
     public void givePlayDateList(Context context, ResultListener<List<PlayDate>> resultListener){
         if (Util.isOnline(context)){
-            daoPlay.fetchPlayDateList(context,resultado -> resultListener.finish(resultado));
+            daoPlay.fetchPlayDateList(context, resultListener);
         }else {
             resultListener.finish(new ArrayList<>());
         }

@@ -66,7 +66,7 @@ public class DaoPet {
     //return a list of pet for the search logic
     public void searchPet(String search,Context context, ResultListener<List<Pet>> listResultListener){
         mDatabase.collection(context.getString(R.string.collection_pets))
-                .whereGreaterThanOrEqualTo("nombre",search)
+                .whereGreaterThanOrEqualTo("nombre",search.toUpperCase())
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

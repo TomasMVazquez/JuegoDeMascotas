@@ -110,7 +110,6 @@ public class MyPetsActivity extends AppCompatActivity implements MyPetsAdapter.A
         bundle.putString(ProfileActivity.KEY_PET_ID, petProfile.getIdPet());
         intent.putExtras(bundle);
         startActivity(intent);
-
     }
 
     //Add pet to database
