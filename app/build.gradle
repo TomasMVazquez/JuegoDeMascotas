@@ -66,4 +66,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-basement:16.0.1'
     //DatePicker
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
+    //ButterKnife
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 }
