@@ -71,6 +71,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
     public interface PetsAdapterInterface{
         void goToProfileFromPets(String idOwner, Pet pet); //TODO REVISAR
         void goToChat(String userToChat);
+        void addFriend(Pet pet);
     }
 
 
@@ -79,6 +80,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
         //Atributos
         private ImageView ivCVPets;
         private ImageView chatCardView;
+        private ImageView friendCardView;
         private TextView tvCVNamePets;
         private TextView tvCVIdPet;
         private TextView tvCVIdOwner;
@@ -92,17 +94,24 @@ public class PetsAdapter extends RecyclerView.Adapter {
             tvCVIdPet = itemView.findViewById(R.id.tvCVIdPet);
             tvCVIdOwner = itemView.findViewById(R.id.tvCVIdOwner);
             chatCardView = itemView.findViewById(R.id.chatCardView);
+            friendCardView = itemView.findViewById(R.id.friendCardView);
 
             //Go to Profile on Click
             itemView.setOnClickListener(v -> {
-                Pet petProfile = petList.get(getAdapterPosition());
-                adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), petProfile);
+                Pet pet = petList.get(getAdapterPosition());
+                adapterInterface.goToProfileFromPets(tvCVIdOwner.getText().toString(), pet);
             });
 
             //Go to chat on Click
             chatCardView.setOnClickListener(v -> {
                 Pet pet = petList.get(getAdapterPosition());
                 adapterInterface.goToChat(pet.getMiDuenioId());
+            });
+
+            //Click on Add Firend Heart
+            friendCardView.setOnClickListener(v -> {
+                Pet pet = petList.get(getAdapterPosition());
+                adapterInterface.addFriend(pet);
             });
 
         }
