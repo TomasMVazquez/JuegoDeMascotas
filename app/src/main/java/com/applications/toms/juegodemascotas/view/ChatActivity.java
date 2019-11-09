@@ -29,7 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChatActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify{
+public class    ChatActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify{
 
     private static final String TAG = "ChatActivity";
     public static final String KEY_USER_TO_CHAT = "user_to_chat";

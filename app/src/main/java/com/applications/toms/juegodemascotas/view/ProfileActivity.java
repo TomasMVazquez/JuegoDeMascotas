@@ -41,6 +41,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify,
@@ -63,14 +65,14 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
 
-    private ImageView ivProfile;
-    private TextView tvName;
-    private TextView tvDir;
-    private TextView tvAboutProfile;
-    private TextView tvMyPetsOwner;
-    private RecyclerView rvMyPetsOwner;
-    private FloatingActionButton fabImageProfile;
-    private FloatingActionButton fabEditProfile;
+    @BindView(R.id.ivProfile) ImageView ivProfile;
+    @BindView(R.id.tvName) TextView tvName;
+    @BindView(R.id.tvDir) TextView tvDir;
+    @BindView(R.id.tvAboutProfile) TextView tvAboutProfile;
+    @BindView(R.id.tvMyPetsOwner) TextView tvMyPetsOwner;
+    @BindView(R.id.rvMyPetsOwner) RecyclerView rvMyPetsOwner;
+    @BindView(R.id.fabImageProfile) FloatingActionButton fabImageProfile;
+    @BindView(R.id.fabEditProfile) FloatingActionButton fabEditProfile;
 
     private String type;
     private String petId;
@@ -84,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        ButterKnife.bind(this);
 
         //Controllers
         ownerController = new OwnerController();
@@ -93,17 +96,6 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
-
-        //views from Layout
-        ivProfile = findViewById(R.id.ivProfile);
-        tvName = findViewById(R.id.tvName);
-        tvDir = findViewById(R.id.tvDir);
-        tvAboutProfile = findViewById(R.id.tvAboutProfile);
-        tvMyPetsOwner = findViewById(R.id.tvMyPetsOwner);
-        rvMyPetsOwner = findViewById(R.id.rvMyPetsOwner);
-
-        fabImageProfile = findViewById(R.id.fabImageProfile);
-        fabEditProfile = findViewById(R.id.fabEditProfile);
 
         //Adapter
         circulePetsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
@@ -124,6 +116,13 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
         //Get Owner Data
         fetchOwnerData(idUser);
+
+        fabImageProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         //edit btn for avatar
         fabImageProfile.setOnClickListener(v -> {

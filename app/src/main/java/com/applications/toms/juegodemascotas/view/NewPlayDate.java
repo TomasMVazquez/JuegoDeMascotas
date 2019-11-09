@@ -102,7 +102,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     //Widgets
     private PlacesClient placesClient;
     private EditText etPlayLocation;
-    private static EditText etDatePlayDate;
+    private EditText etDatePlayDate;
     private EditText etHourPlayDate;
     private EditText etTitlePlayDate;
     private Button btnNewPlayDate;
