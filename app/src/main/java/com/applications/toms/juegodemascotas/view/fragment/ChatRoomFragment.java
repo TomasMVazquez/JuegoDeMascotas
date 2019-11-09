@@ -68,7 +68,13 @@ public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.Adapte
 
     @Override
     public void goToChat(String chatId) {
-        //TODO
+        onChatRoomNotify chatRoomAdapter = (onChatRoomNotify) getContext();
+        chatRoomAdapter.enterChat(chatId);
+        getActivity().getSupportFragmentManager().beginTransaction().remove(ChatRoomFragment.this).commit();
+    }
+
+    public interface onChatRoomNotify{
+        public void enterChat(String chatId);
     }
 
 }

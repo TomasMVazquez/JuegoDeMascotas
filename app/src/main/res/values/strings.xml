@@ -47,10 +47,12 @@
     <string name="collection_chats">Chats</string>
     <string name="collection_my_chats">myChats</string>
     <string name="collection_my_pets">myPets</string>
+    <string name="collection_my_friends">myFriends</string>
     <string name="collection_my_plays">myPlays</string>
     <string name="collection_creator">creator</string>
     <string name="collection_creator_user_id">userId</string>
     <string name="collection_participants">participants</string>
+    <string name="collection_id_pet">idPet</string>
 
     //Facebook
     <string name="facebook_app_id">309019083071764</string>

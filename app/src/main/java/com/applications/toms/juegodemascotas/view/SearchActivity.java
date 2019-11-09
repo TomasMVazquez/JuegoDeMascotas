@@ -3,7 +3,9 @@ package com.applications.toms.juegodemascotas.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -14,8 +16,17 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.view.adapter.PetsAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 
 
@@ -23,14 +34,21 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
 
     private static final String TAG = "SearchActivity";
 
-    private static FirebaseUser currentUser;
     private static PetsAdapter petsAdapter;
     private PetController petController;
+
+    private FirebaseUser currentUser;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        //Get Firebase instances
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
         SearchView searchView = findViewById(R.id.searchView);
         searchView.setQueryHint(getString(R.string.search));
@@ -43,12 +61,12 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //intenti with bundle //TODO SearchActivity bundle with nothing
+        //intent with bundle //TODO SearchActivity bundle with nothing
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
         //Get Firebase User instance
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Get Pet controller
         petController = new PetController();
@@ -117,5 +135,20 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
         bundle.putString(ChatActivity.KEY_USER_TO_CHAT, userToChat);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void addFriend(Pet pet) {
+        Toast.makeText(this, "Agregando a " + pet.getNombre() + " a mi lista de amigos", Toast.LENGTH_SHORT).show();
+
+        //Create on the current user a document with firend list
+        CollectionReference myFriendCol = db.collection(getString(R.string.collection_users))
+                .document(currentUser.getUid()).collection(getString(R.string.collection_my_friends));
+
+        myFriendCol.document(pet.getIdPet()).set(pet).addOnSuccessListener(aVoid -> {
+            //TODO si ya existia te lo reemplaza... Deberia no realizar todo esto o si?
+            Toast.makeText(SearchActivity.this, "Agregado!", Toast.LENGTH_SHORT).show();
+        });
+
     }
 }

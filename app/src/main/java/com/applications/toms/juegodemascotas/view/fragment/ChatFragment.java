@@ -180,7 +180,7 @@ public class ChatFragment extends Fragment {
         scrollView.fullScroll(View.FOCUS_DOWN);
     }
 
-    public static String getCurrentDate() {
+    private static String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_1);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date today = Calendar.getInstance().getTime();

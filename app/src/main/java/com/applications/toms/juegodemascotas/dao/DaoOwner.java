@@ -2,11 +2,13 @@ package com.applications.toms.juegodemascotas.dao;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.ProfileActivity;
 import com.bumptech.glide.Glide;
@@ -18,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -29,6 +32,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 public class DaoOwner {
 
     private List<Owner> ownerList = new ArrayList<>();
+    private List<Pet> friendsList = new ArrayList<>();
     private FirebaseFirestore mDatabase;
 
     //DAO to look for owners and owners data
@@ -64,5 +68,25 @@ public class DaoOwner {
         FirebaseStorage mStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = mStorage.getReference().child(userId).child(avatar);
         storageReference.getDownloadUrl().addOnSuccessListener(uri -> uriResultListener.finish(uri));
+    }
+
+    public void fetchFriends(String ownerId,Context context, ResultListener<List<Pet>> friendsResultListener){
+        //extract single owner data
+        CollectionReference friendRef = mDatabase.collection(context.getString(R.string.collection_users))
+                .document(ownerId).collection(context.getString(R.string.collection_my_friends));
+
+        friendRef.addSnapshotListener(((queryDocumentSnapshots, e) -> {
+            try {
+
+                friendsList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
+                friendsResultListener.finish(friendsList);
+
+            }catch (Exception exp){
+                Thread.currentThread().interrupt();
+                Log.d("DAO_OWNER", "fetchFriends: Error Thread interrupted");
+
+            }
+        }));
+
     }
 }
