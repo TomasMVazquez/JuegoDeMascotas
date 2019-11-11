@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -47,6 +48,12 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
             createFragment(signUpFragment);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        setSignInUpResult(false);
     }
 
     //Metodos

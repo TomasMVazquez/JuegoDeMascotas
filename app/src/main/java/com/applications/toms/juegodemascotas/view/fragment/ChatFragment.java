@@ -18,8 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.controller.ChatController;
+import com.applications.toms.juegodemascotas.dao.DaoChat;
+import com.applications.toms.juegodemascotas.model.Message;
+import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -44,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -66,6 +72,7 @@ public class ChatFragment extends Fragment {
     private String message;
     private String userName;
     private String time;
+    private Integer idLastMessage;
 
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
@@ -103,6 +110,8 @@ public class ChatFragment extends Fragment {
 
         final String user = currentUser.getDisplayName();
 
+        ChatController chatController = new ChatController();
+
         sendButton.setOnClickListener(v -> {
             String messageText = messageArea.getText().toString();
 
@@ -113,7 +122,15 @@ public class ChatFragment extends Fragment {
 //                String DataString = DateFormat.getDateInstance(DateFormat.SHORT).format(Calendar.getInstance().getTime());
                 map.put("time", getCurrentDate());
 
-                chatCollection.document().set(map);
+                chatController.giveLastMessageId(idChat, context, result -> {
+                    if (result != null){
+                        idLastMessage = Integer.parseInt(result) + 1;
+                        chatCollection.document(String.valueOf(idLastMessage)).set(map);
+                    }else {
+                        idLastMessage = 1;
+                        chatCollection.document(String.valueOf(idLastMessage)).set(map);
+                    }
+                });
 
                 messageArea.setText("");
             }
@@ -128,6 +145,7 @@ public class ChatFragment extends Fragment {
 // Stop listening to changes
 //        registration.remove();
 
+        //TODO Al entrar devuelta al chat se desordena el orden en que se enviaron
         chatCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
             Log.d(TAG, "onCreateView: " + queryDocumentSnapshots);
 
