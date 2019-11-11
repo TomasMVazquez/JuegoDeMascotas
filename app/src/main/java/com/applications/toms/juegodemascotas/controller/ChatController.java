@@ -28,7 +28,20 @@ public class ChatController {
     }
 
     public void giveLastMessage(String chatId, Context context, ResultListener<List<Message>> resultListener){
-        daoChat.fetchLastMessage(chatId,context,resultListener);
+        if (Util.isOnline(context)) {
+            daoChat.fetchLastMessage(chatId, context, resultListener);
+        }else {
+            resultListener.finish(new ArrayList<>());
+        }
     }
+
+    public void giveLastMessageId(String chatId, Context context, ResultListener<String> resultListener){
+        if (Util.isOnline(context)) {
+            daoChat.fetchLastMessageID(chatId, context, resultListener);
+        }else {
+            resultListener.finish(null);
+        }
+    }
+
 
 }

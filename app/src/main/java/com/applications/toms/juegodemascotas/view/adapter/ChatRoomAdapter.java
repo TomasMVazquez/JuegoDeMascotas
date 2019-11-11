@@ -19,6 +19,7 @@ import com.applications.toms.juegodemascotas.model.Message;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.List;
 
@@ -86,7 +87,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter {
 
         //Atributos
         private TextView tvChatId;
-        private ImageView ivCardViewUserToChat;
+        private CircularImageView ivCardViewUserToChat;
         private TextView tvChatName;
         private TextView tvLastChat;
         private TextView tvLastChatTime;

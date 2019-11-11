@@ -152,7 +152,9 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                     break;
             }
         }else {
-            updateUI(null);
+            if (requestCode != KEY_SIGN_IN) {
+                updateUI(null);
+            }
         }
     }
 

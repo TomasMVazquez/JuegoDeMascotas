@@ -79,8 +79,28 @@ public class DaoChat {
                 .get()
                 .addOnCompleteListener(task -> {
                     QuerySnapshot document = task.getResult();
-                    List<Message> message = document.toObjects(Message.class);
-                    resultListener.finish(message);
+                        List<Message> message = document.toObjects(Message.class);
+                        if (message.size()>0) {
+                            resultListener.finish(message);
+                        }
+                });
+    }
+
+    public void fetchLastMessageID(String chatId, Context context, ResultListener<String> resultListener){
+        CollectionReference chatRef = mDatabase.collection(context.getString(R.string.collection_chats))
+                .document(chatId).collection(context.getString(R.string.collection_messages));
+
+        chatRef.orderBy("time", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    QuerySnapshot document = task.getResult();
+                    if (document.getDocuments().size()>0){
+                        String idM = document.getDocuments().get(0).getId();
+                        resultListener.finish(idM);
+                    }else {
+                        resultListener.finish(null);
+                    }
                 });
     }
 
