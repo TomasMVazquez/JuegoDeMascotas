@@ -1,6 +1,5 @@
 package com.applications.toms.juegodemascotas.view;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,10 +14,7 @@ import android.util.Log;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Chat;
 import com.applications.toms.juegodemascotas.view.fragment.ChatFragment;
-import com.applications.toms.juegodemascotas.view.fragment.ChatRoomFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.applications.toms.juegodemascotas.view.menu_fragments.ChatRoomFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;

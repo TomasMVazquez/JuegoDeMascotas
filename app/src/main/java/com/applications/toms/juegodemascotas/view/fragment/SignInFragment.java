@@ -29,6 +29,8 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class SignInFragment extends Fragment {
 
+    private static final String TAG = "SignInFragment";
+
     private Context context;
     private Activity activity;
 
