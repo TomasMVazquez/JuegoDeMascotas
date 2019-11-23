@@ -47,7 +47,8 @@ import pl.aprilapps.easyphotopicker.EasyImage;
  */
 public class AddPetFragment extends Fragment {
 
-    public static final int KEY_CAMERA_PET = 301;
+    private static final String TAG = "AddPetFragment";
+    private static final int KEY_CAMERA_PET = 301;
 
     private FirebaseStorage mStorage;
     private FirebaseAuth mAuth;

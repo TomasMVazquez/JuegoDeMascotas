@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.view.fragment;
+package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
 import android.content.Context;
@@ -36,6 +36,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterInterface {
 
+    private static final String TAG = "PlayDateFragment";
     private static Context context;
     private MapAdapter mapAdapter;
 

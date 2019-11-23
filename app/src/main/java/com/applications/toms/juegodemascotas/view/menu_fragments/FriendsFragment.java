@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.view.fragment;
+package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
 import android.content.Context;
@@ -32,6 +32,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * A simple {@link Fragment} subclass.
  */
 public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAdapterInterface {
+
+    private static final String TAG = "FriendsFragment";
 
     public FriendsFragment() {
         // Required empty public constructor

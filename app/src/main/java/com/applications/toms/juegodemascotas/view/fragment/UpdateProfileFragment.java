@@ -35,6 +35,8 @@ import java.util.Objects;
  */
 public class UpdateProfileFragment extends Fragment {
 
+    private static final String TAG = "UpdateProfileFragment";
+
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 

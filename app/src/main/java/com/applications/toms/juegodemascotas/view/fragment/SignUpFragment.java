@@ -28,6 +28,8 @@ import com.google.android.material.textfield.TextInputLayout;
  */
 public class SignUpFragment extends Fragment {
 
+    private static final String TAG = "SignUpFragment";
+
     private EditText etPassSigUp;
     private EditText etEmailSigUp;
     private TextInputLayout tiPassSignUp;

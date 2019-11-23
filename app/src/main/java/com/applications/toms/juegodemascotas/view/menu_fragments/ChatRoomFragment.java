@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.view.fragment;
+package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
 import android.os.Bundle;
@@ -14,14 +14,11 @@ import android.view.ViewGroup;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.ChatController;
-import com.applications.toms.juegodemascotas.model.Chat;
-import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.adapter.ChatRoomAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
