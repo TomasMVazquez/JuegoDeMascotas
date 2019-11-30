@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.AdapterInterfaceChatRoom {
 
-    private static final String TAG = "ChatRoomFragment";
+    public static final String TAG = "ChatRoomFragment";
     //Atributos
     private ChatRoomAdapter chatRoomAdapter;
 
@@ -62,6 +62,7 @@ public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.Adapte
 
         return view;
     }
+
 
     @Override
     public void goToChat(String chatId) {

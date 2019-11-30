@@ -85,6 +85,8 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                 startActivity(intentMap);
                 getActivity().finish();
             });
+        }else {
+            fabNewPlayDate.setOnClickListener(v -> Toast.makeText(context, "Debes estar Logeado para crear un Juego", Toast.LENGTH_SHORT).show());
         }
 
         return view;

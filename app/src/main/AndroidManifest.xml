@@ -11,8 +11,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="ExtraText">
-        <activity android:name=".view.ChatActivity"
-            android:parentActivityName=".view.MainActivity"/>
         <activity android:name=".view.SignInUpActivity"
             android:parentActivityName=".view.LogInActivity"
             />

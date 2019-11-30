@@ -2,7 +2,6 @@ package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.OwnerController;
-import com.applications.toms.juegodemascotas.model.Pet;
-import com.applications.toms.juegodemascotas.util.ResultListener;
-import com.applications.toms.juegodemascotas.view.ChatActivity;
-import com.applications.toms.juegodemascotas.view.MainActivity;
-import com.applications.toms.juegodemascotas.view.SearchActivity;
 import com.applications.toms.juegodemascotas.view.adapter.FriendsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -35,10 +28,15 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
 
     private static final String TAG = "FriendsFragment";
 
+    private FriendsInterface friendsInterface;
+
     public FriendsFragment() {
         // Required empty public constructor
     }
 
+    public void setFriendsInterface(FriendsInterface friendsInterface) {
+        this.friendsInterface = friendsInterface;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,11 +69,18 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
 
     @Override
     public void goToChat(String userToChat) {
-        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ChatActivity.KEY_CHAT,"2");
-        bundle.putString(ChatActivity.KEY_USER_TO_CHAT, userToChat);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        //TODO CHANGE TO FRAGMENT 1
+//        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(ChatActivity.KEY_CHAT,"2");
+//        bundle.putString(ChatActivity.KEY_USER_TO_CHAT, userToChat);
+//        intent.putExtras(bundle);
+//        startActivity(intent);
+        friendsInterface.getChat(userToChat);
     }
+
+    public interface FriendsInterface{
+        void getChat(String userToChat);
+    }
+
 }
