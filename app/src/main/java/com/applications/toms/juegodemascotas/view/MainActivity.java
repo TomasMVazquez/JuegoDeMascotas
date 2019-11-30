@@ -14,18 +14,24 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.model.Chat;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.AdminStorage;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
+import com.applications.toms.juegodemascotas.view.fragment.ChatFragment;
+import com.applications.toms.juegodemascotas.view.menu_fragments.ChatRoomFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.FriendsFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.PlayDateFragment;
 import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransformer;
@@ -36,6 +42,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -44,9 +51,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify, FriendsFragment.FriendsInterface{
 
     private static final String TAG = "MainActivity";
     public static final int KEY_LOGIN=101;
@@ -106,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
         //Toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setTitle(getResources().getString(R.string.app_name));
 
         //NavigationView
         drawerLayout = findViewById(R.id.drawer);
@@ -152,11 +163,18 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Juegos En construccion", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.chat:
-                    Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ChatActivity.KEY_CHAT,"1");
-                    chatIntent.putExtras(bundle);
-                    startActivity(chatIntent);
+                    //TODO CHANGE TO FRAGMENTS 1
+//                    Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString(ChatActivity.KEY_CHAT,"1");
+//                    chatIntent.putExtras(bundle);
+//                    startActivity(chatIntent);
+                    Log.d(TAG, "onCreate: Get type 1 -> showRoom");
+                    //TODO Title stays fixed even when you go back
+                    actionBar.setTitle(getString(R.string.collection_chats));
+
+                    ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
+                    fragments(chatRoomFragment,ChatRoomFragment.TAG);
                     return true;
                 case R.id.searchDog:
                     Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
@@ -208,6 +226,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //Replace fragment and add tags Fragment //TODO CHANGE TO FRAGMENTS 1
+    private void fragments(Fragment fragment, String fragmentTag){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer,fragment,fragmentTag);
+        fragmentTransaction.addToBackStack(TAG).commit();
     }
 
     //Inflate Menu where is showing the Login btn
@@ -440,4 +466,84 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //CHECK INSTANCE OF FRAGMENT
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        if (fragment instanceof FriendsFragment) {
+            FriendsFragment friendsFragment = (FriendsFragment) fragment;
+            friendsFragment.setFriendsInterface(this);
+        }
+
+    }
+
+//****CHAT FRAGMENT ****
+    //GO to Chat with an specific owner
+    @Override
+    public void enterChat(String chatId) {
+        showChat(chatId);
+    }
+    //Show Chat
+    private void showChat(String chatId){
+        Log.d(TAG, "showChat: showing...");
+        Bundle bundle = new Bundle();
+        bundle.putString(ChatFragment.KEY_ID_CHAT,chatId);
+        ChatFragment chatFragment = new ChatFragment();
+        chatFragment.setArguments(bundle);
+        fragments(chatFragment,ChatFragment.TAG);
+    }
+    //Check Database to see if the chat already exists
+    public void checkChatExists(String userToChat){
+
+        CollectionReference myChatCol = db.collection(getString(R.string.collection_users))
+                .document(currentUser.getUid()).collection(getString(R.string.collection_my_chats));
+
+        Log.d(TAG, "checkChatExists: " + userToChat);
+
+        myChatCol.document(userToChat).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()){
+                Log.d(TAG, "checkChatExists: result=yes");
+                String idChat = (String) documentSnapshot.getData().get(getString(R.string.id_chat));
+                showChat(idChat);
+            }else {
+                Log.d(TAG, "checkChatExists: result=no -> create");
+                createChat(userToChat);
+            }
+        });
+
+    }
+    //If doesnt exists create one
+    private void createChat(String userToChat){
+        Log.d(TAG, "createChat: Creating ...");
+        //Room Chat collections create new Chat and get the ID
+        CollectionReference chatCollection = db.collection(getString(R.string.collection_chats));
+        DocumentReference chatRef = chatCollection.document();
+        String idNewChat = chatRef.getId();
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(getString(R.string.id_chat), idNewChat);
+
+        Chat newChat = new Chat(idNewChat,userToChat,currentUser.getUid());
+
+        chatRef.set(newChat);
+
+        Log.d(TAG, "createChat: ChatRomm ID = " + idNewChat);
+
+        //Create on the current user a document with the chatting and set the idchat
+        CollectionReference myChatCol = db.collection(getString(R.string.collection_users))
+                .document(currentUser.getUid()).collection(getString(R.string.collection_my_chats));
+        myChatCol.document(userToChat).set(map);
+
+        //Create the chat in the other user aswell
+        CollectionReference otherChatCol = db.collection(getString(R.string.collection_users))
+                .document(userToChat).collection(getString(R.string.collection_my_chats));
+        otherChatCol.document(currentUser.getUid()).set(map);
+
+        //Go To chat
+        showChat(idNewChat);
+    }
+    //Go to chat from Friends Fragment
+    @Override
+    public void getChat(String userToChat) {
+        checkChatExists(userToChat);
+    }
 }

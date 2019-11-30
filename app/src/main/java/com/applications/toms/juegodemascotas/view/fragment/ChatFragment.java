@@ -58,7 +58,7 @@ import java.util.TimeZone;
  */
 public class ChatFragment extends Fragment {
 
-    private static final String TAG = "ChatFragment";
+    public static final String TAG = "ChatFragment";
     public static final String KEY_ID_CHAT = "chat";
 
     public static final String DATE_FORMAT_1 = "yy-MM-dd HH:mm";

@@ -129,12 +129,13 @@ public class SearchActivity extends AppCompatActivity implements PetsAdapter.Pet
 
     @Override
     public void goToChat(String userToChat) {
-        Intent intent = new Intent(SearchActivity.this,ChatActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ChatActivity.KEY_CHAT,"2");
-        bundle.putString(ChatActivity.KEY_USER_TO_CHAT, userToChat);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        //TODO CHANGE TO FRAGMENTS 1
+//        Intent intent = new Intent(SearchActivity.this,ChatActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(ChatActivity.KEY_CHAT,"2");
+//        bundle.putString(ChatActivity.KEY_USER_TO_CHAT, userToChat);
+//        intent.putExtras(bundle);
+//        startActivity(intent);
     }
 
     @Override
