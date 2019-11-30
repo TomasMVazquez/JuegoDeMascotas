@@ -14,9 +14,6 @@
         <activity android:name=".view.SignInUpActivity"
             android:parentActivityName=".view.LogInActivity"
             />
-        <activity
-            android:name=".view.SearchActivity"
-            android:parentActivityName=".view.MainActivity" />
         <activity android:name=".view.PlayDateDetail" />
         <activity android:name=".view.NewPlayDate" />
         <activity

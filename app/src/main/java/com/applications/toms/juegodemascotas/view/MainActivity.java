@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -35,6 +36,7 @@ import com.applications.toms.juegodemascotas.view.menu_fragments.ChatRoomFragmen
 import com.applications.toms.juegodemascotas.view.menu_fragments.FriendsFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.PlayDateFragment;
 import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransformer;
+import com.applications.toms.juegodemascotas.view.menu_fragments.SearchFragment;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,7 +57,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify, FriendsFragment.FriendsInterface{
+public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify,
+        FriendsFragment.FriendsInterface, SearchFragment.SearchInterface{
 
     private static final String TAG = "MainActivity";
     public static final int KEY_LOGIN=101;
@@ -118,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle(getResources().getString(R.string.app_name));
+        //TODO Since we have de search view the title is not shown
+//        SearchView searchView = findViewById(R.id.searchView);
+//        searchView.setQueryHint(getString(R.string.search));
 
         //NavigationView
         drawerLayout = findViewById(R.id.drawer);
@@ -177,8 +183,13 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                     fragments(chatRoomFragment,ChatRoomFragment.TAG);
                     return true;
                 case R.id.searchDog:
-                    Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
-                    startActivity(searchIntent);
+                    //TODO CHANGE TO FRAGMENTS 2
+//                    Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
+//                    startActivity(searchIntent);
+                    Log.d(TAG, "onCreate: -> SearchFragment");
+                    actionBar.setTitle(getString(R.string.search));
+                    SearchFragment searchFragment = new SearchFragment();
+                    fragments(searchFragment,SearchFragment.TAG);
                     return true;
             }
             return false;
@@ -473,6 +484,10 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
             FriendsFragment friendsFragment = (FriendsFragment) fragment;
             friendsFragment.setFriendsInterface(this);
         }
+        if (fragment instanceof SearchFragment) {
+            SearchFragment searchFragment = (SearchFragment) fragment;
+            searchFragment.setSearchInterface(this);
+        }
 
     }
 
@@ -544,6 +559,13 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     //Go to chat from Friends Fragment
     @Override
     public void getChat(String userToChat) {
+        checkChatExists(userToChat);
+    }
+
+//****SEARCH FRAGMENT ****
+    //Go to Chat from Search Fragment
+    @Override
+    public void chatFromSearch(String userToChat) {
         checkChatExists(userToChat);
     }
 }
