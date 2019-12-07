@@ -28,12 +28,15 @@ import androidx.viewpager.widget.ViewPager;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Chat;
 import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.AdminStorage;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
+import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
 import com.applications.toms.juegodemascotas.view.fragment.ChatFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.ChatRoomFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.FriendsFragment;
+import com.applications.toms.juegodemascotas.view.menu_fragments.MyPetsFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.PlayDateFragment;
 import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransformer;
 import com.applications.toms.juegodemascotas.view.menu_fragments.SearchFragment;
@@ -58,7 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify,
-        FriendsFragment.FriendsInterface, SearchFragment.SearchInterface{
+        FriendsFragment.FriendsInterface, SearchFragment.SearchInterface, MyPetsFragment.MyPetsInterface{
 
     private static final String TAG = "MainActivity";
     public static final int KEY_LOGIN=101;
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     private static FirebaseStorage mStorage;
     private static StorageReference raiz;
     private static Context context;
+    private static String userFirestore;
+    private static String myPetsFirestore;
 
     private DrawerLayout drawerLayout;
 
@@ -111,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         mStorage = FirebaseStorage.getInstance();
         raiz = mStorage.getReference();
         db = FirebaseFirestore.getInstance();
+        userFirestore = getResources().getString(R.string.collection_users);
+        myPetsFirestore = getResources().getString(R.string.collection_my_pets);
 
         //Contect from Application
         context = getApplicationContext();
@@ -155,12 +162,19 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                     }
                     return true;
                 case R.id.my_pets:
+                    //TODO CHANGE TO FRAGMENTS 3
                     if (currentUser!=null){
-                        Intent intent = new Intent(MainActivity.this,MyPetsActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(MyPetsActivity.KEY_DUENIO_ID,currentUser.getUid());
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        Log.d(TAG, "onCreate: MyPets Fragment");
+                        //TODO Title stays fixed even when you go back
+                        actionBar.setTitle(getString(R.string.my_pets));
+                        MyPetsFragment myPetsFragment = new MyPetsFragment();
+                        fragments(myPetsFragment,MyPetsFragment.TAG);
+
+//                        Intent intent = new Intent(MainActivity.this,MyPetsActivity.class);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString(MyPetsActivity.KEY_DUENIO_ID,currentUser.getUid());
+//                        intent.putExtras(bundle);
+//                        startActivity(intent);
                     }else {
                         goLogIn();
                     }
@@ -477,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         });
     }
 
-    //CHECK INSTANCE OF FRAGMENT
+    //CHECK INSTANCE OF FRAGMENT ***to implement the listenings
     @Override
     public void onAttachFragment(@NonNull Fragment fragment) {
         if (fragment instanceof FriendsFragment) {
@@ -487,6 +501,10 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         if (fragment instanceof SearchFragment) {
             SearchFragment searchFragment = (SearchFragment) fragment;
             searchFragment.setSearchInterface(this);
+        }
+        if (fragment instanceof MyPetsFragment){
+            MyPetsFragment myPetsFragment = (MyPetsFragment) fragment;
+            myPetsFragment.setMyPetsInterface(this);
         }
 
     }
@@ -568,4 +586,43 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     public void chatFromSearch(String userToChat) {
         checkChatExists(userToChat);
     }
+
+//****MY PETS FRAGMENT ****
+    //Go to Add Pet Fragment
+    @Override
+    public void goToAddPet() {
+        AddPetFragment addPetFragment = new AddPetFragment();
+        fragments(addPetFragment,AddPetFragment.TAG);
+    }
+
+    //Add pet to database
+    public static void addPetToDataBase(final String name, final String raza, final String size, final String birth, final String sex, final String photo, final String info){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final CollectionReference userRefMasc = db.collection(userFirestore)
+                .document(currentUser.getUid()).collection(myPetsFirestore);
+
+        final String idPet = userRefMasc.document().getId();
+        Pet newPet = new Pet(idPet,name,raza,size,sex,birth,photo,info,currentUser.getUid());
+
+        userRefMasc.document(idPet).set(newPet)
+                .addOnSuccessListener(aVoid -> {
+                    //TODO
+                })
+                .addOnFailureListener(e -> {
+                    //TODO
+                });
+
+        DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
+                .document(idPet);
+
+        petsRef.set(newPet).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                //TODO
+            }else{
+                //TODO
+            }
+        });
+    }
+
 }

@@ -11,16 +11,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f0e0b52b-51c4-4339-8c3d-892c00815ff7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/SearchFragment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/MyPetsFragment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_my_pets.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/SearchActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_chat.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_search.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/toolbar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/toolbar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_my_pets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_add_pet.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_add_pet.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -45,16 +46,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="489" column="9" lean-forward="true" selection-start-line="489" selection-start-column="9" selection-end-line="489" selection-end-column="9" />
+            <state relative-caret-position="243">
+              <caret line="589" column="27" lean-forward="true" selection-start-line="589" selection-start-column="27" selection-end-line="589" selection-end-column="27" />
               <folding>
-                <element signature="method#onStart#0;class#MainActivity#0" />
                 <element signature="method#onResume#0;class#MainActivity#0" />
-                <element signature="method#onCreate#0;class#MainActivity#0" />
-                <element signature="e#4647#4690#0" expanded="true" />
-                <element signature="e#7618#7654#0" expanded="true" />
-                <element signature="e#8176#8202#0" expanded="true" />
-                <element signature="class#7815:8192" />
+                <element signature="e#4644#4695#0" expanded="true" />
+                <element signature="e#4723#4776#0" expanded="true" />
+                <element signature="e#7093#7120#0" expanded="true" />
                 <element signature="method#fragments#0;class#MainActivity#0" />
                 <element signature="method#onCreateOptionsMenu#0;class#MainActivity#0" />
                 <element signature="method#onOptionsItemSelected#0;class#MainActivity#0" />
@@ -67,34 +65,59 @@
                 <element signature="method#deleteProfilePet#0;class#MainActivity#0" />
                 <element signature="method#showChat#0;class#MainActivity#0" />
                 <element signature="method#checkChatExists#0;class#MainActivity#0" />
-                <element signature="e#20119#20155#0" expanded="true" />
-                <element signature="e#20216#20255#0" expanded="true" />
-                <element signature="e#20577#20604#0" expanded="true" />
                 <element signature="method#createChat#0;class#MainActivity#0" />
-                <element signature="e#21054#21090#0" expanded="true" />
-                <element signature="e#21282#21309#0" expanded="true" />
-                <element signature="e#21634#21670#0" expanded="true" />
-                <element signature="e#21731#21770#0" expanded="true" />
-                <element signature="e#21931#21967#0" expanded="true" />
-                <element signature="e#22018#22057#0" expanded="true" />
+                <element signature="method#addPetToDataBase#0;class#MainActivity#0" />
+                <element signature="e#24727#24785#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/SearchFragment.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/MyPetsFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="144" selection-start-line="144" selection-end-line="144" />
+            <state relative-caret-position="187">
+              <caret line="93" column="41" selection-start-line="93" selection-start-column="41" selection-end-line="93" selection-end-column="41" />
               <folding>
-                <element signature="e#1908#1934#0" expanded="true" />
-                <element signature="class#2359:2833" />
-                <element signature="e#4678#4679#0" expanded="true" />
-                <element signature="e#4726#4727#0" expanded="true" />
-                <element signature="e#4616#4652#0" expanded="true" />
-                <element signature="e#4713#4754#0" expanded="true" />
+                <element signature="e#2110#2161#0" expanded="true" />
+                <element signature="e#2189#2242#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="260">
+              <caret line="74" column="53" lean-forward="true" selection-start-line="74" selection-start-column="53" selection-end-line="74" selection-end-column="53" />
+              <folding>
+                <element signature="e#3102#3149#0" expanded="true" />
+                <element signature="method#addPetAvatar#0;class#AddPetFragment#0" />
+                <element signature="method#checkCompleteData#0;class#AddPetFragment#0" />
+                <element signature="method#onActivityResult#0;class#AddPetFragment#0" />
+                <element signature="method#showTruitonDatePickerDialog#0;class#AddPetFragment#0" />
+                <element signature="class#DatePickerFragment#0;class#AddPetFragment#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_add_pet.xml">
+          <provider editor-type-id="android-designer2" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="163" column="46" selection-start-line="163" selection-start-column="46" selection-end-line="163" selection-end-column="46" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="850">
+              <caret line="65" column="210" selection-start-line="65" selection-start-column="210" selection-end-line="65" selection-end-column="210" />
             </state>
           </provider>
         </entry>
@@ -121,6 +144,7 @@
       <find>log</find>
       <find>misMascotas</find>
       <find>mis</find>
+      <find>addPetto</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -129,9 +153,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/PlayDateAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/model/Juego.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/model/Duenio.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/dao/DaoPetsFromOwner.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/btn_rounded.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/card_view_play_date.xml" />
@@ -159,12 +180,10 @@
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ProfileActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/NewPlayDate.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_play_date_detail.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/UpdateProfileFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/SignUpFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/SignInFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/PlayDateFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_chat_room.xml" />
@@ -178,8 +197,13 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/SearchActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/toolbar.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/SearchFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_my_pets.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_add_pet.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/MyPetsFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
       </list>
     </option>
   </component>
@@ -193,8 +217,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -264,19 +289,12 @@
               <item name="JuegoDeMascotas" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="menu" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
-            <path>
-              <item name="JuegoDeMascotas" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
               <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -399,7 +417,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.497545" visible="true" weight="0.21785174" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.497545" visible="true" weight="0.21785174" />
       <window_info id="Structure" order="2" sideWeight="0.502455" side_tool="true" weight="0.21785174" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -407,7 +425,6 @@
       <window_info id="Designer" order="6" />
       <window_info id="Resources Explorer" order="7" />
       <window_info id="Capture Tool" order="8" />
-      <window_info anchor="bottom" id="Dependency Viewer" weight="0.5270049" />
       <window_info anchor="bottom" id="Run" order="0" weight="0.32967034" />
       <window_info anchor="bottom" id="Logcat" order="1" weight="0.63829786" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.3282967" />
@@ -416,8 +433,9 @@
       <window_info anchor="bottom" id="Event Log" order="5" side_tool="true" weight="0.3289689" />
       <window_info anchor="bottom" id="Version Control" order="6" weight="0.3289689" />
       <window_info anchor="bottom" id="Build" order="7" weight="0.32569557" />
-      <window_info anchor="bottom" id="Debug" order="8" weight="0.3289689" />
+      <window_info anchor="bottom" id="Debug" order="8" weight="0.3535188" />
       <window_info anchor="bottom" id="Android Profiler" order="9" />
+      <window_info anchor="bottom" id="Dependency Viewer" order="10" weight="0.5270049" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
       <window_info anchor="right" id="Gradle" order="1" />
       <window_info anchor="right" id="Theme Preview" order="2" />
@@ -453,44 +471,7 @@
       <window_info anchor="right" id="Device File Explorer" order="5" side_tool="true" weight="0.32980332" />
     </layout-to-restore>
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/SearchFragment.java</url>
-          <line>143</line>
-          <properties />
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/util/MiAplicacion.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/controller/PlayController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
-          <caret line="40" column="9" lean-forward="true" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/model/DuenioConteiner.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/util/Util.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
-          <caret line="85" column="24" lean-forward="true" selection-start-line="85" selection-start-column="24" selection-end-line="85" selection-end-column="24" />
-          <folding>
-            <element signature="e#3316#3359#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/util/ResultListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -579,6 +560,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_play_date_detail.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
           <caret line="67" column="48" selection-start-line="67" selection-start-column="48" selection-end-line="67" selection-end-column="48" />
@@ -589,11 +571,10 @@
           </folding>
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_sign_up.xml">
-      <provider selected="true" editor-type-id="text-editor" />
       <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/UpdateProfileFragment.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -619,17 +600,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="49" column="55" selection-start-line="49" selection-start-column="55" selection-end-line="49" selection-end-column="55" />
-          <folding>
-            <element signature="method#checkCompleteData#0;class#AddPetFragment#0" />
-            <element signature="method#onActivityResult#0;class#AddPetFragment#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/MyViewPagerAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-66">
@@ -644,12 +614,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_chat_room.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="16" column="43" lean-forward="true" selection-start-line="16" selection-start-column="43" selection-end-line="16" selection-end-column="43" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/adapter/MyPetsAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -669,12 +639,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_chat.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="41" selection-start-line="8" selection-start-column="41" selection-end-line="8" selection-end-column="41" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/ChatFragment.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -683,80 +653,49 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ChatActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-168">
-          <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
-          <folding>
-            <element signature="method#checkChatExists#0;class#ChatActivity#0" />
-            <element signature="method#createChat#0;class#ChatActivity#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/ChatActivity.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
           <caret line="61" column="49" lean-forward="true" selection-start-line="61" selection-start-column="49" selection-end-line="61" selection-end-column="49" />
         </state>
       </provider>
-      <provider editor-type-id="android-manifest" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="14" column="44" lean-forward="true" selection-start-line="14" selection-start-column="44" selection-end-line="14" selection-end-column="44" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_chat.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="40" selection-start-line="26" selection-start-column="40" selection-end-line="26" selection-end-column="40" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_chat.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/toolbar_menu.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/toolbar.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="8" lean-forward="true" selection-start-line="15" selection-start-column="8" selection-end-line="26" selection-end-column="47" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml">
+      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="17" lean-forward="true" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_search.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="42" column="8" lean-forward="true" selection-start-line="42" selection-start-column="8" selection-end-line="48" selection-end-column="52" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="18" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_search.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/ChatRoomFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="799">
@@ -770,16 +709,6 @@
           <caret line="76" column="33" selection-start-line="76" selection-start-column="33" selection-end-line="76" selection-end-column="33" />
           <folding>
             <element signature="method#goToPlayDetail#0;class#PlayDateFragment#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1445">
-          <caret line="118" column="47" lean-forward="true" selection-start-line="118" selection-start-column="47" selection-end-line="118" selection-end-column="47" />
-          <folding>
-            <element signature="method#goToProfile#0;class#MyPetsActivity#0" />
           </folding>
         </state>
       </provider>
@@ -836,18 +765,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/SearchActivity.java" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_my_pets.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="402">
+          <caret line="34" column="58" lean-forward="true" selection-start-line="11" selection-start-column="4" selection-end-line="34" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_my_pets.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="41" selection-start-line="8" selection-start-column="41" selection-end-line="8" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MyPetsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="119" column="76" lean-forward="true" selection-start-line="118" selection-start-column="8" selection-end-line="119" selection-end-column="76" />
+          <folding>
+            <element signature="e#1986#2037#0" expanded="true" />
+            <element signature="e#2065#2118#0" expanded="true" />
+            <element signature="method#goToProfile#0;class#MyPetsActivity#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="489" column="9" lean-forward="true" selection-start-line="489" selection-start-column="9" selection-end-line="489" selection-end-column="9" />
+        <state relative-caret-position="243">
+          <caret line="589" column="27" lean-forward="true" selection-start-line="589" selection-start-column="27" selection-end-line="589" selection-end-column="27" />
           <folding>
-            <element signature="method#onStart#0;class#MainActivity#0" />
             <element signature="method#onResume#0;class#MainActivity#0" />
-            <element signature="method#onCreate#0;class#MainActivity#0" />
-            <element signature="e#4647#4690#0" expanded="true" />
-            <element signature="e#7618#7654#0" expanded="true" />
-            <element signature="e#8176#8202#0" expanded="true" />
-            <element signature="class#7815:8192" />
+            <element signature="e#4644#4695#0" expanded="true" />
+            <element signature="e#4723#4776#0" expanded="true" />
+            <element signature="e#7093#7120#0" expanded="true" />
             <element signature="method#fragments#0;class#MainActivity#0" />
             <element signature="method#onCreateOptionsMenu#0;class#MainActivity#0" />
             <element signature="method#onOptionsItemSelected#0;class#MainActivity#0" />
@@ -860,39 +815,61 @@
             <element signature="method#deleteProfilePet#0;class#MainActivity#0" />
             <element signature="method#showChat#0;class#MainActivity#0" />
             <element signature="method#checkChatExists#0;class#MainActivity#0" />
-            <element signature="e#20119#20155#0" expanded="true" />
-            <element signature="e#20216#20255#0" expanded="true" />
-            <element signature="e#20577#20604#0" expanded="true" />
             <element signature="method#createChat#0;class#MainActivity#0" />
-            <element signature="e#21054#21090#0" expanded="true" />
-            <element signature="e#21282#21309#0" expanded="true" />
-            <element signature="e#21634#21670#0" expanded="true" />
-            <element signature="e#21731#21770#0" expanded="true" />
-            <element signature="e#21931#21967#0" expanded="true" />
-            <element signature="e#22018#22057#0" expanded="true" />
+            <element signature="method#addPetToDataBase#0;class#MainActivity#0" />
+            <element signature="e#24727#24785#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/SearchActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="118" column="54" lean-forward="true" selection-start-line="118" selection-start-column="4" selection-end-line="118" selection-end-column="54" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/SearchFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="144" selection-start-line="144" selection-end-line="144" />
+        <state relative-caret-position="427">
+          <caret line="141" column="35" selection-start-line="141" selection-start-column="35" selection-end-line="141" selection-end-column="35" />
           <folding>
-            <element signature="e#1908#1934#0" expanded="true" />
-            <element signature="class#2359:2833" />
-            <element signature="e#4678#4679#0" expanded="true" />
-            <element signature="e#4726#4727#0" expanded="true" />
-            <element signature="e#4616#4652#0" expanded="true" />
-            <element signature="e#4713#4754#0" expanded="true" />
+            <element signature="method#addFriend#0;class#SearchFragment#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/menu_fragments/MyPetsFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="93" column="41" selection-start-line="93" selection-start-column="41" selection-end-line="93" selection-end-column="41" />
+          <folding>
+            <element signature="e#2110#2161#0" expanded="true" />
+            <element signature="e#2189#2242#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/applications/toms/juegodemascotas/view/fragment/AddPetFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="74" column="53" lean-forward="true" selection-start-line="74" selection-start-column="53" selection-end-line="74" selection-end-column="53" />
+          <folding>
+            <element signature="e#3102#3149#0" expanded="true" />
+            <element signature="method#addPetAvatar#0;class#AddPetFragment#0" />
+            <element signature="method#checkCompleteData#0;class#AddPetFragment#0" />
+            <element signature="method#onActivityResult#0;class#AddPetFragment#0" />
+            <element signature="method#showTruitonDatePickerDialog#0;class#AddPetFragment#0" />
+            <element signature="class#DatePickerFragment#0;class#AddPetFragment#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_add_pet.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="163" column="46" selection-start-line="163" selection-start-column="46" selection-end-line="163" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="850">
+          <caret line="65" column="210" selection-start-line="65" selection-start-column="210" selection-end-line="65" selection-end-column="210" />
         </state>
       </provider>
     </entry>

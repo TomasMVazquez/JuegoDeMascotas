@@ -26,7 +26,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.view.MyPetsActivity;
+import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,7 +47,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
  */
 public class AddPetFragment extends Fragment {
 
-    private static final String TAG = "AddPetFragment";
+    public static final String TAG = "AddPetFragment";
     private static final int KEY_CAMERA_PET = 301;
 
     private FirebaseStorage mStorage;
@@ -86,7 +86,7 @@ public class AddPetFragment extends Fragment {
         //Birth date picker
         etAddPetBirth.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus){
-                showTruitonDatePickerDialog(v);
+                showTruitonDatePickerDialog();
             }
         });
 
@@ -97,7 +97,7 @@ public class AddPetFragment extends Fragment {
         spinnerArray.add(getResources().getString(R.string.spinner_small));
         spinnerArray.add(getResources().getString(R.string.spinner_medium));
         spinnerArray.add(getResources().getString(R.string.spinner_large));
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,spinnerArray);
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerArray);
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAddPetSize.setAdapter(adapterSpinner);
         spinnerAddPetSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -128,15 +128,15 @@ public class AddPetFragment extends Fragment {
 
         //Pet Avatar
         ivAddPetPhoto = view.findViewById(R.id.ivAddPetPhoto);
-
+        ivAddPetPhoto.setOnClickListener(v -> addPetAvatar());
         FloatingActionButton fabAddPetPhoto = view.findViewById(R.id.fabAddPetPhoto);
-        ivAddPetPhoto.setOnClickListener(v -> EasyImage.openChooserWithGallery(AddPetFragment.this,"Elige la mejor foto", KEY_CAMERA_PET));
+        fabAddPetPhoto.setOnClickListener(v -> addPetAvatar());
 
         //Btn Add pet
         Button btnAddPet = view.findViewById(R.id.btnAddPet);
         btnAddPet.setOnClickListener(v -> {
             if (checkCompleteData()){
-                MyPetsActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
+                MainActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AddPetFragment.this).commit();
             } else {
                 Toast.makeText(getActivity(), "Faltan completar datos", Toast.LENGTH_SHORT).show();
@@ -144,6 +144,11 @@ public class AddPetFragment extends Fragment {
         });
 
         return view;
+    }
+
+    //Add Pet Avatar
+    private void addPetAvatar(){
+        EasyImage.openChooserWithGallery(AddPetFragment.this,"Elige la mejor foto", KEY_CAMERA_PET);
     }
 
     //Verification that all data is complete
@@ -217,7 +222,7 @@ public class AddPetFragment extends Fragment {
     }
 
     //Date picker
-    public void showTruitonDatePickerDialog(View v) {
+    public void showTruitonDatePickerDialog() {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
