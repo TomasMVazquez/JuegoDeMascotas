@@ -63,7 +63,7 @@
     <string name="about_profile">En esta seccion puedes escribir un poco sobre vos, tus intereses, hobbies y otros. De esta manera cuando asistas a un juego el resto puede conocerte un poco</string>
     <string name="updateAbout">Escribe un poco sobre vos, tus intereses, hobbies y otros.</string>
     <string name="address_profile">Aquí puedes poner tu barrio</string>
-    <string name="about_pet">En esta seccion puedes escribir un poco sobre tu pet, sus gustos, playDates favoritos y otros. De esta manera cuando asistas a un juego el resto puede conocer un poco de tu pet</string>
+    <string name="about_pet">En esta seccion puedes escribir un poco sobre tu mascota, sus gustos, juegos favoritos y otros. De esta manera cuando asistas a un juego el resto puede conocer un poco de tu mascota</string>
     <string name="take_profile_picture">Elige tu foto de perfil</string>
     <string name="take_profile_pet_picture">Elige la foto de perfil de tu pet</string>
     <string name="updateTitle">Actualice su perfíl</string>
@@ -85,7 +85,7 @@
     <string name="add_pet_photo">Foto Perfil</string>
     <string name="add_pet_sex_m">Macho</string>
     <string name="add_pet_sex_h">Hembra</string>
-    <string name="add_pet_info">Sobre tu pet, sus gustos, playDates favoritos y otros</string>
+    <string name="add_pet_info">Sobre tu mascota, sus gustos, juegos favoritos y otros</string>
     <string name="add_pet_btn">Agregar Mascota</string>
     <string name="spinner_small">Chico - 0kg a 15kg</string>
     <string name="spinner_medium">Mediano - 15kg a 25kg</string>

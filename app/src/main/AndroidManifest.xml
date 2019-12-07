@@ -41,7 +41,6 @@
         </activity> <!-- //Fin FACEBOOK -->
         <activity android:name=".view.LogInActivity" />
         <activity android:name=".view.ProfileActivity" />
-        <activity android:name=".view.MyPetsActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
