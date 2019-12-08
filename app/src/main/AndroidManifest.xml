@@ -40,7 +40,6 @@
             </intent-filter>
         </activity> <!-- //Fin FACEBOOK -->
         <activity android:name=".view.LogInActivity" />
-        <activity android:name=".view.ProfileActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"

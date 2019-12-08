@@ -77,7 +77,7 @@
     <string name="btn_update">Actualizar Profile</string>
 
     //Add Pet
-    <string name="add_pet_title">Mi Mascota</string>
+    <string name="add_pet_title">Agregar Mascota</string>
     <string name="add_pet_name">Nombre</string>
     <string name="add_pet_birth">Fecha de Nacimiento</string>
     <string name="add_pet_size">Tamaño</string>
