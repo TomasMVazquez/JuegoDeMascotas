@@ -1,31 +1,33 @@
-package com.applications.toms.juegodemascotas.view;
+package com.applications.toms.juegodemascotas.view.menu_fragments;
+
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
 import android.os.Bundle;
-
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.applications.toms.juegodemascotas.view.adapter.CirculeOwnerAdapter;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
@@ -45,17 +47,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class ProfileActivity extends AppCompatActivity implements UpdateProfileFragment.OnFragmentNotify,
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class ProfileFragment extends Fragment implements UpdateProfileFragment.OnFragmentNotify,
         CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner {
+
+    public static final String TAG = "ProfileFragment";
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_USER_ID = "user_id";
     public static final String KEY_PET_ID = "pet_id";
     public static final int KEY_CAMERA_OWNER_PICTURE = 301;
     public static final int KEY_CAMERA_PET_PICTURE = 302;
-    private static final String TAG = "PROFILE";
 
     //Atributos
+    private Context context;
+
     private static CirculePetsAdapter circulePetsAdapter;
     private static CirculeOwnerAdapter circuleOwnerAdapter;
 
@@ -65,14 +73,14 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
 
-    @BindView(R.id.ivProfile) ImageView ivProfile;
-    @BindView(R.id.tvName) TextView tvName;
-    @BindView(R.id.tvDir) TextView tvDir;
-    @BindView(R.id.tvAboutProfile) TextView tvAboutProfile;
-    @BindView(R.id.tvMyPetsOwner) TextView tvMyPetsOwner;
-    @BindView(R.id.rvMyPetsOwner) RecyclerView rvMyPetsOwner;
-    @BindView(R.id.fabImageProfile) FloatingActionButton fabImageProfile;
-    @BindView(R.id.fabEditProfile) FloatingActionButton fabEditProfile;
+    private ImageView ivProfile;
+    private TextView tvName;
+    private TextView tvDir;
+    private TextView tvAboutProfile;
+    private TextView tvMyPetsOwner;
+    private RecyclerView rvMyPetsOwner;
+    private FloatingActionButton fabImageProfile;
+    private FloatingActionButton fabEditProfile;
 
     private String type;
     private String petId;
@@ -81,12 +89,27 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
     private String photoPetActual;
     private String photoOwnerActual;
 
-    @SuppressLint("RestrictedApi")
+    public ProfileFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        ButterKnife.bind(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        ivProfile = view.findViewById(R.id.ivProfile);
+        tvName = view.findViewById(R.id.tvName);
+        tvDir = view.findViewById(R.id.tvDir);
+        tvAboutProfile = view.findViewById(R.id.tvAboutProfile);
+        tvMyPetsOwner = view.findViewById(R.id.tvMyPetsOwner);
+        rvMyPetsOwner = view.findViewById(R.id.rvMyPetsOwner);
+        fabImageProfile = view.findViewById(R.id.fabImageProfile);
+        fabEditProfile = view.findViewById(R.id.fabEditProfile);
+
+        context = getContext();
 
         //Controllers
         ownerController = new OwnerController();
@@ -98,18 +121,17 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         mStorage = FirebaseStorage.getInstance();
 
         //Adapter
-        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
-        circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<Owner>(),this,this);
+        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<>(),context,this);
+        circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<Owner>(),context,this);
 
         //Recycler View
         rvMyPetsOwner.hasFixedSize();
         //LayoutManager
-        LinearLayoutManager llm = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         rvMyPetsOwner.setLayoutManager(llm);
 
         //intent and bundle
-        Intent intent = getIntent();
-        final Bundle bundle = intent.getExtras();
+        Bundle bundle = getArguments();
         type = bundle.getString(KEY_TYPE);
         idUser = bundle.getString(KEY_USER_ID);
         petId = bundle.getString(KEY_PET_ID);
@@ -117,48 +139,82 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
         //Get Owner Data
         fetchOwnerData(idUser);
 
-        fabImageProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
         //edit btn for avatar
         fabImageProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
-                EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
+                EasyImage.openChooserWithGallery(getActivity(), getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
             }else if (type.equals("2")){
-                EasyImage.openChooserWithGallery(ProfileActivity.this, getResources().getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
+                EasyImage.openChooserWithGallery(getActivity(), getResources().getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
             }
         });
 
         //edit btn profile info
         fabEditProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
-                UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
-                fragmentTransaction.commit();
+                //TODO
+//                UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
+//                fragmentTransaction.commit();
             }else if (type.equals("2")){
                 deletePetProfile(idUser);
             }
         });
 
+        return view;
+    }
+
+    @Override
+    public void goToUserProfile(String idOwner) {
+        //TODO
+//        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(ProfileActivity.KEY_TYPE,"1");
+//        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+//        bundle.putString(ProfileActivity.KEY_PET_ID,"0");
+//        intent.putExtras(bundle);
+//        startActivity(intent);
+    }
+
+    @Override
+    public void goToPetProfile(String idOwner, String idPet) {
+        //TODO
+//        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(ProfileActivity.KEY_TYPE,"2");
+//        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+//        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
+//        intent.putExtras(bundle);
+//        startActivity(intent);
+    }
+
+    //Actualizar el profile y salvarlo
+    @Override
+    public void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about) {
+        tvName.setText(name);
+        tvDir.setText(dir);
+        tvAboutProfile.setText(about);
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
+
+        currentUser.updateProfile(profileUpdates);
+
+        MainActivity.updateProfile( name,  dir,  birth,  sex,  about);
     }
 
     //Check if user is current user
     private boolean checkCurrentUser(String userId){
         if (!currentUser.getUid().equals(userId)){
-           return false;
+            return false;
         }
         return true;
     }
 
     //Fetch Owner data
     private void fetchOwnerData(String userId){
-        ownerController.giveOwnerData(userId, this, resultado -> {
+        ownerController.giveOwnerData(userId, context, resultado -> {
             //Check if user is current user
             if (checkCurrentUser(userId)){
                 //Traer info del usuario y botones para modificar
@@ -168,7 +224,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
             }
         });
 
-        petController.giveOwnerPets(userId,this,resultado -> {
+        petController.giveOwnerPets(userId,context,resultado -> {
             petsList.addAll(resultado);
         });
 
@@ -209,9 +265,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                 if (avatar.length > 1){
                     Glide.with(this).load(profileData.getAvatar()).into(ivProfile);
                 }else {
-                    ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), this, result -> {
+                    ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), context, result -> {
                         Log.d(TAG, "completeDataInProfile: uri: " + result);
-                        Glide.with(ProfileActivity.this).load(result).into(ivProfile);
+                        Glide.with(getActivity()).load(result).into(ivProfile);
                     });
                 }
                 photoOwnerActual = profileData.getAvatar();
@@ -221,7 +277,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
         }else if (type.equals("2")){
             //If is a pet and Im the owner I can delete, this is the icon
-            fabEditProfile.setImageDrawable(getDrawable(R.drawable.ic_delete_forever_white_24dp));
+            fabEditProfile.setImageDrawable(context.getDrawable(R.drawable.ic_delete_forever_white_24dp));
             //Text MyOwner or MyPets
             tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
             //Adapter
@@ -241,51 +297,37 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                     circuleOwnerAdapter.setOwner(ownerList);
                     //Photo
                     photoPetActual = pet.getFotoMascota();
-                    petController.givePetAvatar(profileData.getUserId(),pet.getFotoMascota(),this,result -> Glide.with(ProfileActivity.this).load(result).into(ivProfile));
+                    petController.givePetAvatar(profileData.getUserId(),pet.getFotoMascota(),context,result -> Glide.with(getActivity()).load(result).into(ivProfile));
                 }
             }
         }
     }
 
-    //Actualizar el profile y salvarlo
-    public void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about){
-        tvName.setText(name);
-        tvDir.setText(dir);
-        tvAboutProfile.setText(about);
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(name)
-                .build();
-
-        currentUser.updateProfile(profileUpdates);
-
-        MainActivity.updateProfile( name,  dir,  birth,  sex,  about);
-    }
-
     //Eliminar perfil (solo para mascotas)
     public void deletePetProfile(String userId){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Confirmación");
         builder.setMessage("Por favor confirmar que usted quiere eliminar este perfil");
         builder.setCancelable(false);
-        builder.setIcon(this.getDrawable(R.drawable.ic_delete_forever_white_24dp));
+        builder.setIcon(context.getDrawable(R.drawable.ic_delete_forever_white_24dp));
         builder.setPositiveButton("Si", (dialog, which) -> {
-            Intent intent = new Intent(ProfileActivity.this,MainActivity.class);
+            Intent intent = new Intent(getActivity(),MainActivity.class);
             MainActivity.deleteProfilePet(userId, petId);
             startActivity(intent);
         });
 
         builder.setNegativeButton("No", (dialog, which) ->
-                Toast.makeText(getApplicationContext(), "El perfil NO se elimino", Toast.LENGTH_SHORT).show());
+                Toast.makeText(context, "El perfil NO se elimino", Toast.LENGTH_SHORT).show());
 
         builder.show();
     }
 
     //On Activity Result de las fotos
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, ProfileActivity.this, new EasyImage.Callbacks() {
+        EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new EasyImage.Callbacks() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
 
@@ -304,7 +346,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                             final StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(uriTemp.getLastPathSegment());
 
                             //Poner nueva foto
-                            Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
+                            Glide.with(getActivity()).load(uri).into(ivProfile);
                             //Actualizar foto de Firebase User
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setPhotoUri(uri)
@@ -321,7 +363,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
                         case KEY_CAMERA_PET_PICTURE:
                             final StorageReference nuevaFotoPet = raiz.child(idUser).child(uriTemp.getLastPathSegment());
                             //Poner nueva foto
-                            Glide.with(ProfileActivity.this).load(uri).into(ivProfile);
+                            Glide.with(getActivity()).load(uri).into(ivProfile);
                             MainActivity.updatePhotoPet(idUser,petId,photoPetActual,uriTemp.getLastPathSegment(),uriTemp);
 
                             break;
@@ -336,30 +378,5 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileF
 
             }
         });
-
     }
-
-    //Ir al perfil de la fotito
-    @Override
-    public void goToUserProfile(String idOwner) {
-        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ProfileActivity.KEY_TYPE,"1");
-        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-        bundle.putString(ProfileActivity.KEY_PET_ID,"0");
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    @Override
-    public void goToPetProfile(String idOwner, String idPet) {
-        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ProfileActivity.KEY_TYPE,"2");
-        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
 }

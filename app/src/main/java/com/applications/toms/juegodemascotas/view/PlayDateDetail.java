@@ -130,13 +130,14 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
         //Go to profile in case they click it
         ivOwnerCreator.setOnClickListener(v -> {
-            Intent intent1 = new Intent(PlayDateDetail.this,ProfileActivity.class);
-            Bundle bundle1 = new Bundle();
-            bundle1.putString(ProfileActivity.KEY_TYPE,"1");
-            bundle1.putString(ProfileActivity.KEY_USER_ID,creatorId);
-            bundle1.putString(ProfileActivity.KEY_PET_ID,"0");
-            intent1.putExtras(bundle1);
-            startActivity(intent1);
+            //TODO CHANGE TO FRAGMENTS 4
+//            Intent intent1 = new Intent(PlayDateDetail.this,ProfileActivity.class);
+//            Bundle bundle1 = new Bundle();
+//            bundle1.putString(ProfileActivity.KEY_TYPE,"1");
+//            bundle1.putString(ProfileActivity.KEY_USER_ID,creatorId);
+//            bundle1.putString(ProfileActivity.KEY_PET_ID,"0");
+//            intent1.putExtras(bundle1);
+//            startActivity(intent1);
         });
 
     }
@@ -200,12 +201,13 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     @Override
     public void goToPetProfile(String idOwner, String idPet) {
-        Intent intent = new Intent(PlayDateDetail.this,ProfileActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ProfileActivity.KEY_TYPE,"2");
-        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        //TODO CHANGE TO FRAGMENTS 4
+//        Intent intent = new Intent(PlayDateDetail.this,ProfileActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(ProfileActivity.KEY_TYPE,"2");
+//        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
+//        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
+//        intent.putExtras(bundle);
+//        startActivity(intent);
     }
 }

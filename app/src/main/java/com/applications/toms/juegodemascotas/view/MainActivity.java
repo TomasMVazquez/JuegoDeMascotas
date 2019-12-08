@@ -39,6 +39,8 @@ import com.applications.toms.juegodemascotas.view.menu_fragments.FriendsFragment
 import com.applications.toms.juegodemascotas.view.menu_fragments.MyPetsFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.PlayDateFragment;
 import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransformer;
+import com.applications.toms.juegodemascotas.view.menu_fragments.PlaysToGoFragment;
+import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.SearchFragment;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     private static String myPetsFirestore;
 
     private DrawerLayout drawerLayout;
+    private ActionBar actionBar;
 
     private MenuItem item_toolbar;
 
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         //Toolbar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle(getResources().getString(R.string.app_name));
         //TODO Since we have de search view the title is not shown
@@ -150,13 +153,21 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                     return true;
                 case R.id.my_profile:
                     if (currentUser!=null){
-                        Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                        //TODO CHANGE TO FRAGMENTS 4
+                        Log.d(TAG, "onCreate: Profile Fragment");
+//                        Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putString(ProfileActivity.KEY_TYPE,"1");
-                        bundle.putString(ProfileActivity.KEY_USER_ID,currentUser.getUid());
-                        bundle.putString(ProfileActivity.KEY_PET_ID,"0");
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+                        bundle.putString(ProfileFragment.KEY_TYPE,"1");
+                        bundle.putString(ProfileFragment.KEY_USER_ID,currentUser.getUid());
+                        bundle.putString(ProfileFragment.KEY_PET_ID,"0");
+//                        intent.putExtras(bundle);
+//                        startActivity(intent);
+                        //TODO Title stays fixed even when you go back
+                        actionBar.setTitle(getString(R.string.my_profile));
+                        ProfileFragment profileFragment = new ProfileFragment();
+                        Log.d("FRAGMENT CREADO = ", "Profile");
+                        profileFragment.setArguments(bundle);
+                        fragments(profileFragment,ProfileFragment.TAG);
                     }else {
                         goLogIn();
                     }
@@ -168,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         //TODO Title stays fixed even when you go back
                         actionBar.setTitle(getString(R.string.my_pets));
                         MyPetsFragment myPetsFragment = new MyPetsFragment();
+                        Log.d("FRAGMENT CREADO = ", "MyPets");
                         fragments(myPetsFragment,MyPetsFragment.TAG);
 
 //                        Intent intent = new Intent(MainActivity.this,MyPetsActivity.class);
@@ -180,6 +192,12 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                     }
                     return true;
                 case R.id.plays:
+                    Log.d(TAG, "onCreate: Plays To Go Fragment");
+                    //TODO Title stays fixed even when you go back
+                    actionBar.setTitle(getString(R.string.plays));
+                    PlaysToGoFragment playsToGoFragment = new PlaysToGoFragment();
+                    Log.d("FRAGMENT CREADO = ", "PlaysToGo");
+                    fragments(playsToGoFragment,PlaysToGoFragment.TAG);
                     Toast.makeText(MainActivity.this, "Juegos En construccion", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.chat:
@@ -194,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                     actionBar.setTitle(getString(R.string.collection_chats));
 
                     ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
+                    Log.d("FRAGMENT CREADO = ", "ChatRoom");
                     fragments(chatRoomFragment,ChatRoomFragment.TAG);
                     return true;
                 case R.id.searchDog:
@@ -201,8 +220,10 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 //                    Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
 //                    startActivity(searchIntent);
                     Log.d(TAG, "onCreate: -> SearchFragment");
+                    //TODO Title stays fixed even when you go back
                     actionBar.setTitle(getString(R.string.search));
                     SearchFragment searchFragment = new SearchFragment();
+                    Log.d("FRAGMENT CREADO = ", "Search");
                     fragments(searchFragment,SearchFragment.TAG);
                     return true;
             }
@@ -211,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
         //TABS FRAGMENTS
         List<Fragment> fragmentList = new ArrayList<>();
+        Log.d("FRAGMENT CREADO = ", "PlayDate + Firends");
         fragmentList.add(new PlayDateFragment());
         fragmentList.add(new FriendsFragment());
 
@@ -521,6 +543,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         Bundle bundle = new Bundle();
         bundle.putString(ChatFragment.KEY_ID_CHAT,chatId);
         ChatFragment chatFragment = new ChatFragment();
+        Log.d("FRAGMENT CREADO = ", "Chat");
         chatFragment.setArguments(bundle);
         fragments(chatFragment,ChatFragment.TAG);
     }
@@ -592,6 +615,9 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     @Override
     public void goToAddPet() {
         AddPetFragment addPetFragment = new AddPetFragment();
+        Log.d("FRAGMENT CREADO = ", "AddPet");
+        //TODO Title stays fixed even when you go back
+        actionBar.setTitle(getString(R.string.add_pet_title));
         fragments(addPetFragment,AddPetFragment.TAG);
     }
 
