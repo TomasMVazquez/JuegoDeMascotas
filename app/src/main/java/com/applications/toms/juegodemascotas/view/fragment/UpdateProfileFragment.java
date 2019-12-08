@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.model.Owner;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +34,7 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UpdateProfileFragment extends Fragment {
+public class UpdateProfileFragment extends Fragment implements FragmentTitles {
 
     private static final String TAG = "UpdateProfileFragment";
 
@@ -116,6 +117,11 @@ public class UpdateProfileFragment extends Fragment {
             getActivity().getSupportFragmentManager().beginTransaction().remove(UpdateProfileFragment.this).commit();
         });
         return view;
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.btn_update;
     }
 
     //interface comunication to activity

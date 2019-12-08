@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.view.adapter.MyPetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterInterface{
+public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterInterface, FragmentTitles {
 
     public static final String TAG = "MyPetsFragment";
 
@@ -100,6 +101,11 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
         });
 
         return view;
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.my_pets;
     }
 
     public interface MyPetsInterface{

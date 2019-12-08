@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.view.adapter.PetsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterInterface{
+public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterInterface, FragmentTitles {
 
     public static final String TAG = "SearchFragment";
 
@@ -103,6 +104,11 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
         });
 
         return view;
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.search;
     }
 
     public interface SearchInterface{
