@@ -26,6 +26,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -45,7 +46,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 /*
  * A simple {@link Fragment} subclass.
  */
-public class AddPetFragment extends Fragment {
+public class AddPetFragment extends Fragment implements FragmentTitles {
 
     public static final String TAG = "AddPetFragment";
     private static final int KEY_CAMERA_PET = 301;
@@ -225,6 +226,11 @@ public class AddPetFragment extends Fragment {
     public void showTruitonDatePickerDialog() {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.add_pet_title;
     }
 
     //Date Picker Comands

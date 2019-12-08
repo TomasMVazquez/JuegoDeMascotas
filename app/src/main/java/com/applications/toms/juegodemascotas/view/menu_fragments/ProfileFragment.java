@@ -27,6 +27,7 @@ import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.applications.toms.juegodemascotas.view.adapter.CirculeOwnerAdapter;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
@@ -51,7 +52,8 @@ import pl.aprilapps.easyphotopicker.EasyImage;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment implements UpdateProfileFragment.OnFragmentNotify,
-        CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner {
+        CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner,
+        FragmentTitles {
 
     public static final String TAG = "ProfileFragment";
 
@@ -378,5 +380,10 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
 
             }
         });
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.my_profile;
     }
 }
