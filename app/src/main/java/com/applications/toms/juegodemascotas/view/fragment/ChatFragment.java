@@ -24,6 +24,7 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.ChatController;
 import com.applications.toms.juegodemascotas.dao.DaoChat;
 import com.applications.toms.juegodemascotas.model.Message;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -56,7 +57,7 @@ import java.util.TimeZone;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements FragmentTitles {
 
     public static final String TAG = "ChatFragment";
     public static final String KEY_ID_CHAT = "chat";
@@ -205,4 +206,8 @@ public class ChatFragment extends Fragment {
         return dateFormat.format(today);
     }
 
+    @Override
+    public int getFragmentTitle() {
+        return R.string.chat;
+    }
 }

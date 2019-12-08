@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.ChatController;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.view.adapter.ChatRoomAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.AdapterInterfaceChatRoom {
+public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.AdapterInterfaceChatRoom, FragmentTitles {
 
     public static final String TAG = "ChatRoomFragment";
     //Atributos
@@ -69,6 +70,11 @@ public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.Adapte
         onChatRoomNotify chatRoomAdapter = (onChatRoomNotify) getContext();
         chatRoomAdapter.enterChat(chatId);
         getActivity().getSupportFragmentManager().beginTransaction().remove(ChatRoomFragment.this).commit();
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.chat;
     }
 
     public interface onChatRoomNotify{
