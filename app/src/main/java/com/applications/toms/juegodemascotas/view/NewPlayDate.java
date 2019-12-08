@@ -99,6 +99,8 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private static Context context;
     private Owner creator;
 
+    private String errorMsg;
+
     //Widgets
     private PlacesClient placesClient;
     private EditText etPlayLocation;
@@ -106,6 +108,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private EditText etHourPlayDate;
     private EditText etTitlePlayDate;
     private Button btnNewPlayDate;
+    private Spinner spinnerPetSizePlayDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +141,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         petController.giveOwnerPets(currentUser.getUid(),this,resultado -> myPets.addAll(resultado));
 
         //Seleccion del tamanio de mascota
-        Spinner spinnerPetSizePlayDate = findViewById(R.id.spinnerPetSizePlayDate);
+        spinnerPetSizePlayDate = findViewById(R.id.spinnerPetSizePlayDate);
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(getResources().getString(R.string.add_pet_size));
         spinnerArray.add(getResources().getString(R.string.spinner_small));
@@ -190,8 +193,12 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         //Al clickear el boton crear juego
         btnNewPlayDate.setOnClickListener(v -> {
             Log.d(TAG, "onCreate: Click Crear PlayDate");
-            addNewPlayToDB();
-            
+            if (checkCompleteData()){
+                addNewPlayToDB();
+            }else {
+                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                errorMsg = "";
+            }
         });
 
         etPlayLocation.setOnFocusChangeListener((v, hasFocus) -> {
@@ -201,7 +208,48 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         });
     }
 
-    //Aniadir PlayDate a la base de Datos
+    //Checking that all data is correctly completed
+    public Boolean checkCompleteData(){
+
+        if (etTitlePlayDate.getText().toString().equals("")){
+            errorMsg = "Debes completar el nombre del juego";
+            etTitlePlayDate.requestFocus();
+            return false;
+        }
+
+        if (etDatePlayDate.getText().toString().equals("")){
+            errorMsg = "Debes completar la fecha";
+            etDatePlayDate.requestFocus();
+            return false;
+        }
+
+        if (etHourPlayDate.getText().toString().equals("")){
+            errorMsg = "Debes completar la hora";
+            etHourPlayDate.requestFocus();
+            return false;
+        }
+
+        if (size.equals(getString(R.string.add_pet_size))){
+            errorMsg = "Debes completar el tamaño de los perros convocados";
+            spinnerPetSizePlayDate.requestFocus();
+            return false;
+        }
+
+        if (etPlayLocation.getText().toString().equals("")){
+            errorMsg = "Debes completar la ubicación";
+            if (etPlayLocation.hasFocus()){
+                searchInMap();
+            }else {
+                etPlayLocation.requestFocus();
+            }
+            return false;
+        }
+
+        errorMsg = "";
+        return true;
+    }
+
+    //Add PlayDate To dataBase after checking everything is ok
     private void addNewPlayToDB(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
