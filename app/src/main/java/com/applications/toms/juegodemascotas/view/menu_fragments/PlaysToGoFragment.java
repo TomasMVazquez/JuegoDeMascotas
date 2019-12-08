@@ -10,11 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlaysToGoFragment extends Fragment {
+public class PlaysToGoFragment extends Fragment implements FragmentTitles {
 
     public static final String TAG = "PlaysToGoFragment";
 
@@ -36,4 +37,8 @@ public class PlaysToGoFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public int getFragmentTitle() {
+        return R.string.plays;
+    }
 }
