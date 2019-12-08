@@ -32,7 +32,7 @@ public class PlayController {
     //return one Play
     public void givePlayDate(String playId,Context context, ResultListener<PlayDate> resultListener){
         if (Util.isOnline(context)){
-            daoPlay.fetchPlayDate(playId,context,resultado -> resultListener.finish(resultado));
+            daoPlay.fetchPlayDate(playId,context, resultListener);
         }else {
             resultListener.finish(null);
         }
@@ -42,7 +42,7 @@ public class PlayController {
     //return owners plays
     public void giveOwnerPlayDateList(String ownerId, Context context, ResultListener<List<PlayDate>> resultListener){
         if (Util.isOnline(context)){
-            daoPlay.fetchOwnerPlays(ownerId,context,resultado -> resultListener.finish(resultado));
+            daoPlay.fetchOwnerPlays(ownerId,context, resultListener);
         }else {
             resultListener.finish(new ArrayList<>());
         }

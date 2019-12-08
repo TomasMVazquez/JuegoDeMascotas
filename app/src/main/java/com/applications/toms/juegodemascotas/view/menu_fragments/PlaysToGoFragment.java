@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PlayController;
 import com.applications.toms.juegodemascotas.model.PlayDate;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.MyPlaysMapAdapter;
@@ -23,17 +24,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.MapAdapterInterface {
+public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.MapAdapterInterface, FragmentTitles {
 
     public static final String TAG = "PlaysToGoFragment";
 
     private static FirebaseUser currentUser;
     private static Context context;
+    private PlayController playController;
 
     private MyPlaysMapAdapter myPlaysMapAdapter;
 
@@ -51,22 +54,28 @@ public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.Map
         context = getContext();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        PlayController playController = new PlayController();
+        playController = new PlayController();
         myPlaysMapAdapter = new MyPlaysMapAdapter(new ArrayList<>(),this);
 
         //Recycler View
-        RecyclerView recyclerViewPets = view.findViewById(R.id.recyclerMyPlays);
-        recyclerViewPets.hasFixedSize();
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerMyPlays);
+        recyclerView.hasFixedSize();
         //LayoutManager
         LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
-        recyclerViewPets.setLayoutManager(llm);
+        recyclerView.setLayoutManager(llm);
         //adaptador
-        recyclerViewPets.setAdapter(myPlaysMapAdapter);
+        recyclerView.setAdapter(myPlaysMapAdapter);
 
-        playController.giveOwnerPlayDateList(currentUser.getUid(), context, result -> myPlaysMapAdapter.setMyPlays(result));
-
+        refreshPlays();
 
         return view;
+    }
+
+    private void refreshPlays(){
+        playController.giveOwnerPlayDateList(currentUser.getUid(), context, result -> {
+            Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
+            myPlaysMapAdapter.setMyPlays(result);
+        });
     }
 
     @Override
@@ -76,5 +85,10 @@ public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.Map
         bundle.putString(PlayDateDetail.KEY_PLAY_DETAIL,juegoId);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public int getFragmentTitle() {
+        return R.string.plays;
     }
 }

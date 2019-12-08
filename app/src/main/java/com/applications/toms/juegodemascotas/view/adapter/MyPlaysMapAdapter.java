@@ -110,10 +110,10 @@ public class MyPlaysMapAdapter extends RecyclerView.Adapter<MyPlaysMapAdapter.Vi
         private ViewHolder(View itemView) {
             super(itemView);
             layout = itemView;
-            mapView = (MapView) layout.findViewById(R.id.mapPlayDate);
-            locationPlayDate = layout.findViewById(R.id.locationPlayDate);
-            dateTimePlayDate = layout.findViewById(R.id.dateTimePlayDate);
-            sizeDogsPlayDate = layout.findViewById(R.id.sizeDogsPlayDate);
+            mapView = (MapView) layout.findViewById(R.id.mapMyPlays);
+            locationPlayDate = layout.findViewById(R.id.locationMyPlays);
+            dateTimePlayDate = layout.findViewById(R.id.dateTimeMyPlays);
+            sizeDogsPlayDate = layout.findViewById(R.id.sizeDogsMyPlays);
 
             if (mapView != null) {
                 // Initialise the MapView
