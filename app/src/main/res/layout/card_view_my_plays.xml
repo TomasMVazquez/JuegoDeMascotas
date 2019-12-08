@@ -25,33 +25,37 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/colorPrimary_translucid"
+            android:background="@color/colorPrimary_translucid_2"
             android:elevation="10dp"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
+            android:padding="2dp"
             >
 
             <TextView
                 android:id="@+id/locationMyPlays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp"
                 tools:text="UBICACION DE LA CITA DE JUEGO"
                 android:textAllCaps="true"
                 android:textStyle="bold"
                 android:textAlignment="textEnd"
+                android:lines="1"
                 />
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                >
                 <TextView
                     android:id="@+id/dateTimeMyPlays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp"
                     tools:text="01/01/19 - 17:30"
                     android:textAllCaps="true"
                     android:textStyle="bold"
@@ -62,8 +66,8 @@
                     android:id="@+id/sizeDogsMyPlays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="14sp"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp"
                     tools:text="Chico - 0kg a 15kg"
                     android:textAllCaps="true"
                     android:textStyle="bold"
