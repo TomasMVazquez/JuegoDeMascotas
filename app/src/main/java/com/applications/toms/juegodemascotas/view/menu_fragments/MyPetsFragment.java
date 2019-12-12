@@ -110,11 +110,13 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
 
     public interface MyPetsInterface{
         void goToAddPet();
+        void petSelectedListener(String idOwner, String petId);
     }
 
     @Override
-    public void goToProfile(String idOwner, Pet pet) {
+    public void goToProfile(String idOwner, String petId) {
         //TODO Make go to profile (after making profile fragment)
+        myPetsInterface.petSelectedListener(idOwner,petId);
     }
 
     //Refresh Recycler

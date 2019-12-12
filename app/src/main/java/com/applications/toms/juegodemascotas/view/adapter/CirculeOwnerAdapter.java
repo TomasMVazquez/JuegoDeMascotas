@@ -67,7 +67,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
     }
 
     public interface AdapterInterfaceCirculeOwner{
-        void goToUserProfile(String idOwner);
+        void goToUserProfile(String keyType, String idOwner, String idPet);
     }
 
     public class CirculeOwnerViewHolder extends RecyclerView.ViewHolder{
@@ -86,7 +86,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
             tvPetId = itemView.findViewById(R.id.tvPetId);
 
             itemView.setOnClickListener(v ->
-                    adapterInterfaceCirculeOwner.goToUserProfile(tvUid.getText().toString())
+                    adapterInterfaceCirculeOwner.goToUserProfile("1",tvUid.getText().toString(),null)
             );
 
         }
