@@ -63,6 +63,8 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
     public static final int KEY_CAMERA_OWNER_PICTURE = 301;
     public static final int KEY_CAMERA_PET_PICTURE = 302;
 
+    private ProfileFragmentListener profileFragmentListener;
+
     //Atributos
     private Context context;
 
@@ -95,6 +97,11 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        profileFragmentListener = (ProfileFragmentListener) context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -168,27 +175,15 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
     }
 
     @Override
-    public void goToUserProfile(String idOwner) {
+    public void goToUserProfile(String keyType,String idOwner, String idPet) {
         //TODO
-//        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(ProfileActivity.KEY_TYPE,"1");
-//        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-//        bundle.putString(ProfileActivity.KEY_PET_ID,"0");
-//        intent.putExtras(bundle);
-//        startActivity(intent);
+        profileFragmentListener.profileChange(keyType,idOwner,idPet);
     }
 
     @Override
-    public void goToPetProfile(String idOwner, String idPet) {
+    public void goToPetProfile(String keyType,String idOwner, String idPet) {
         //TODO
-//        Intent intent = new Intent(ProfileActivity.this,ProfileActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(ProfileActivity.KEY_TYPE,"2");
-//        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-//        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
-//        intent.putExtras(bundle);
-//        startActivity(intent);
+        profileFragmentListener.profileChange(keyType,idOwner,idPet);
     }
 
     //Actualizar el profile y salvarlo
@@ -385,5 +380,9 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
     @Override
     public int getFragmentTitle() {
         return R.string.my_profile;
+    }
+
+    public interface ProfileFragmentListener{
+        void profileChange(String keyType,String idOwner, String petId);
     }
 }

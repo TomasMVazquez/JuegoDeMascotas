@@ -4,6 +4,7 @@ package com.applications.toms.juegodemascotas.view.menu_fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +46,12 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
 
     public SearchFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        searchInterface = (SearchInterface) context;
     }
 
     public void setSearchInterface(SearchInterface searchInterface) {
@@ -113,6 +120,7 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
 
     public interface SearchInterface{
         void chatFromSearch(String userToChat);
+        void goToPetProfile(String idOwner, Pet choosenPet);
     }
 
     //Get results from search
@@ -126,15 +134,8 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
 
     //Go to a profile when clicking the card of a pet.
     @Override
-    public void goToProfileFromPets(String idOwner, Pet pet) {
-        //TODO CHANGE TO FRAGMENT 2
-//        Intent intent = new Intent(SearchActivity.this,ProfileActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(ProfileActivity.KEY_TYPE,"2");
-//        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-//        bundle.putString(ProfileActivity.KEY_PET_ID, pet.getIdPet());
-//        intent.putExtras(bundle);
-//        startActivity(intent);
+    public void goToProfileFromPets(String idOwner, Pet choosenPet) {
+        searchInterface.goToPetProfile(idOwner,choosenPet);
     }
 
     //Go to a chat when clicking the chat icon.

@@ -64,7 +64,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify,
-        FriendsFragment.FriendsInterface, SearchFragment.SearchInterface, MyPetsFragment.MyPetsInterface {
+        FriendsFragment.FriendsInterface, SearchFragment.SearchInterface, MyPetsFragment.MyPetsInterface,
+        ProfileFragment.ProfileFragmentListener {
 
     public static final int KEY_LOGIN = 101;
     private static final String TAG = "MainActivity";
@@ -674,6 +675,17 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         checkChatExists(userToChat);
     }
 
+    @Override
+    public void goToPetProfile(String idOwner, Pet choosenPet) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileFragment.KEY_TYPE,"2");
+        bundle.putString(ProfileFragment.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileFragment.KEY_PET_ID,choosenPet.getIdPet());
+        ProfileFragment myProfileFragment = new ProfileFragment();
+        myProfileFragment.setArguments(bundle);
+        fragments(myProfileFragment,ProfileFragment.TAG);
+    }
+
     //****MY PETS FRAGMENT ****
     //Go to Add Pet Fragment
     @Override
@@ -685,4 +697,26 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         fragments(addPetFragment, AddPetFragment.TAG);
     }
 
+    @Override
+    public void petSelectedListener(String idOwner, String petId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileFragment.KEY_TYPE,"2");
+        bundle.putString(ProfileFragment.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileFragment.KEY_PET_ID,petId);
+        ProfileFragment myProfileFragment = new ProfileFragment();
+        myProfileFragment.setArguments(bundle);
+        fragments(myProfileFragment,myProfileFragment.TAG);
+    }
+
+    @Override
+    public void profileChange(String keyType, String idOwner, String petId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileFragment.KEY_TYPE,keyType);
+        bundle.putString(ProfileFragment.KEY_USER_ID,idOwner);
+        bundle.putString(ProfileFragment.KEY_PET_ID,petId);
+        //TODO: Check if its ok to call the ProfileFragment constructor every time
+        ProfileFragment myProfileFragment = new ProfileFragment();
+        myProfileFragment.setArguments(bundle);
+        fragments(myProfileFragment,myProfileFragment.TAG);
+    }
 }

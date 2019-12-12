@@ -199,15 +199,9 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         });
     }
 
+
     @Override
-    public void goToPetProfile(String idOwner, String idPet) {
-        //TODO CHANGE TO FRAGMENTS 4
-//        Intent intent = new Intent(PlayDateDetail.this,ProfileActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(ProfileActivity.KEY_TYPE,"2");
-//        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-//        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
-//        intent.putExtras(bundle);
-//        startActivity(intent);
+    public void goToPetProfile(String keyType, String idOwner, String idPet) {
+
     }
 }
