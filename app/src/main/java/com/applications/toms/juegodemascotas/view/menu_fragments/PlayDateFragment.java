@@ -4,6 +4,7 @@ package com.applications.toms.juegodemascotas.view.menu_fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.MapAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,6 +41,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
     private static final String TAG = "PlayDateFragment";
     private static Context context;
     private MapAdapter mapAdapter;
+    private FirebaseUser currentUser;
 
     public PlayDateFragment() {
         // Required empty public constructor
@@ -53,7 +56,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         //Application conext
         context = getApplicationContext();
         //Firebase User
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Adapter
         mapAdapter = new MapAdapter(new ArrayList<>(),this);
@@ -117,8 +120,25 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                 playRef.update(context.getString(R.string.collection_participants), FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getUid()));
                 Toast.makeText(context, "Se agrego la cita a tus juegos", Toast.LENGTH_SHORT).show();
                 joinToCreatorPlayDate(playClicked.getCreator().getUserId(),juegoId);
+                addPlayToMyPlays(playClicked);
             }else {
                 Toast.makeText(context, "Ya te encuentras unido a este juego", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    //Add Plays to MyPlays DataBase
+    private void addPlayToMyPlays(PlayDate playJoined){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference playRefMasc = db.collection(context.getString(R.string.collection_users))
+                .document(currentUser.getUid())
+                .collection(context.getString(R.string.collection_my_plays))
+                .document(playJoined.getIdPlay());
+        
+        playRefMasc.set(playJoined).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuccess: Creado en MyPlays");
             }
         });
     }

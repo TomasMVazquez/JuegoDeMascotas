@@ -5,8 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".view.menu_fragments.PlaysToGoFragment"
     android:background="@color/colorWhite"
-
     >
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMyPlays"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
