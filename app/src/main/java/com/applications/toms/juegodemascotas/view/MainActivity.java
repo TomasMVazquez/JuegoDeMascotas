@@ -327,22 +327,17 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         //Setting the navigation View
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             drawerLayout.closeDrawers();
-            switch (menuItem.getItemId()) {
-                case R.id.main:
-                    Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
-                    return true;
-                case R.id.my_profile:
-                    if (currentUser != null) {
-                        //TODO CHANGE TO FRAGMENTS 4
+            if (currentUser != null) {
+                switch (menuItem.getItemId()) {
+                    case R.id.main:
+                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.my_profile:
                         Log.d(TAG, "onCreate: Profile Fragment");
-//                        Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString(ProfileFragment.KEY_TYPE, "1");
                         bundle.putString(ProfileFragment.KEY_USER_ID, currentUser.getUid());
                         bundle.putString(ProfileFragment.KEY_PET_ID, "0");
-//                        intent.putExtras(bundle);
-//                        startActivity(intent);
-                        //TODO Title stays fixed even when you go back
                         actionBar.setTitle(getString(R.string.my_profile));
                         if (profileFragment == null) {
                             profileFragment = new ProfileFragment();
@@ -350,71 +345,46 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         }
                         profileFragment.setArguments(bundle);
                         fragments(profileFragment, ProfileFragment.TAG);
-                    } else {
-                        goLogIn();
-                    }
-                    return true;
-                case R.id.my_pets:
-                    //TODO CHANGE TO FRAGMENTS 3
-                    if (currentUser != null) {
+                        return true;
+                    case R.id.my_pets:
                         Log.d(TAG, "onCreate: MyPets Fragment");
-                        //TODO Title stays fixed even when you go back
                         actionBar.setTitle(getString(R.string.my_pets));
                         if (myPetsFragment == null) {
                             myPetsFragment = new MyPetsFragment();
                             Log.d("FRAGMENT CREADO = ", "MyPets");
                         }
                         fragments(myPetsFragment, MyPetsFragment.TAG);
-
-//                        Intent intent = new Intent(MainActivity.this,MyPetsActivity.class);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString(MyPetsActivity.KEY_DUENIO_ID,currentUser.getUid());
-//                        intent.putExtras(bundle);
-//                        startActivity(intent);
-                    } else {
-                        goLogIn();
-                    }
-                    return true;
-                case R.id.plays:
-                    Log.d(TAG, "onCreate: Plays To Go Fragment");
-                    //TODO Title stays fixed even when you go back
-                    actionBar.setTitle(getString(R.string.plays));
-                    if (playsToGoFragment == null) {
-                        playsToGoFragment = new PlaysToGoFragment();
-                        Log.d("FRAGMENT CREADO = ", "PlaysToGo");
-                    }
-                    fragments(playsToGoFragment, PlaysToGoFragment.TAG);
-                    Toast.makeText(MainActivity.this, "Juegos En construccion", Toast.LENGTH_SHORT).show();
-                    return true;
-                case R.id.chat:
-                    //TODO CHANGE TO FRAGMENTS 1
-//                    Intent chatIntent = new Intent(MainActivity.this,ChatActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString(ChatActivity.KEY_CHAT,"1");
-//                    chatIntent.putExtras(bundle);
-//                    startActivity(chatIntent);
-                    Log.d(TAG, "onCreate: Get type 1 -> showRoom");
-                    //TODO Title stays fixed even when you go back
-                    actionBar.setTitle(getString(R.string.collection_chats));
-                    if (chatRoomFragment == null) {
-                        chatRoomFragment = new ChatRoomFragment();
-                        Log.d("FRAGMENT CREADO = ", "ChatRoom");
-                    }
-                    fragments(chatRoomFragment, ChatRoomFragment.TAG);
-                    return true;
-                case R.id.searchDog:
-                    //TODO CHANGE TO FRAGMENTS 2
-//                    Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
-//                    startActivity(searchIntent);
-                    Log.d(TAG, "onCreate: -> SearchFragment");
-                    //TODO Title stays fixed even when you go back
-                    actionBar.setTitle(getString(R.string.search));
-                    if (searchFragment == null) {
-                        searchFragment = new SearchFragment();
-                        Log.d("FRAGMENT CREADO = ", "Search");
-                    }
-                    fragments(searchFragment, SearchFragment.TAG);
-                    return true;
+                        return true;
+                    case R.id.plays:
+                        Log.d(TAG, "onCreate: Plays To Go Fragment");
+                        actionBar.setTitle(getString(R.string.plays));
+                        if (playsToGoFragment == null) {
+                            playsToGoFragment = new PlaysToGoFragment();
+                            Log.d("FRAGMENT CREADO = ", "PlaysToGo");
+                        }
+                        fragments(playsToGoFragment, PlaysToGoFragment.TAG);
+                        return true;
+                    case R.id.chat:
+                        Log.d(TAG, "onCreate: Get type 1 -> showRoom");
+                        actionBar.setTitle(getString(R.string.collection_chats));
+                        if (chatRoomFragment == null) {
+                            chatRoomFragment = new ChatRoomFragment();
+                            Log.d("FRAGMENT CREADO = ", "ChatRoom");
+                        }
+                        fragments(chatRoomFragment, ChatRoomFragment.TAG);
+                        return true;
+                    case R.id.searchDog:
+                        Log.d(TAG, "onCreate: -> SearchFragment");
+                        actionBar.setTitle(getString(R.string.search));
+                        if (searchFragment == null) {
+                            searchFragment = new SearchFragment();
+                            Log.d("FRAGMENT CREADO = ", "Search");
+                        }
+                        fragments(searchFragment, SearchFragment.TAG);
+                        return true;
+                }
+            }else {
+                goLogIn();
             }
             return false;
         });
