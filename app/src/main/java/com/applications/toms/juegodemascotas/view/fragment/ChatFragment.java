@@ -137,16 +137,6 @@ public class ChatFragment extends Fragment implements FragmentTitles {
             }
         });
 
-//        Query query = chatCollection;
-//        // ...
-//        ListenerRegistration registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
-//
-//                });
-
-// Stop listening to changes
-//        registration.remove();
-
-        //TODO Al entrar devuelta al chat se desordena el orden en que se enviaron
         chatCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
             Log.d(TAG, "onCreateView: " + queryDocumentSnapshots);
 
