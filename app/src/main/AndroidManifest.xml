@@ -14,7 +14,9 @@
         <activity android:name=".view.SignInUpActivity"
             android:parentActivityName=".view.LogInActivity"
             />
-        <activity android:name=".view.PlayDateDetail" />
+        <activity android:name=".view.PlayDateDetail"
+            android:parentActivityName=".view.MainActivity"
+            />
         <activity android:name=".view.NewPlayDate" />
         <activity
             android:name="com.facebook.FacebookActivity"
