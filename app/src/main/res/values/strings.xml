@@ -109,6 +109,7 @@
 
     //PLAY DETAIL
     <string name="tv_when">Cuando:</string>
+    <string name="tv_where">Donde:</string>
     <string name="tv_for">Para perros:</string>
     <string name="tv_creator">Organizadores</string>
     <string name="tv_participants">Participantes</string>
