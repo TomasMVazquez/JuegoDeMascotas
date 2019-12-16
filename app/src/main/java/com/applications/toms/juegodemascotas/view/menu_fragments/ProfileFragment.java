@@ -62,21 +62,15 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
     public static final String KEY_PET_ID = "pet_id";
     public static final int KEY_CAMERA_OWNER_PICTURE = 301;
     public static final int KEY_CAMERA_PET_PICTURE = 302;
-
-    private ProfileFragmentListener profileFragmentListener;
-
-    //Atributos
-    private Context context;
-
     private static CirculePetsAdapter circulePetsAdapter;
     private static CirculeOwnerAdapter circuleOwnerAdapter;
-
+    private static FirebaseUser currentUser;
+    private ProfileFragmentListener profileFragmentListener;
+    //Atributos
+    private Context context;
     private OwnerController ownerController;
     private PetController petController;
-
     private FirebaseStorage mStorage;
-    private static FirebaseUser currentUser;
-
     private ImageView ivProfile;
     private TextView tvName;
     private TextView tvDir;
@@ -130,13 +124,13 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
         mStorage = FirebaseStorage.getInstance();
 
         //Adapter
-        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<>(),context,this);
-        circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<Owner>(),context,this);
+        circulePetsAdapter = new CirculePetsAdapter(new ArrayList<>(), context, this);
+        circuleOwnerAdapter = new CirculeOwnerAdapter(new ArrayList<>(), context, this);
 
         //Recycler View
         rvMyPetsOwner.hasFixedSize();
         //LayoutManager
-        LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager llm = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         rvMyPetsOwner.setLayoutManager(llm);
 
         //intent and bundle
@@ -152,7 +146,7 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
         fabImageProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
                 EasyImage.openChooserWithGallery(getActivity(), getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
-            }else if (type.equals("2")){
+            } else if (type.equals("2")) {
                 EasyImage.openChooserWithGallery(getActivity(), getResources().getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
             }
         });
@@ -166,7 +160,7 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
 //                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //                fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
 //                fragmentTransaction.commit();
-            }else if (type.equals("2")){
+            } else if (type.equals("2")) {
                 deletePetProfile(idUser);
             }
         });
@@ -175,15 +169,15 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
     }
 
     @Override
-    public void goToUserProfile(String keyType,String idOwner, String idPet) {
+    public void goToUserProfile(String keyType, String idOwner, String idPet) {
         //TODO
-        profileFragmentListener.profileChange(keyType,idOwner,idPet);
+        profileFragmentListener.profileChange(keyType, idOwner, idPet);
     }
 
     @Override
-    public void goToPetProfile(String keyType,String idOwner, String idPet) {
+    public void goToPetProfile(String keyType, String idOwner, String idPet) {
         //TODO
-        profileFragmentListener.profileChange(keyType,idOwner,idPet);
+        profileFragmentListener.profileChange(keyType, idOwner, idPet);
     }
 
     //Actualizar el profile y salvarlo
@@ -198,43 +192,45 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
 
         currentUser.updateProfile(profileUpdates);
 
-        MainActivity.updateProfile( name,  dir,  birth,  sex,  about);
+        MainActivity.updateProfile(name, dir, birth, sex, about);
     }
 
     //Check if user is current user
-    private boolean checkCurrentUser(String userId){
-        if (!currentUser.getUid().equals(userId)){
+    private boolean checkCurrentUser(String userId) {
+        if (!currentUser.getUid().equals(userId)) {
             return false;
         }
         return true;
     }
 
     //Fetch Owner data
-    private void fetchOwnerData(String userId){
+    private void fetchOwnerData(String userId) {
         ownerController.giveOwnerData(userId, context, resultado -> {
             //Check if user is current user
-            if (checkCurrentUser(userId)){
+            if (checkCurrentUser(userId)) {
                 //Traer info del usuario y botones para modificar
                 initCurrentUser(resultado);
-            }else {
+            } else {
                 initOtherUser(resultado);
             }
         });
 
-        petController.giveOwnerPets(userId,context,resultado -> {
-            petsList.addAll(resultado);
+        petController.giveOwnerPets(petsList,userId, context, resultado -> {
+            if(resultado != null) {
+                petsList.addAll(resultado);
+            }
         });
 
     }
 
     //Init profile user = current user
-    private void initCurrentUser(Owner owner){
+    private void initCurrentUser(Owner owner) {
         completeDataInProfile(owner);
     }
 
     //Init profile if is diferent user
     @SuppressLint("RestrictedApi")
-    private void initOtherUser(Owner user){
+    private void initOtherUser(Owner user) {
         //No mostramos botones para editar o elimiar
         fabImageProfile.setVisibility(View.GONE);
         fabEditProfile.setVisibility(View.GONE);
@@ -243,8 +239,8 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
     }
 
     //Bring Data to profile
-    private void completeDataInProfile(Owner profileData){
-        if (type.equals("1")){
+    private void completeDataInProfile(Owner profileData) {
+        if (type.equals("1")) {
             //Text MyOwner or MyPets
             tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
             //adaptador
@@ -257,22 +253,22 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
             tvAboutProfile.setText(profileData.getAboutMe());
             tvDir.setText(profileData.getAddress());
             //Photo Profile
-            if (profileData.getAvatar() != null ) {
-                String [] avatar = profileData.getAvatar().split("=");
-                if (avatar.length > 1){
+            if (profileData.getAvatar() != null) {
+                String[] avatar = profileData.getAvatar().split("=");
+                if (avatar.length > 1) {
                     Glide.with(this).load(profileData.getAvatar()).into(ivProfile);
-                }else {
+                } else {
                     ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), context, result -> {
                         Log.d(TAG, "completeDataInProfile: uri: " + result);
                         Glide.with(getActivity()).load(result).into(ivProfile);
                     });
                 }
                 photoOwnerActual = profileData.getAvatar();
-            }else {
+            } else {
                 //TODO
             }
 
-        }else if (type.equals("2")){
+        } else if (type.equals("2")) {
             //If is a pet and Im the owner I can delete, this is the icon
             fabEditProfile.setImageDrawable(context.getDrawable(R.drawable.ic_delete_forever_white_24dp));
             //Text MyOwner or MyPets
@@ -280,8 +276,8 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
             //Adapter
             rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
             //Busco la mascota elegida
-            for (Pet pet : petsList){
-                if (pet.getIdPet().equals(petId)){
+            for (Pet pet : petsList) {
+                if (pet.getIdPet().equals(petId)) {
                     //Name
                     tvName.setText(pet.getNombre());
                     //Info
@@ -294,21 +290,21 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
                     circuleOwnerAdapter.setOwner(ownerList);
                     //Photo
                     photoPetActual = pet.getFotoMascota();
-                    petController.givePetAvatar(profileData.getUserId(),pet.getFotoMascota(),context,result -> Glide.with(getActivity()).load(result).into(ivProfile));
+                    petController.givePetAvatar(profileData.getUserId(), pet.getFotoMascota(), context, result -> Glide.with(getActivity()).load(result).into(ivProfile));
                 }
             }
         }
     }
 
     //Eliminar perfil (solo para mascotas)
-    public void deletePetProfile(String userId){
+    public void deletePetProfile(String userId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Confirmación");
         builder.setMessage("Por favor confirmar que usted quiere eliminar este perfil");
         builder.setCancelable(false);
         builder.setIcon(context.getDrawable(R.drawable.ic_delete_forever_white_24dp));
         builder.setPositiveButton("Si", (dialog, which) -> {
-            Intent intent = new Intent(getActivity(),MainActivity.class);
+            Intent intent = new Intent(getActivity(), MainActivity.class);
             MainActivity.deleteProfilePet(userId, petId);
             startActivity(intent);
         });
@@ -351,7 +347,7 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
                             currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
                                     //Cambiamos un metodo local por uno en el main
-                                    MainActivity.updateProfilePicture(photoOwnerActual,nuevaFoto.getName(),uriTemp);
+                                    MainActivity.updateProfilePicture(photoOwnerActual, nuevaFoto.getName(), uriTemp);
                                 }
                             });
 
@@ -361,7 +357,7 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
                             final StorageReference nuevaFotoPet = raiz.child(idUser).child(uriTemp.getLastPathSegment());
                             //Poner nueva foto
                             Glide.with(getActivity()).load(uri).into(ivProfile);
-                            MainActivity.updatePhotoPet(idUser,petId,photoPetActual,uriTemp.getLastPathSegment(),uriTemp);
+                            MainActivity.updatePhotoPet(idUser, petId, photoPetActual, uriTemp.getLastPathSegment(), uriTemp);
 
                             break;
                         default:
@@ -382,7 +378,7 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
         return R.string.my_profile;
     }
 
-    public interface ProfileFragmentListener{
-        void profileChange(String keyType,String idOwner, String petId);
+    public interface ProfileFragmentListener {
+        void profileChange(String keyType, String idOwner, String petId);
     }
 }
