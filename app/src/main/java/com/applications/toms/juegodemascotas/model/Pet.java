@@ -1,5 +1,7 @@
 package com.applications.toms.juegodemascotas.model;
 
+import java.util.Objects;
+
 public class Pet {
 
     //atributos
@@ -59,21 +61,21 @@ public class Pet {
         return fotoMascota;
     }
 
-    public String getInfoMascota() {
-        return infoMascota;
-    }
-
-    public String getMiDuenioId() {
-        return miDuenioId;
-    }
-
     //Setter
     public void setFotoMascota(String fotoMascota) {
         this.fotoMascota = fotoMascota;
     }
 
+    public String getInfoMascota() {
+        return infoMascota;
+    }
+
     public void setInfoMascota(String infoMascota) {
         this.infoMascota = infoMascota;
+    }
+
+    public String getMiDuenioId() {
+        return miDuenioId;
     }
 
     //toString
@@ -83,5 +85,20 @@ public class Pet {
                 "nombre='" + nombre + '\'' +
                 ", raza='" + raza + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Pet pet = (Pet) o;
+        return idPet.equals(pet.idPet) && miDuenioId.equals(pet.miDuenioId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idPet, miDuenioId);
     }
 }

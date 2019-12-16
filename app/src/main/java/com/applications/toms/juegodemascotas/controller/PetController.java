@@ -22,46 +22,63 @@ public class PetController {
     }
 
     //Return pets list
-    public void givePetList(Context context, ResultListener<List<Pet>> resultListener){
+    public void givePetList(Context context, ResultListener<List<Pet>> resultListener) {
 //        DaoPet daoPet = new DaoPet();
-        if (Util.isOnline(context)){
-            daoPet.fetchPetList(context,resultado -> resultListener.finish(resultado));
-        }else {
+        if (Util.isOnline(context)) {
+            daoPet.fetchPetList(context, resultado -> resultListener.finish(resultado));
+        } else {
             resultListener.finish(new ArrayList<>());
         }
     }
 
     //return one pet
-    public void givePet(String petId, Context context, ResultListener<Pet> resultListener){
+    public void givePet(String petId, Context context, ResultListener<Pet> resultListener) {
 //        DaoPet daoPet = new DaoPet();
-        if (Util.isOnline(context)){
-            daoPet.fetchPet(petId,context,resultado -> resultListener.finish(resultado));
-        }else {
+        if (Util.isOnline(context)) {
+            daoPet.fetchPet(petId, context, resultado -> resultListener.finish(resultado));
+        } else {
             resultListener.finish(null);
         }
 
     }
 
+    //TODO: Confirm if overloarding is ok here
     //return owners pets
-    public void giveOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> resultListener){
-//        DaoPet daoPet = new DaoPet();
-        if (Util.isOnline(context)){
-            daoPet.fetchOwnerPets(ownerId,context,resultado -> resultListener.finish(resultado));
+    public void giveOwnerPets(List<Pet> currentPetList, String ownerId, Context context, ResultListener<List<Pet>> resultListener) {
+        if (Util.isOnline(context)) {
+            daoPet.fetchOwnerPets(ownerId, context, resultado -> {
+                List<Pet> duplicatedPetsList = new ArrayList<>();
+                //Check if the data is duplicated, method Overloaded to test it
+                for (Pet pet : resultado) {
+                    if (currentPetList.contains(pet))
+                        duplicatedPetsList.add(pet);
+                }
+                resultado.removeAll(duplicatedPetsList);
+                if (resultado.isEmpty())
+                    resultado = null;
+                resultListener.finish(resultado);
+            });
         }
     }
 
+    //return owners pets
+    public void giveOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> resultListener) {
+//        DaoPet daoPet = new DaoPet();
+        daoPet.fetchOwnerPets(ownerId, context, resultado -> resultListener.finish(resultado));
+    }
+
     //Return pets avatar
-    public void givePetAvatar(String ownerId, String avatar, Context context, ResultListener<Uri> resultListener){
+    public void givePetAvatar(String ownerId, String avatar, Context context, ResultListener<Uri> resultListener) {
         if (Util.isOnline(context)) {
             daoPet.fetchPetAvatar(ownerId, avatar, context, result -> resultListener.finish(result));
         }
     }
 
     //Search result
-    public void giveResultSearch(String search, Context context, ResultListener<List<Pet>> resultListener){
-        if (Util.isOnline(context)){
-            daoPet.searchPet(search,context,result -> resultListener.finish(result));
-        }else {
+    public void giveResultSearch(String search, Context context, ResultListener<List<Pet>> resultListener) {
+        if (Util.isOnline(context)) {
+            daoPet.searchPet(search, context, result -> resultListener.finish(result));
+        } else {
             resultListener.finish(new ArrayList<>());
         }
     }
