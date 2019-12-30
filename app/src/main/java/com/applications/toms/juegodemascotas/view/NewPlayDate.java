@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -251,6 +252,16 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
 
     //Add PlayDate To dataBase after checking everything is ok
     private void addNewPlayToDB(){
+
+        //Progess dialog
+        final ProgressDialog prog = new ProgressDialog(NewPlayDate.this);
+        prog.setTitle("Por favor espere");
+        prog.setMessage("Estamos creando el juego");
+        prog.setCancelable(false);
+        prog.setIndeterminate(true);
+        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        prog.show();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         //Creo la collection de juegos "dentro del usuario" para agregar nuevo juego
@@ -290,6 +301,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
            if (task.isSuccessful()){
                //TODO
                Log.d(TAG, "addNewPlayToDB: Creado en collection");
+               prog.dismiss();
                Intent i = new Intent(NewPlayDate.this,MainActivity.class);
                startActivity(i);
                finish();
