@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     private static String myPetsFirestore;
     private FirebaseAuth mAuth;
     private DrawerLayout drawerLayout;
-    private ActionBar actionBar;
+    private static ActionBar actionBar;
 
     private MenuItem item_toolbar;
 
@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         setSupportActionBar(myToolbar);
         actionBar = getSupportActionBar();
         assert actionBar != null;
-        actionBar.setTitle(getResources().getString(R.string.app_name));
+        changeActionBarTitle(getResources().getString(R.string.app_name));
         //TODO Since we have de search view the title is not shown
 //        SearchView searchView = findViewById(R.id.searchView);
 //        searchView.setQueryHint(getString(R.string.search));
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         bundle.putString(ProfileFragment.KEY_TYPE, "1");
                         bundle.putString(ProfileFragment.KEY_USER_ID, currentUser.getUid());
                         bundle.putString(ProfileFragment.KEY_PET_ID, "0");
-                        actionBar.setTitle(getString(R.string.my_profile));
+                        changeActionBarTitle(getString(R.string.my_profile));
                         if (profileFragment == null) {
                             profileFragment = new ProfileFragment();
                             Log.d("FRAGMENT CREADO = ", "Profile");
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         return true;
                     case R.id.my_pets:
                         Log.d(TAG, "onCreate: MyPets Fragment");
-                        actionBar.setTitle(getString(R.string.my_pets));
+                        changeActionBarTitle(getString(R.string.my_pets));
                         if (myPetsFragment == null) {
                             myPetsFragment = new MyPetsFragment();
                             Log.d("FRAGMENT CREADO = ", "MyPets");
@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         return true;
                     case R.id.plays:
                         Log.d(TAG, "onCreate: Plays To Go Fragment");
-                        actionBar.setTitle(getString(R.string.plays));
+                        changeActionBarTitle(getString(R.string.plays));
                         if (playsToGoFragment == null) {
                             playsToGoFragment = new PlaysToGoFragment();
                             Log.d("FRAGMENT CREADO = ", "PlaysToGo");
@@ -365,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         return true;
                     case R.id.chat:
                         Log.d(TAG, "onCreate: Get type 1 -> showRoom");
-                        actionBar.setTitle(getString(R.string.collection_chats));
+                        changeActionBarTitle(getString(R.string.collection_chats));
                         if (chatRoomFragment == null) {
                             chatRoomFragment = new ChatRoomFragment();
                             Log.d("FRAGMENT CREADO = ", "ChatRoom");
@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         return true;
                     case R.id.searchDog:
                         Log.d(TAG, "onCreate: -> SearchFragment");
-                        actionBar.setTitle(getString(R.string.search));
+                        changeActionBarTitle(getString(R.string.search));
                         if (searchFragment == null) {
                             searchFragment = new SearchFragment();
                             Log.d("FRAGMENT CREADO = ", "Search");
@@ -431,6 +431,11 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
             }
         });
 
+    }
+
+    //Change ActionBar Title
+    public static void changeActionBarTitle(String newTitle){
+        actionBar.setTitle(newTitle);
     }
 
     //Replace fragment and add tags Fragment //TODO CHANGE TO FRAGMENTS 1
@@ -664,7 +669,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         AddPetFragment addPetFragment = new AddPetFragment();
         Log.d("FRAGMENT CREADO = ", "AddPet");
         //TODO Title stays fixed even when you go back
-        actionBar.setTitle(getString(R.string.add_pet_title));
+        changeActionBarTitle(getString(R.string.add_pet_title));
         fragments(addPetFragment, AddPetFragment.TAG);
     }
 
