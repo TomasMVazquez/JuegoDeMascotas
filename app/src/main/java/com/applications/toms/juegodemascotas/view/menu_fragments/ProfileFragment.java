@@ -11,6 +11,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,7 +53,7 @@ import pl.aprilapps.easyphotopicker.EasyImage;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProfileFragment extends Fragment implements UpdateProfileFragment.OnFragmentNotify,
+public class    ProfileFragment extends Fragment implements UpdateProfileFragment.OnFragmentNotify,
         CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner,
         FragmentTitles {
 
@@ -155,11 +157,11 @@ public class ProfileFragment extends Fragment implements UpdateProfileFragment.O
         fabEditProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
                 //TODO
-//                UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
-//                fragmentTransaction.commit();
+                UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containerProfile, updateProfileFragment);
+                fragmentTransaction.commit();
             } else if (type.equals("2")) {
                 deletePetProfile(idUser);
             }

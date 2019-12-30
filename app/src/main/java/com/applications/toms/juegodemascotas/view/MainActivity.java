@@ -1,6 +1,8 @@
 package com.applications.toms.juegodemascotas.view;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -302,16 +304,13 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
         //Getting de SupportFragmentManager, declared globally
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (fragmentManager.getBackStackEntryCount() > 0) {
-                    FragmentTitles currentFragment = (FragmentTitles) fragmentManager.findFragmentById(R.id.mainContainer);
-                    int fragmentTitle = currentFragment.getFragmentTitle();
-                    myToolbar.setTitle(fragmentTitle);
-                } else {
-                    myToolbar.setTitle(R.string.app_name);
-                }
+        fragmentManager.addOnBackStackChangedListener(() -> {
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                FragmentTitles currentFragment = (FragmentTitles) fragmentManager.findFragmentById(R.id.mainContainer);
+                int fragmentTitle = currentFragment.getFragmentTitle();
+                myToolbar.setTitle(fragmentTitle);
+            } else {
+                myToolbar.setTitle(R.string.app_name);
             }
         });
 
@@ -472,12 +471,14 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     //Go to Login
     public void goLogIn() {
         if (currentUser != null) {
+            Intent mStartActivity = new Intent(MainActivity.this, MainActivity.class);
+            int mPendingIntentId = 123456;
+            PendingIntent mPendingIntent = PendingIntent.getActivity(MainActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+            AlarmManager mgr = (AlarmManager)MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
             FirebaseAuth.getInstance().signOut();
             LoginManager.getInstance().logOut();
-            currentUser = null;
-            Toast.makeText(this, "Has salido de tu sesion", Toast.LENGTH_SHORT).show();
-            item_toolbar.setIcon(getDrawable(R.drawable.ic_person_black_24dp));
-            recreate();
+            System.exit(0);
         } else {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivityForResult(intent, KEY_LOGIN);

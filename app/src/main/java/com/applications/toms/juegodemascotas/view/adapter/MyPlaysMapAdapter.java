@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.PlayDate;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -94,58 +96,32 @@ public class MyPlaysMapAdapter extends RecyclerView.Adapter<MyPlaysMapAdapter.Vi
      * MapView. This ensures that the map is initialised with the latest data that it should
      * display.
      */
-    public class ViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private MapView mapView;
-        private GoogleMap map;
         private View layout;
         private LatLng location;
         private TextView locationPlayDate;
         private TextView dateTimePlayDate;
         private TextView sizeDogsPlayDate;
 
+        private ImageView imgMap;
+
         private String idPlay;
-        private String idCreator;
+        private String idPlace;
 
         private ViewHolder(View itemView) {
             super(itemView);
             layout = itemView;
-            mapView = (MapView) layout.findViewById(R.id.mapMyPlays);
+//            mapView = (MapView) layout.findViewById(R.id.mapMyPlays);
             locationPlayDate = layout.findViewById(R.id.locationMyPlays);
             dateTimePlayDate = layout.findViewById(R.id.dateTimeMyPlays);
             sizeDogsPlayDate = layout.findViewById(R.id.sizeDogsMyPlays);
-
-            if (mapView != null) {
-                // Initialise the MapView
-                mapView.onCreate(null);
-                // Set the map ready callback to receive the GoogleMap object
-                mapView.getMapAsync(this);
-            }
+            imgMap = layout.findViewById(R.id.imgMap);
 
             itemView.setOnClickListener(v -> mapAdapterInterface.goToPlayDetail(idPlay));
         }
 
-        public void onResume(){
-            mapView.onResume();
-        }
-
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-            MapsInitializer.initialize(context.getApplicationContext());
-            map = googleMap;
-            setMapLocation();
-        }
-
-        /*
-         * Displays a {@link LiteListDemoActivity.NamedLocation} on a
-         * {@link com.google.android.gms.maps.GoogleMap}.
-         * Adds a marker and centers the camera on the NamedLocation with the normal map type.
-         */
         private void setMapLocation() {
-            if (map == null) return;
-
-            PlayDate data = (PlayDate) mapView.getTag();
-            if (data == null) return;
 
             String apiKey = context.getString(R.string.google_maps_key);
             if(apiKey.isEmpty()){
@@ -164,7 +140,7 @@ public class MyPlaysMapAdapter extends RecyclerView.Adapter<MyPlaysMapAdapter.Vi
             AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
             // Construct a request object, passing the place ID and fields array.
-            FetchPlaceRequest request = FetchPlaceRequest.builder(data.getIdPlace(), placeFields)
+            FetchPlaceRequest request = FetchPlaceRequest.builder(idPlace, placeFields)
                     .setSessionToken(token)
                     .build();
 
@@ -173,12 +149,11 @@ public class MyPlaysMapAdapter extends RecyclerView.Adapter<MyPlaysMapAdapter.Vi
                 Place mPlace = response.getPlace();
                 location = mPlace.getLatLng();
                 locationPlayDate.setText(mPlace.getName());
-                // Add a marker for this item and set the camera
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f));
-                map.addMarker(new MarkerOptions().position(location));
+                String staticMap = "https://maps.googleapis.com/maps/api/staticmap?center=" + location.latitude + "," + location.longitude
+                        + "&zoom=14&size=640x640&markers=size:mid|" + location.latitude + "," + location.longitude + "&key=" + apiKey;
 
-                // Set the map type back to normal.
-                map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                Glide.with(context).load(staticMap).into(imgMap);
+
             }).addOnFailureListener(exception -> {
                 if (exception instanceof ApiException) {
                     ApiException apiException = (ApiException) exception;
@@ -191,19 +166,12 @@ public class MyPlaysMapAdapter extends RecyclerView.Adapter<MyPlaysMapAdapter.Vi
 
         private void bindView(int pos) {
             PlayDate item = myPlays.get(pos);
-            // Store a reference of the ViewHolder object in the layout.
-            layout.setTag(this);
-            // Store a reference to the item in the mapView's tag. We use it to get the
-            // coordinate of a location, when setting the map location.
-            mapView.setTag(item);
-            setMapLocation();
             String dateTime = item.getDatePlay() + " - " + item.getTimePlay();
             dateTimePlayDate.setText(dateTime);
             sizeDogsPlayDate.setText(item.getSize());
             idPlay = item.getIdPlay();
-            idCreator = item.getCreator().getUserId();
-
-            onResume();
+            idPlace = item.getIdPlace();
+            setMapLocation();
         }
 
     }
