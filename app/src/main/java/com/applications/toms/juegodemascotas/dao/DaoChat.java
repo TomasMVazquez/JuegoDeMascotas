@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -104,4 +105,14 @@ public class DaoChat {
                 });
     }
 
+    //return one owner based on their user id
+    public void fetchUserToChat (String userId,Context context, ResultListener<String> resultListener){
+        //extract single owner data
+        DocumentReference ownerRef = mDatabase.collection(context.getString(R.string.collection_users))
+                .document(userId);
+        ownerRef.addSnapshotListener((documentSnapshot, e) -> {
+            resultListener.finish(documentSnapshot.get("name").toString());
+        });
+
+    }
 }
