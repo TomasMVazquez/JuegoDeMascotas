@@ -329,7 +329,9 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
             if (currentUser != null) {
                 switch (menuItem.getItemId()) {
                     case R.id.main:
-                        Toast.makeText(MainActivity.this, "En construccion", Toast.LENGTH_SHORT).show();
+                            while (fragmentManager.getBackStackEntryCount() > 0) {
+                                fragmentManager.popBackStackImmediate();
+                            }
                         return true;
                     case R.id.my_profile:
                         Log.d(TAG, "onCreate: Profile Fragment");
