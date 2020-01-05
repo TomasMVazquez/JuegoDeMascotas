@@ -22,34 +22,46 @@ public class OwnerController {
     }
 
     //return all owners
-    public void giveOwners(Context context, ResultListener<List<Owner>> resultListener){
-        if (Util.isOnline(context)){
+    public void giveOwners(Context context, ResultListener<List<Owner>> resultListener) {
+        if (Util.isOnline(context)) {
             daoOwner.fetchOwnerList(context, resultListener);
-        }else {
+        } else {
             resultListener.finish(new ArrayList<>());
         }
 
     }
 
     //return one owner
-    public void giveOwnerData(String ownerId, Context context, ResultListener<Owner> resultListener){
-        if (Util.isOnline(context)){
+    public void giveOwnerData(String ownerId, Context context, ResultListener<Owner> resultListener) {
+        if (Util.isOnline(context)) {
             daoOwner.fetchOwner(ownerId, context, resultListener);
-        }else {
+        } else {
             resultListener.finish(null);
         }
     }
 
     //return owners avatar
-    public void giveOwnerAvatar(String userId, String avatar, Context context, ResultListener<Uri> resultListener){
+    public void giveOwnerAvatar(String userId, String avatar, Context context, ResultListener<Uri> resultListener) {
 //        DaoOwner daoOwner = new DaoOwner();
-        daoOwner.fetchOwnerAvatar(userId,avatar,context, resultListener);
+        daoOwner.fetchOwnerAvatar(userId, avatar, context, resultListener);
     }
 
-    public void giveFriends(String ownerId,Context context, ResultListener<List<Pet>> friendsListener){
-        if (Util.isOnline(context)){
-            daoOwner.fetchFriends(ownerId, context, friendsListener);
-        }else {
+    public void giveFriends(List<Pet> currenPetList, String ownerId, Context context, ResultListener<List<Pet>> friendsListener) {
+        if (Util.isOnline(context)) {
+            daoOwner.fetchFriends(ownerId, context, result -> {
+                //friendsListener.finish(result);
+                List<Pet> duplicatedPetFriendsList = new ArrayList<>();
+                //Check if the data is duplicated
+                for(Pet petFromCloud : result){
+                    if(currenPetList.contains(petFromCloud))
+                        duplicatedPetFriendsList.add(petFromCloud);
+                }
+                result.removeAll(duplicatedPetFriendsList);
+                if(result.isEmpty())
+                    result = null;
+                friendsListener.finish(result);
+            });
+        } else {
             friendsListener.finish(new ArrayList<>());
         }
     }

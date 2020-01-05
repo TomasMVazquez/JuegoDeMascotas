@@ -13,11 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.OwnerController;
+import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.adapter.FriendsAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -29,6 +32,7 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
     private static final String TAG = "FriendsFragment";
 
     private FriendsInterface friendsInterface;
+    private List<Pet> petFriendList = new ArrayList<>();
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -48,7 +52,7 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Adapter
-        FriendsAdapter friendsAdapter = new FriendsAdapter(new ArrayList<>(), context,this);
+        FriendsAdapter friendsAdapter = new FriendsAdapter(petFriendList, context,this);
 
         //Recycler View
         RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerFriends);
@@ -61,7 +65,10 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
 
         if (currentUser != null){
             OwnerController ownerController = new OwnerController();
-            ownerController.giveFriends(currentUser.getUid(), context, friendsAdapter::setPetList);
+            ownerController.giveFriends(petFriendList, currentUser.getUid(), context, result -> {
+                petFriendList.addAll(result);
+                friendsAdapter.setPetList(petFriendList);
+            });
         }
 
         return view;

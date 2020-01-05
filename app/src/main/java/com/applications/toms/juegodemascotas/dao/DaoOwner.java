@@ -66,8 +66,8 @@ public class DaoOwner {
         friendRef.addSnapshotListener(((queryDocumentSnapshots, e) -> {
             try {
 
-                friendsList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
-                friendsResultListener.finish(friendsList);
+                //friendsList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
+                friendsResultListener.finish(queryDocumentSnapshots.toObjects(Pet.class));
 
             }catch (Exception exp){
                 Thread.currentThread().interrupt();

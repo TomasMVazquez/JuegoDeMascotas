@@ -155,7 +155,7 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
 
         myFriendCol.document(pet.getIdPet()).set(pet).addOnSuccessListener(aVoid -> {
             //TODO si ya existia te lo reemplaza... Deberia no realizar todo esto o si?
-            Toast.makeText(context, "Agregado!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "¡Agregado!", Toast.LENGTH_SHORT).show();
         });
     }
 }
