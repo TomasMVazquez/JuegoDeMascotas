@@ -2,7 +2,6 @@ package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.model.Owner;
-import com.applications.toms.juegodemascotas.view.ProfileActivity;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -74,7 +67,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
     }
 
     public interface AdapterInterfaceCirculeOwner{
-        void goToUserProfile(String idOwner);
+        void goToUserProfile(String keyType, String idOwner, String idPet);
     }
 
     public class CirculeOwnerViewHolder extends RecyclerView.ViewHolder{
@@ -93,7 +86,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
             tvPetId = itemView.findViewById(R.id.tvPetId);
 
             itemView.setOnClickListener(v ->
-                    adapterInterfaceCirculeOwner.goToUserProfile(tvUid.getText().toString())
+                    adapterInterfaceCirculeOwner.goToUserProfile("1",tvUid.getText().toString(),null)
             );
 
         }

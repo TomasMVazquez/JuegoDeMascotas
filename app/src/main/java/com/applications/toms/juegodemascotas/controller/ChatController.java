@@ -43,5 +43,12 @@ public class ChatController {
         }
     }
 
+    public void giveUserNameToChat(String userId,Context context, ResultListener<String> resultListener){
+        if (Util.isOnline(context)) {
+            daoChat.fetchUserToChat(userId, context, resultListener);
+        }else {
+            resultListener.finish("");
+        }
+    }
 
 }

@@ -11,15 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="ExtraText">
-        <activity android:name=".view.ChatActivity"
-            android:parentActivityName=".view.MainActivity"/>
-        <activity android:name=".view.SignInUpActivity"
-            android:parentActivityName=".view.LogInActivity"
-            />
         <activity
-            android:name=".view.SearchActivity"
+            android:name=".view.SignInUpActivity"
+            android:parentActivityName=".view.LogInActivity" />
+        <activity
+            android:name=".view.PlayDateDetail"
             android:parentActivityName=".view.MainActivity" />
-        <activity android:name=".view.PlayDateDetail" />
         <activity android:name=".view.NewPlayDate" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -45,8 +42,6 @@
             </intent-filter>
         </activity> <!-- //Fin FACEBOOK -->
         <activity android:name=".view.LogInActivity" />
-        <activity android:name=".view.ProfileActivity" />
-        <activity android:name=".view.MyPetsActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -58,6 +53,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
     </application>
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />

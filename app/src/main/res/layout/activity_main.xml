@@ -15,27 +15,36 @@
         android:layout_height="match_parent"
         tools:openDrawer="start">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/mainContainer"
+            >
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabBackground="@color/colorPrimary"
-                app:tabIndicatorColor="@color/colorAccent"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/colorAccent"
-                app:tabTextColor="@color/colorPrimaryDark" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabBackground="@color/colorPrimary"
+                    app:tabIndicatorColor="@color/colorAccent"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="@color/colorAccent"
+                    app:tabTextColor="@color/colorPrimaryDark" />
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </FrameLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation"

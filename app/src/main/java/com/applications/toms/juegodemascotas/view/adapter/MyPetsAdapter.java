@@ -70,7 +70,7 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
     }
 
     public interface AdapterInterface{
-        void goToProfile(String idOwner, Pet pet);
+        void goToProfile(String idOwner, String petId);
     }
 
     public class PetViewHolder extends RecyclerView.ViewHolder{
@@ -92,7 +92,7 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
 
             itemView.setOnClickListener(v -> {
                 Pet petProfile = petList.get(getAdapterPosition());
-                adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), petProfile);
+                adapterInterface.goToProfile(tvCVIdMyOwner.getText().toString(), petProfile.getIdPet());
             });
 
         }

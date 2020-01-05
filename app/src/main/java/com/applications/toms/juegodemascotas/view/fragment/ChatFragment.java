@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -24,7 +25,9 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.ChatController;
 import com.applications.toms.juegodemascotas.dao.DaoChat;
 import com.applications.toms.juegodemascotas.model.Message;
+import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.util.ResultListener;
+import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -51,14 +54,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements FragmentTitles {
 
-    private static final String TAG = "ChatFragment";
+    public static final String TAG = "ChatFragment";
     public static final String KEY_ID_CHAT = "chat";
 
     public static final String DATE_FORMAT_1 = "yy-MM-dd HH:mm";
@@ -73,6 +77,9 @@ public class ChatFragment extends Fragment {
     private String userName;
     private String time;
     private Integer idLastMessage;
+
+    private String userIdToChat;
+    private String userNameToChat;
 
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
@@ -98,9 +105,27 @@ public class ChatFragment extends Fragment {
         Bundle bundle = getArguments();
         idChat = bundle.getString(KEY_ID_CHAT);
 
+        ChatController chatController = new ChatController();
+
         //Getting the Chat of Firebase
         DocumentReference chatDoc = db.collection(getString(R.string.collection_chats)).document(idChat);
         CollectionReference chatCollection = chatDoc.collection(getString(R.string.collection_messages));
+
+        chatDoc.addSnapshotListener((documentSnapshot, e) -> {
+            String userOne = documentSnapshot.get("userOne").toString();
+            String userTwo = documentSnapshot.get("userTwo").toString();
+
+            if (!currentUser.getUid().equals(userOne)){
+                userIdToChat = userOne;
+            }else {
+                userIdToChat = userTwo;
+            }
+            chatController.giveUserNameToChat(userIdToChat, context, result -> {
+                userNameToChat = result;
+                MainActivity.changeActionBarTitle(userNameToChat);
+            });
+        });
+
 
         //Setting the Views
         layout = view.findViewById(R.id.layout1);
@@ -109,8 +134,6 @@ public class ChatFragment extends Fragment {
         scrollView = view.findViewById(R.id.scrollView);
 
         final String user = currentUser.getDisplayName();
-
-        ChatController chatController = new ChatController();
 
         sendButton.setOnClickListener(v -> {
             String messageText = messageArea.getText().toString();
@@ -136,16 +159,6 @@ public class ChatFragment extends Fragment {
             }
         });
 
-//        Query query = chatCollection;
-//        // ...
-//        ListenerRegistration registration = query.addSnapshotListener((queryDocumentSnapshots, e) -> {
-//
-//                });
-
-// Stop listening to changes
-//        registration.remove();
-
-        //TODO Al entrar devuelta al chat se desordena el orden en que se enviaron
         chatCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
             Log.d(TAG, "onCreateView: " + queryDocumentSnapshots);
 
@@ -205,4 +218,8 @@ public class ChatFragment extends Fragment {
         return dateFormat.format(today);
     }
 
+    @Override
+    public int getFragmentTitle() {
+        return R.string.chat;
+    }
 }

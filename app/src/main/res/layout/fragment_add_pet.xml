@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragment.AddPetFragment"
-    android:background="@color/colorTeal_light"
+    android:background="@color/colorWhite"
     android:orientation="vertical"
     >
 
@@ -24,14 +24,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="45dp"
             >
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text="@string/add_pet_title"
-                android:textSize="22sp"
-                android:textColor="@color/colorBlack"
-                />
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"

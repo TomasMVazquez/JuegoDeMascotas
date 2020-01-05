@@ -1,12 +1,16 @@
 package com.applications.toms.juegodemascotas.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +34,8 @@ import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,6 +46,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
 public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAdapter.AdapterInterfaceCircule {
@@ -48,6 +55,10 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     public static final String KEY_PLAY_DETAIL = "play";
 
     //Atributos
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private Toolbar toolbar;
+
     private String playId;
     private static CirculePetsAdapter circulePetsCreatorsAdapter;
     private static CirculePetsAdapter circulePetsParticipantsAdapter;
@@ -61,6 +72,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private TextView tvLocationPlayDetail;
     private TextView tvDateTimePlayDetail;
     private TextView tvSizePlayDetail;
+    private TextView quantityParticipants;
     private ImageView ivOwnerCreator;
     private RecyclerView rvPetsCreator;
     private RecyclerView rvPetsParticipants;
@@ -99,6 +111,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         ivOwnerCreator = findViewById(R.id.ivOwnerCreator);
         rvPetsCreator = findViewById(R.id.rvPetsCreator);
         rvPetsParticipants = findViewById(R.id.rvPetsParticipants);
+        quantityParticipants = findViewById(R.id.quantityParticipants);
+        quantityParticipants.setText("0");
 
         //Adapter
         circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
@@ -130,15 +144,66 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
         //Go to profile in case they click it
         ivOwnerCreator.setOnClickListener(v -> {
-            Intent intent1 = new Intent(PlayDateDetail.this,ProfileActivity.class);
-            Bundle bundle1 = new Bundle();
-            bundle1.putString(ProfileActivity.KEY_TYPE,"1");
-            bundle1.putString(ProfileActivity.KEY_USER_ID,creatorId);
-            bundle1.putString(ProfileActivity.KEY_PET_ID,"0");
-            intent1.putExtras(bundle1);
-            startActivity(intent1);
+            //TODO CHANGE TO FRAGMENTS 4
+//            Intent intent1 = new Intent(PlayDateDetail.this,ProfileActivity.class);
+//            Bundle bundle1 = new Bundle();
+//            bundle1.putString(ProfileActivity.KEY_TYPE,"1");
+//            bundle1.putString(ProfileActivity.KEY_USER_ID,creatorId);
+//            bundle1.putString(ProfileActivity.KEY_PET_ID,"0");
+//            intent1.putExtras(bundle1);
+//            startActivity(intent1);
         });
 
+        //Collapsing Toolbar
+        appBarLayout = findViewById(R.id.appBarLayout);
+        collapsingToolbarLayout = findViewById(R.id.collapsingToolbarLayout);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+//
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                if (scrollRange == -1){
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+
+                // SCROLL TOP
+
+                if (scrollRange + verticalOffset == 0){
+//                    collapsingToolbarLayout.setTitle("Collapsed");
+                    collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+//                    toolbar.setTitleTextColor(getColor(R.color.colorWhite));
+                    toolbar.setBackgroundColor(getColor(R.color.colorPrimary));
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    isShow = true;
+                }
+
+                //SCROLL DOWN
+
+                else if (isShow){
+//                    collapsingToolbarLayout.setTitle("Expanded");
+                    collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+//                    collapsingToolbarLayout.setExpandedTitleColor(getColor(R.color.colorWhite));
+                    toolbar.setBackgroundColor(Color.TRANSPARENT);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    isShow = false;
+                }
+
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return super.onSupportNavigateUp();
     }
 
     private void getDetails(PlayDate playDateDetail){
@@ -154,6 +219,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
                 petController.giveOwnerPets(participant, this, result -> {
                     participantsList.addAll(result);
                     circulePetsParticipantsAdapter.setPetList(participantsList);
+                    quantityParticipants.setText(String.valueOf(participantsList.size()));
                 });
             }
         }
@@ -183,7 +249,9 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         placesClient.fetchPlace(request).addOnSuccessListener(response -> {
             Place mPlace = response.getPlace();
 
-            tvLocationPlayDetail.setText(mPlace.getName());
+            tvLocationPlayDetail.setText(mPlace.getAddress());
+            collapsingToolbarLayout.setTitle(mPlace.getName());
+
             mapPlayDetail.getMapAsync(googleMap -> {
                 mMap = googleMap;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mPlace.getLatLng(),15f));
@@ -198,14 +266,9 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         });
     }
 
+
     @Override
-    public void goToPetProfile(String idOwner, String idPet) {
-        Intent intent = new Intent(PlayDateDetail.this,ProfileActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ProfileActivity.KEY_TYPE,"2");
-        bundle.putString(ProfileActivity.KEY_USER_ID,idOwner);
-        bundle.putString(ProfileActivity.KEY_PET_ID,idPet);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    public void goToPetProfile(String keyType, String idOwner, String idPet) {
+
     }
 }

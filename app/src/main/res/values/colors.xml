@@ -9,10 +9,12 @@
     <color name="colorTeal">#008080</color>
 
     <color name="colorAccent">#795548</color>
+    <color name="colorAccent_2">#795548</color>
 
     <color name="noBackground">#00ffffff</color>
     <color name="translucid">#CCFFFFFF</color>
     <color name="colorPrimary_translucid">#59009688</color>
+    <color name="colorPrimary_translucid_2">#80009688</color>
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
