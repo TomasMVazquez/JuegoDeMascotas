@@ -215,9 +215,6 @@ public class ChatFragment extends Fragment implements FragmentTitles {
                     });
                     snackbar.show();
                 }
-                else {
-//                    Toast.makeText(context, "Ya es amigo", Toast.LENGTH_SHORT).show();
-                }
             });
         });
 

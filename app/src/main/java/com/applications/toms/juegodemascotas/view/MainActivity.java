@@ -1,14 +1,18 @@
 package com.applications.toms.juegodemascotas.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +35,7 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Chat;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.util.AdminStorage;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.util.Util;
@@ -65,12 +70,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.ShowcaseTooltip;
+
 public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify,
         FriendsFragment.FriendsInterface, SearchFragment.SearchInterface, MyPetsFragment.MyPetsInterface,
         ProfileFragment.ProfileFragmentListener {
 
     public static final int KEY_LOGIN = 101;
     private static final String TAG = "MainActivity";
+    public static final String INTRO = "IntroApp";
+    public static final String FIRST_TIME = "FirstTimeStartFlag";
+    private static final String SHOWCASE_ID = "sequence main";
+
     private static FirebaseUser currentUser;
     private static FirebaseFirestore db;
     private static FirebaseStorage mStorage;
@@ -81,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     private FirebaseAuth mAuth;
     private DrawerLayout drawerLayout;
     private static ActionBar actionBar;
+    private Toolbar myToolbar;
+    private TabLayout tabLayout;
 
     private MenuItem item_toolbar;
 
@@ -293,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         context = getApplicationContext();
 
         //Toolbar
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -404,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         //ViewPager
         ViewPager viewPager = findViewById(R.id.viewPager);
         //TabLayout
-        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout = findViewById(R.id.tabLayout);
         //Asociar al view pager
         tabLayout.setupWithViewPager(viewPager);
         //Adapter
@@ -424,7 +440,9 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
             @Override
             public void onPageSelected(int position) {
+                if (position == 1){
 
+                }
             }
 
             @Override
@@ -433,6 +451,80 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
             }
         });
 
+        presentShowcaseView();
+    }
+
+    void presentShowcaseView() {
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500);
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+
+        //sequence.setConfig(config);
+
+        ShowcaseTooltip toolTip1 = ShowcaseTooltip.build(this)
+                .corner(30)
+                .textColor(getColor(R.color.colorOnBoardText))
+                .text(getString(R.string.onboard_main_toolbar_1) + "<b> " + getString(R.string.app_name) + "</b> " +
+                        "<br><br>" +
+                        getString(R.string.onboard_main_toolbar_2) +
+                        "<br><br>" +
+                        getString(R.string.onboard_main_toolbar_3) +
+                        "<br><br>" +
+                        getString(R.string.onboard_main_toolbar_4) +
+                        "<br><br>" +
+                        getString(R.string.onboard_main_toolbar_5));
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(myToolbar)
+                        .setToolTip(toolTip1)
+                        .withRectangleShape()
+                        .setTooltipMargin(30)
+                        .setShapePadding(10)
+                        .setDismissOnTouch(true)
+                        .build()
+        );
+
+        ShowcaseTooltip toolTip2 = ShowcaseTooltip.build(this)
+                .corner(30)
+                .textColor(getColor(R.color.colorOnBoardText))
+                .text(getString(R.string.onboard_main_tablayout_1) +
+                        "<br><br>" +
+                        getString(R.string.onboard_main_tablayout_2));
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(tabLayout)
+                        .setToolTip(toolTip2)
+                        .withRectangleShape()
+                        .setTooltipMargin(30)
+                        .setShapePadding(5)
+                        .setDismissOnTouch(true)
+                        .build()
+        );
+
+        sequence.start();
+
+
+        sequence.setOnItemDismissedListener((itemView, position) -> {
+            if (position == 1){
+                PlayDateFragment.presentShowcaseView(1000); // one second delay
+            }
+        });
+
+    }
+
+
+
+    @SuppressLint("WrongConstant")
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)){
+            drawerLayout.closeDrawers();
+        }else {
+            super.onBackPressed();
+        }
     }
 
     //Change ActionBar Title
@@ -440,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         actionBar.setTitle(newTitle);
     }
 
-    //Replace fragment and add tags Fragment //TODO CHANGE TO FRAGMENTS 1
+    //Replace fragment and add tags Fragment
     private void fragments(Fragment fragment, String fragmentTag) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.mainContainer, fragment, fragmentTag);

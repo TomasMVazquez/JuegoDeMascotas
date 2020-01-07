@@ -21,6 +21,8 @@
     <color name="colorBlueGray">#607D8B</color>
     <color name="colorGray">#9E9E9E</color>
 
+    <color name="colorOnBoardText">#007686</color>
+
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="divider">#BDBDBD</color>

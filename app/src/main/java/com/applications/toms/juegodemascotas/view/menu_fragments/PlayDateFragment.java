@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PlayController;
 import com.applications.toms.juegodemascotas.model.PlayDate;
+import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.MapAdapter;
@@ -32,6 +34,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
+import uk.co.deanwild.materialshowcaseview.shape.OvalShape;
+
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -40,10 +48,16 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterInterface {
 
     private static final String TAG = "PlayDateFragment";
+    private static final String SHOWCASE_ID = "simple play date";
+
     private static Context context;
+    private static Activity activity;
+
     private MapAdapter mapAdapter;
     private FirebaseUser currentUser;
     private List<PlayDate> currentPlayDateList = new ArrayList<>();
+
+    private static FloatingActionButton fabNewPlayDate;
 
     public PlayDateFragment() {
         // Required empty public constructor
@@ -57,6 +71,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
 
         //Application conext
         context = getApplicationContext();
+        activity = getActivity();
         //Firebase User
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -67,7 +82,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         PlayController playController = new PlayController();
 
         //FAB view btn
-        FloatingActionButton fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
+        fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
 
         //Recycler View
         RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerPlayDates);
@@ -159,5 +174,18 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                 playRefMasc.update(context.getString(R.string.collection_participants), FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getUid()));
             }
         });
+    }
+
+    public static void presentShowcaseView(int withDelay) {
+        new MaterialShowcaseView.Builder(activity)
+                .setTarget(fabNewPlayDate)
+                .setShape(new CircleShape())
+//                .setTitleText("BIENVENIDO")
+                .setDismissText(context.getString(R.string.onboard_click))
+                .setContentText(context.getString(R.string.onboard_playdate_fab))
+                .setDelay(withDelay) // optional but starting animations immediately in onCreate can make them choppy
+                .singleUse(SHOWCASE_ID) // provide a unique ID used to ensure it is only shown once
+                .useFadeAnimation() // remove comment if you want to use fade animations for Lollipop & up
+                .show();
     }
 }

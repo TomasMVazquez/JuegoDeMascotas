@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -26,19 +27,26 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterInterface, FragmentTitles {
 
     public static final String TAG = "MyPetsFragment";
+    private static final String SHOWCASE_ID = "simple my pets";
+
 
     private static String userFirestore;
     private static String myPetsFirestore;
 
     private static FirebaseUser currentUser;
+    private static Activity activity;
     private static Context context;
     private static PetController petController;
+    private FloatingActionButton fabAddPet;
 
     //Atributos
     private MyPetsAdapter myPetsAdapter;
@@ -60,6 +68,7 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
 
         //Get application context
         context = getContext();
+        activity = getActivity();
 
         //Get Firebase instances
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -70,7 +79,7 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
         myPetsFirestore = getResources().getString(R.string.collection_my_pets);
 
         //view FAB
-        FloatingActionButton fabAddPet = view.findViewById(R.id.fabAddPet);
+        fabAddPet = view.findViewById(R.id.fabAddPet);
 
         //Adapter
         myPetsAdapter = new MyPetsAdapter(new ArrayList<>(),context,this);
@@ -91,14 +100,10 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
 
         //add pet btn FAB
         fabAddPet.setOnClickListener(v -> {
-            //TODO making go to add PetFragment
             myPetsInterface.goToAddPet();
-//            AddPetFragment addPetFragment = new AddPetFragment();
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.containerPets,addPetFragment);
-//            fragmentTransaction.commit();
         });
+
+        presentShowcaseView(800);
 
         return view;
     }
@@ -122,5 +127,17 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
     //Refresh Recycler
     private void refreshPets(){
         petController.giveOwnerPets(currentUser.getUid(),context,resultado -> myPetsAdapter.setPetList(resultado));
+    }
+
+    private void presentShowcaseView(int withDelay) {
+        new MaterialShowcaseView.Builder(activity)
+                .setTarget(fabAddPet)
+                .setShape(new CircleShape())
+                .setDismissText(context.getString(R.string.onboard_click))
+                .setContentText(context.getString(R.string.onboard_mypets_fab))
+                .setDelay(withDelay) // optional but starting animations immediately in onCreate can make them choppy
+                .singleUse(SHOWCASE_ID) // provide a unique ID used to ensure it is only shown once
+                .useFadeAnimation() // remove comment if you want to use fade animations for Lollipop & up
+                .show();
     }
 }

@@ -2,6 +2,7 @@ package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +50,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.aprilapps.easyphotopicker.EasyImage;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,6 +61,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
         FragmentTitles {
 
     public static final String TAG = "ProfileFragment";
+    private static final String SHOWCASE_ID = "simple profile";
 
     public static final String KEY_TYPE = "type";
     public static final String KEY_USER_ID = "user_id";
@@ -69,6 +73,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
     private static FirebaseUser currentUser;
     private ProfileFragmentListener profileFragmentListener;
     //Atributos
+    private Activity activity;
     private Context context;
     private OwnerController ownerController;
     private PetController petController;
@@ -115,6 +120,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
         fabEditProfile = view.findViewById(R.id.fabEditProfile);
 
         context = getContext();
+        activity = getActivity();
 
         //Controllers
         ownerController = new OwnerController();
@@ -166,6 +172,8 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
                 deletePetProfile(idUser);
             }
         });
+
+        presentShowcaseView(1000);
 
         return view;
     }
@@ -382,5 +390,17 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
 
     public interface ProfileFragmentListener {
         void profileChange(String keyType, String idOwner, String petId);
+    }
+
+    private void presentShowcaseView(int withDelay) {
+        new MaterialShowcaseView.Builder(activity)
+                .setTarget(fabEditProfile)
+                .setShape(new CircleShape())
+                .setDismissText(context.getString(R.string.onboard_click))
+                .setContentText(context.getString(R.string.onboard_profile_edit_fab))
+                .setDelay(withDelay) // optional but starting animations immediately in onCreate can make them choppy
+                .singleUse(SHOWCASE_ID) // provide a unique ID used to ensure it is only shown once
+                .useFadeAnimation() // remove comment if you want to use fade animations for Lollipop & up
+                .show();
     }
 }

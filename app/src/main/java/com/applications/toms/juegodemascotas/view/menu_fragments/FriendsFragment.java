@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,6 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
+
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -30,6 +34,9 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAdapterInterface {
 
     private static final String TAG = "FriendsFragment";
+    private static final String SHOWCASE_ID = "simple friends";
+
+    private static Activity activity;
 
     private FriendsInterface friendsInterface;
     private List<Pet> petFriendList = new ArrayList<>();
@@ -48,6 +55,7 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
+        activity = getActivity();
         Context context = getApplicationContext();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -76,13 +84,6 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
 
     @Override
     public void goToChat(String userToChat) {
-        //TODO CHANGE TO FRAGMENT 1
-//        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(ChatActivity.KEY_CHAT,"2");
-//        bundle.putString(ChatActivity.KEY_USER_TO_CHAT, userToChat);
-//        intent.putExtras(bundle);
-//        startActivity(intent);
         friendsInterface.getChat(userToChat);
     }
 
