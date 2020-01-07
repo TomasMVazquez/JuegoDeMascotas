@@ -28,11 +28,19 @@
         </RelativeLayout>
     </ScrollView>
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/coordinatorSnack"
+        android:elevation="10dp"
+        android:layout_marginTop="5dp"
+        />
+
     <include
         layout="@layout/message_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"
-        android:layout_marginTop="5dp"/>
+        />
 
 </LinearLayout>

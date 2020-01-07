@@ -65,4 +65,12 @@ public class OwnerController {
             friendsListener.finish(new ArrayList<>());
         }
     }
+
+    public void giveFriendsToCheck(String ownerId, Context context, ResultListener<List<Pet>> friendsListener){
+        if (Util.isOnline(context)) {
+            daoOwner.fetchFriends(ownerId,context, friendsListener::finish);
+        } else {
+            friendsListener.finish(new ArrayList<>());
+        }
+    }
 }

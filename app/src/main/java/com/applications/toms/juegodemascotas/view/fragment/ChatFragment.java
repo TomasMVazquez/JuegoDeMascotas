@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -28,14 +30,18 @@ import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.ChatController;
+import com.applications.toms.juegodemascotas.controller.OwnerController;
+import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.dao.DaoChat;
 import com.applications.toms.juegodemascotas.model.Message;
+import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.applications.toms.juegodemascotas.view.adapter.ChatRoomAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -80,6 +86,7 @@ public class ChatFragment extends Fragment implements FragmentTitles {
     private LinearLayout layout;
     private EditText messageArea;
     private ScrollView scrollView;
+    private CoordinatorLayout coordinatorSnack;
     private Context context;
 
     private String idChat;
@@ -117,6 +124,7 @@ public class ChatFragment extends Fragment implements FragmentTitles {
         ImageView sendButton = view.findViewById(R.id.sendButton);
         messageArea = view.findViewById(R.id.messageArea);
         scrollView = view.findViewById(R.id.scrollView);
+        coordinatorSnack = view.findViewById(R.id.coordinatorSnack);
 
         Log.d(TAG, "onCreateView: ChatFragment");
 
@@ -140,10 +148,14 @@ public class ChatFragment extends Fragment implements FragmentTitles {
             }else {
                 userIdToChat = userTwo;
             }
+            //Getting the name from the controller
             chatController.giveUserNameToChat(userIdToChat, context, result -> {
                 userNameToChat = result;
                 MainActivity.changeActionBarTitle(userNameToChat);
             });
+
+            //Checking if its friend
+            checkIfFriend(userIdToChat);
 
         });
 
@@ -178,6 +190,37 @@ public class ChatFragment extends Fragment implements FragmentTitles {
         });
 
         return view;
+    }
+
+    private void checkIfFriend(String userIdToChat){
+        PetController petController = new PetController();
+        OwnerController ownerController = new OwnerController();
+
+        ownerController.giveFriendsToCheck(currentUser.getUid(),context,result -> {
+            petController.giveOwnerPets(userIdToChat,context,resultToChat -> {
+                if (!result.contains(resultToChat.get(0))){
+                    Snackbar snackbar = Snackbar.make(coordinatorSnack,context.getString(R.string.add_friend),Snackbar.LENGTH_LONG);
+
+                    snackbar.setAction(context.getString(R.string.add_friend_click), v -> {
+                        for (Pet pet:resultToChat) {
+                            //Create on the current user a document with firend list
+                            CollectionReference myFriendCol = db.collection(getString(R.string.collection_users))
+                                    .document(currentUser.getUid()).collection(getString(R.string.collection_my_friends));
+
+                            myFriendCol.document(pet.getIdPet()).set(pet).addOnSuccessListener(aVoid -> {
+                                //TODO Talvez no es necesario el addonsuccess
+//                                Toast.makeText(context, "¡Agregado!", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                    snackbar.show();
+                }
+                else {
+//                    Toast.makeText(context, "Ya es amigo", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
     }
 
     private void addedMsg(){
