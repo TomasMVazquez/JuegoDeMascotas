@@ -1,7 +1,11 @@
 package com.applications.toms.juegodemascotas.model;
 
+import java.util.Comparator;
+import java.util.PrimitiveIterator;
+
 public class Message {
 
+    private Integer id;
     private String message;
     private String time;
     private String user;
@@ -9,10 +13,15 @@ public class Message {
     public Message() {
     }
 
-    public Message(String message, String time, String user) {
+    public Message(Integer id,String message, String time, String user) {
+        this.id = id;
         this.message = message;
         this.time = time;
         this.user = user;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getMessage() {
@@ -35,4 +44,5 @@ public class Message {
                 ", user='" + user + '\'' +
                 '}';
     }
+
 }

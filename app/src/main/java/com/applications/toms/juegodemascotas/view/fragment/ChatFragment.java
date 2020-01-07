@@ -2,10 +2,15 @@ package com.applications.toms.juegodemascotas.view.fragment;
 
 
 import android.content.Context;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
@@ -28,6 +33,8 @@ import com.applications.toms.juegodemascotas.model.Message;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.view.MainActivity;
+import com.applications.toms.juegodemascotas.view.adapter.ChatRoomAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -49,7 +56,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -83,11 +93,14 @@ public class ChatFragment extends Fragment implements FragmentTitles {
 
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
+    private CollectionReference chatCollection;
+
+    private ArrayList<Message> messageArrayList = new ArrayList<>();
+    private ArrayList<Integer> msgIdsShown = new ArrayList<>();
 
     public ChatFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,6 +112,12 @@ public class ChatFragment extends Fragment implements FragmentTitles {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
+        //Setting the Views
+        layout = view.findViewById(R.id.layout1);
+        ImageView sendButton = view.findViewById(R.id.sendButton);
+        messageArea = view.findViewById(R.id.messageArea);
+        scrollView = view.findViewById(R.id.scrollView);
+
         Log.d(TAG, "onCreateView: ChatFragment");
 
         //Getting the ID chat form the arguments
@@ -109,8 +128,9 @@ public class ChatFragment extends Fragment implements FragmentTitles {
 
         //Getting the Chat of Firebase
         DocumentReference chatDoc = db.collection(getString(R.string.collection_chats)).document(idChat);
-        CollectionReference chatCollection = chatDoc.collection(getString(R.string.collection_messages));
+        chatCollection = chatDoc.collection(getString(R.string.collection_messages));
 
+        //Getting the name to show in the App Bar
         chatDoc.addSnapshotListener((documentSnapshot, e) -> {
             String userOne = documentSnapshot.get("userOne").toString();
             String userTwo = documentSnapshot.get("userTwo").toString();
@@ -124,67 +144,76 @@ public class ChatFragment extends Fragment implements FragmentTitles {
                 userNameToChat = result;
                 MainActivity.changeActionBarTitle(userNameToChat);
             });
+
         });
-
-
-        //Setting the Views
-        layout = view.findViewById(R.id.layout1);
-        ImageView sendButton = view.findViewById(R.id.sendButton);
-        messageArea = view.findViewById(R.id.messageArea);
-        scrollView = view.findViewById(R.id.scrollView);
 
         final String user = currentUser.getDisplayName();
 
+        addedMsg();
+        
         sendButton.setOnClickListener(v -> {
             String messageText = messageArea.getText().toString();
 
             if(!messageText.equals("")){
-                Map<String, String> map = new HashMap<String, String>();
+                Map<String, Object> map = new HashMap<>();
                 map.put("message", messageText);
                 map.put("user", user);
-//                String DataString = DateFormat.getDateInstance(DateFormat.SHORT).format(Calendar.getInstance().getTime());
                 map.put("time", getCurrentDate());
 
                 chatController.giveLastMessageId(idChat, context, result -> {
                     if (result != null){
                         idLastMessage = Integer.parseInt(result) + 1;
+                        map.put("id", idLastMessage);
                         chatCollection.document(String.valueOf(idLastMessage)).set(map);
                     }else {
                         idLastMessage = 1;
+                        map.put("id", idLastMessage);
                         chatCollection.document(String.valueOf(idLastMessage)).set(map);
                     }
+                    scrollView.fullScroll(View.FOCUS_DOWN);
                 });
 
                 messageArea.setText("");
             }
         });
 
-        chatCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            Log.d(TAG, "onCreateView: " + queryDocumentSnapshots);
+        return view;
+    }
 
+    private void addedMsg(){
+        chatCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
             for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                 if (dc.getType() == DocumentChange.Type.ADDED) {
-
-                    message = (String) dc.getDocument().getData().get("message");
-                    userName = (String) dc.getDocument().getData().get("user");
-                    time = (String) dc.getDocument().getData().get("time");
-
-                    Log.d(TAG, "onCreateView: " + message + " " + userName + " " + time);
-
-                    if(userName.equals(user)){
-                        addMessageBox(user,message,time, 1);
-                    }
-                    else{
-                        addMessageBox(userName,message,time, 2);
-                    }
+                    Message msgAdded = dc.getDocument().toObject(Message.class);
+                    messageArrayList.add(msgAdded);
                 }
             }
-
-
-
+            sortArray(messageArrayList);
         });
+    }
 
-        return view;
+    private void sortArray(ArrayList<Message> messages){
+        Collections.sort(messages, (o1, o2) -> o1.getId() - o2.getId());
+
+        for (Message msg: messages) {
+            if (!msgIdsShown.contains(msg.getId())){
+                msgIdsShown.add(msg.getId());
+                showMsg(msg);
+            }
+        }
+    }
+
+    private void showMsg(Message message){
+        final String user = currentUser.getDisplayName();
+        Log.d(TAG, "onCreateView: " + message + " " + userName + " " + time);
+
+        if(message.getUser().equals(user)){
+            addMessageBox(user,message.getMessage(),message.getTime(), 1);
+        }
+        else{
+            addMessageBox(message.getUser(),message.getMessage(),message.getTime(), 2);
+        }
+
     }
 
     private void addMessageBox(String user, String message, String time, int type){
@@ -208,6 +237,10 @@ public class ChatFragment extends Fragment implements FragmentTitles {
         textView.setLayoutParams(lp2);
         layout.addView(textView);
 
+        showBottom();
+    }
+
+    private void showBottom(){
         scrollView.fullScroll(View.FOCUS_DOWN);
     }
 
@@ -222,4 +255,5 @@ public class ChatFragment extends Fragment implements FragmentTitles {
     public int getFragmentTitle() {
         return R.string.chat;
     }
+
 }

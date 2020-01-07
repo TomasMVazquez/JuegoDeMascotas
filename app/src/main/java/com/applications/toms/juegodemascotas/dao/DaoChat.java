@@ -75,7 +75,7 @@ public class DaoChat {
         CollectionReference chatRef = mDatabase.collection(context.getString(R.string.collection_chats))
                 .document(chatId).collection(context.getString(R.string.collection_messages));
 
-        chatRef.orderBy("time", Query.Direction.DESCENDING)
+        chatRef.orderBy("id", Query.Direction.DESCENDING)
                 .limit(1)
                 .get()
                 .addOnCompleteListener(task -> {
