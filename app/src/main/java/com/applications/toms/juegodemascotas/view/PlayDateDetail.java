@@ -1,5 +1,6 @@
 package com.applications.toms.juegodemascotas.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -36,10 +41,12 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -65,6 +72,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     private FirebaseStorage mStorage;
     private static FirebaseUser currentUser;
+    private FirebaseFirestore db;
+    private DocumentReference playRef;
 
     private PlayController playController;
 
@@ -76,7 +85,8 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private ImageView ivOwnerCreator;
     private RecyclerView rvPetsCreator;
     private RecyclerView rvPetsParticipants;
-    private PlayDate playDateDetail;
+    private FloatingActionButton fabExitPlay;
+    private Integer checkExitAdd = null;
 
     private List<Pet> participantsList = new ArrayList<>();
 
@@ -100,8 +110,11 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
         //db para extraer el juego
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
+        playRef = db.collection(getString(R.string.collection_play))
+                .document(playId);
 
         //Busco los objetos
         mapPlayDetail = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapPlayDetail);
@@ -113,6 +126,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         rvPetsParticipants = findViewById(R.id.rvPetsParticipants);
         quantityParticipants = findViewById(R.id.quantityParticipants);
         quantityParticipants.setText("0");
+        fabExitPlay = findViewById(R.id.fabExitPlay);
 
         //Adapter
         circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
@@ -139,6 +153,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         //Busco info en la base de datos
         playController.givePlayDate(playId, this, resultado -> {
             creatorId = resultado.getCreator().getUserId();
+            checkExitAddBtn();
             getDetails(resultado);
         });
 
@@ -160,8 +175,6 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-
-//
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
@@ -199,6 +212,79 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
             }
         });
 
+        fabExitPlay.setOnClickListener(v -> exitAddClick());
+    }
+
+    private void checkExitAddBtn(){
+        if (!currentUser.getUid().equals(creatorId)){
+            playRef.get().addOnSuccessListener(documentSnapshot -> {
+                PlayDate playClicked = documentSnapshot.toObject(PlayDate.class);
+                if (!playClicked.getParticipants().contains(currentUser.getUid())) {
+                    fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_add_location_black_24dp));
+                    checkExitAdd = 1;
+                } else {
+                    fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_location_off_black_24dp));
+                    checkExitAdd = 2;
+                }
+            });
+            fabExitPlay.show();
+        }
+    }
+
+    private void exitAddClick(){
+
+        if (checkExitAdd == 1){
+            //Logic to add participant
+            playRef.update(getString(R.string.collection_participants), FieldValue.arrayUnion(currentUser.getUid()));
+        }
+        else if (checkExitAdd == 2){
+            //Logic to exit from play date
+            playRef.update(getString(R.string.collection_participants), FieldValue.arrayRemove(currentUser.getUid()));
+        }
+        joinToCreatorPlayDate(creatorId, playId);
+    }
+
+    //Add Plays to MyPlays DataBase
+    private void addPlayToMyPlays(PlayDate playJoined) {
+        DocumentReference playRefMasc = db.collection(getString(R.string.collection_users))
+                .document(currentUser.getUid())
+                .collection(getString(R.string.collection_my_plays))
+                .document(playJoined.getIdPlay());
+
+        if (checkExitAdd == 1) {
+            playRefMasc.set(playJoined).addOnSuccessListener(aVoid ->{
+                fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_location_off_black_24dp));
+                checkExitAdd = 2;
+            });
+        }
+        else if (checkExitAdd == 2){
+            playRefMasc.delete().addOnCompleteListener(task -> {
+                fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_add_location_black_24dp));
+                checkExitAdd = 1;
+            });
+        }
+    }
+
+    //Join user to play
+    private void joinToCreatorPlayDate(String creatorId, String juegoId) {
+        DocumentReference playRefMasc = db.collection(getString(R.string.collection_users))
+                .document(creatorId)
+                .collection(getString(R.string.collection_my_plays)).document(juegoId);
+
+        if (checkExitAdd == 1) {
+            playRefMasc.get().addOnSuccessListener(documentSnapshotTwo -> {
+                PlayDate ownerPlay = documentSnapshotTwo.toObject(PlayDate.class);
+                playRefMasc.update(getString(R.string.collection_participants), FieldValue.arrayUnion(currentUser.getUid()));
+                addPlayToMyPlays(ownerPlay);
+            });
+        }
+        else if (checkExitAdd == 2){
+            playRefMasc.get().addOnSuccessListener(documentSnapshotTwo -> {
+                PlayDate ownerPlay = documentSnapshotTwo.toObject(PlayDate.class);
+                playRefMasc.update(getString(R.string.collection_participants), FieldValue.arrayRemove(currentUser.getUid()));
+                addPlayToMyPlays(ownerPlay);
+            });
+        }
     }
 
     @Override
@@ -269,6 +355,6 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     @Override
     public void goToPetProfile(String keyType, String idOwner, String idPet) {
-
+        //TODO Go To Profile
     }
 }

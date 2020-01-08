@@ -56,11 +56,12 @@
             >
 
             <LinearLayout
+                android:id="@+id/llPlace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="start|center"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
                 android:padding="10dp"
                 android:background="@color/colorPrimary_translucid"
                 android:elevation="10dp"
@@ -159,7 +160,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/tv_creator"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:layout_marginBottom="10dp"
+                    />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvPetsCreator"
@@ -185,7 +188,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="10dp"
                         android:hint="@string/tv_participants"
                         android:textSize="18sp" />
 
@@ -211,5 +214,18 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabExitPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_location_off_black_24dp"
+        android:elevation="6dp"
+        app:layout_anchor="@id/llPlace"
+        app:layout_anchorGravity="bottom|end"
+        android:visibility="gone"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
