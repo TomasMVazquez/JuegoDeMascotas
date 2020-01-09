@@ -6,6 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -55,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAdapter.AdapterInterfaceCircule {
 
@@ -236,12 +240,29 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         if (checkExitAdd == 1){
             //Logic to add participant
             playRef.update(getString(R.string.collection_participants), FieldValue.arrayUnion(currentUser.getUid()));
+            joinToCreatorPlayDate(creatorId, playId);
         }
         else if (checkExitAdd == 2){
             //Logic to exit from play date
-            playRef.update(getString(R.string.collection_participants), FieldValue.arrayRemove(currentUser.getUid()));
+            confirmDialogDemo();
         }
-        joinToCreatorPlayDate(creatorId, playId);
+    }
+
+    private void confirmDialogDemo() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmación");
+        builder.setMessage("Por favor confirmar que usted NO quiere participar de este juego");
+        builder.setCancelable(false);
+        builder.setIcon(getDrawable(R.drawable.juego_mascota));
+
+        builder.setPositiveButton("Confirmar", (dialog, which) ->{
+            playRef.update(getString(R.string.collection_participants), FieldValue.arrayRemove(currentUser.getUid()));
+            joinToCreatorPlayDate(creatorId, playId);
+        });
+
+        builder.setNegativeButton("Cancelar", (dialog, which) -> Toast.makeText(getApplicationContext(), "No se eliminó de sus juegos", Toast.LENGTH_SHORT).show());
+
+        builder.show();
     }
 
     //Add Plays to MyPlays DataBase
@@ -255,14 +276,16 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
             playRefMasc.set(playJoined).addOnSuccessListener(aVoid ->{
                 fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_location_off_black_24dp));
                 checkExitAdd = 2;
+                Toast.makeText(this, "Se agrego la cita a tus juegos", Toast.LENGTH_SHORT).show();
             });
         }
         else if (checkExitAdd == 2){
             playRefMasc.delete().addOnCompleteListener(task -> {
                 fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_add_location_black_24dp));
                 checkExitAdd = 1;
+                Toast.makeText(this, "Se eliminó la cita de tus juegos", Toast.LENGTH_SHORT).show();
             });
-        }
+        }   
     }
 
     //Join user to play

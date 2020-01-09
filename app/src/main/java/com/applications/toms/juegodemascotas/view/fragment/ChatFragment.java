@@ -189,6 +189,8 @@ public class ChatFragment extends Fragment implements FragmentTitles {
             }
         });
 
+        scrollView.postDelayed(() -> scrollView.fullScroll(ScrollView.FOCUS_DOWN),1000);
+
         return view;
     }
 
