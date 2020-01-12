@@ -94,6 +94,34 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/llEmailLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:padding="10dp"
+        >
+
+        <TextView
+            android:id="@+id/txtTC1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tyc_1"
+            />
+        <TextView
+            android:id="@+id/txtTC2"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/txtTC1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tyc_2"
+            android:linksClickable="true"
+            android:textStyle="bold"
+            />
+
+    </RelativeLayout>
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivLogoLogIn"

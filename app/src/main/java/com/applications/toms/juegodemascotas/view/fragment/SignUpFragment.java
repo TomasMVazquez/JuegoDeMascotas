@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.view.SignInUpActivity;
@@ -56,6 +58,9 @@ public class SignUpFragment extends Fragment {
         etPassSigUp = view.findViewById(R.id.etPassSigUp);
         etEmailSigUp = view.findViewById(R.id.etEmailSigUp);
         tiPassSignUp = view.findViewById(R.id.tiPassSignUp);
+
+        TextView txtPriv2 = view.findViewById(R.id.txtPriv2);
+        txtPriv2.setMovementMethod(LinkMovementMethod.getInstance());
 
         //show password while touch image view
         ivVisiblePassUp.setOnTouchListener((v, event) -> {

@@ -106,6 +106,33 @@
                 />
         </LinearLayout>
 
+        <RelativeLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/txtPriv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/priv_1"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:id="@+id/txtPriv2"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/txtPriv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/priv_2"
+                android:linksClickable="true"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:singleLine="true"
+                />
+
+        </RelativeLayout>
     </LinearLayout>
 
     <RelativeLayout

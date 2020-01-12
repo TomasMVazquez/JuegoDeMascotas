@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,6 +79,11 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
 
         //FaceBook Sign in
         LoginButton loginButton = findViewById(R.id.login_button_facebook);
+
+        //Terminos y condiciones
+        TextView txtTC2 = findViewById(R.id.txtTC2);
+        txtTC2.setMovementMethod(LinkMovementMethod.getInstance());
+
 
         //email Sign In
         Button btnGoSignUp = findViewById(R.id.btnGoSignUp);

@@ -285,7 +285,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
                 checkExitAdd = 1;
                 Toast.makeText(this, "Se eliminó la cita de tus juegos", Toast.LENGTH_SHORT).show();
             });
-        }   
+        }
     }
 
     //Join user to play
