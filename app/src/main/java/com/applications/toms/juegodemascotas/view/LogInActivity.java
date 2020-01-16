@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,8 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     public static final int KEY_SIGN_IN = 102;
     private static final String TAG = "LOGIN";
 
+    private RelativeLayout rlLog;
+
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
 
@@ -72,6 +75,8 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         callbackManager = CallbackManager.Factory.create();
         //Instance for DataBase
         mAuth = FirebaseAuth.getInstance();
+
+        rlLog = findViewById(R.id.rlLog);
 
         //Google Sign in
         SignInButton google_sig_in = findViewById(R.id.google_sig_in);
@@ -229,7 +234,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        Toast.makeText(LogInActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(rlLog,getString(R.string.error_authentication),Snackbar.LENGTH_SHORT).show();
                         updateUI(null);
                     }
 

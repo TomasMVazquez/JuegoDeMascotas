@@ -25,6 +25,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -54,6 +55,7 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     private static ActionBar actionBar;
     private Toolbar myToolbar;
     private TabLayout tabLayout;
-
+    private static CoordinatorLayout coordinatorSnack;
     private MenuItem item_toolbar;
 
     //Fragment declaration globally
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
 
         final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
-        uploadTask.addOnSuccessListener(taskSnapshot -> Toast.makeText(context, "Profile Foto OK!", Toast.LENGTH_SHORT).show());
+        uploadTask.addOnSuccessListener(taskSnapshot -> Snackbar.make(coordinatorSnack,context.getString(R.string.problems_login),Snackbar.LENGTH_SHORT).show());
     }
 
     //Update owner profile info
@@ -222,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         //crush -- this is useful to test the app so a QA can send the error report
 //        new UCEHandler.Builder(this).build();
 
+        coordinatorSnack = findViewById(R.id.coordinatorSnackMain);
         fragmentManager = getSupportFragmentManager();
 
         Intent intent = getIntent();
@@ -233,7 +236,13 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         //Check if service is ok for Maps
         if (Util.isServicesOk(this)) {
             Log.d(TAG, "onCreate: Check Service OK!");
-        } // TODO Agregar Snack Bar si no hay conexion
+        } else {
+            Snackbar.make(coordinatorSnack,getString(R.string.problems_google),Snackbar.LENGTH_LONG).show();
+        }
+
+        if (!Util.isOnline(this)) {
+            Snackbar.make(coordinatorSnack,getString(R.string.device_online),Snackbar.LENGTH_LONG).show();
+        }
 
         //get instance from Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -546,7 +555,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                     if (task.isSuccessful()) {
                         recreate();
                     } else {
-                        Toast.makeText(MainActivity.this, "Error Log In", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(coordinatorSnack,getString(R.string.problems_login),Snackbar.LENGTH_SHORT).show();
                     }
                 });
             } else {

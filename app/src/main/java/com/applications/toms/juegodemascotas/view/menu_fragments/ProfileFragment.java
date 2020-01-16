@@ -18,9 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +39,7 @@ import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.UpdateProfileFragment;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -86,6 +89,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
     private RecyclerView rvMyPetsOwner;
     private FloatingActionButton fabImageProfile;
     private FloatingActionButton fabEditProfile;
+    private FrameLayout containerProfile;
 
     private String type;
     private String petId;
@@ -93,6 +97,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
     private List<Pet> petsList = new ArrayList<Pet>();
     private String photoPetActual;
     private String photoOwnerActual;
+    private Boolean disableBack;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -110,6 +115,8 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        disableBack = true;
+
         ivProfile = view.findViewById(R.id.ivProfile);
         tvName = view.findViewById(R.id.tvName);
         tvDir = view.findViewById(R.id.tvDir);
@@ -118,6 +125,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
         rvMyPetsOwner = view.findViewById(R.id.rvMyPetsOwner);
         fabImageProfile = view.findViewById(R.id.fabImageProfile);
         fabEditProfile = view.findViewById(R.id.fabEditProfile);
+        containerProfile = view.findViewById(R.id.containerProfile);
 
         context = getContext();
         activity = getActivity();
@@ -174,8 +182,20 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
 
         presentShowcaseView(1000);
 
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    return disableBack;
+                }
+            }
+            return false;
+        });
+
         return view;
     }
+
 
     @Override
     public void goToUserProfile(String keyType, String idOwner, String idPet) {
@@ -299,6 +319,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
                 }
             }
         }
+        disableBack = false;
     }
 
     //Eliminar perfil (solo para mascotas)
@@ -314,8 +335,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
             startActivity(intent);
         });
 
-        builder.setNegativeButton("No", (dialog, which) ->
-                Toast.makeText(context, "El perfil NO se elimino", Toast.LENGTH_SHORT).show());
+        builder.setNegativeButton("No", (dialog, which) -> Snackbar.make(containerProfile,getString(R.string.error_profile_delete),Snackbar.LENGTH_SHORT).show());
 
         builder.show();
     }
@@ -398,4 +418,6 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
                 .useFadeAnimation() // remove comment if you want to use fade animations for Lollipop & up
                 .show();
     }
+
+
 }

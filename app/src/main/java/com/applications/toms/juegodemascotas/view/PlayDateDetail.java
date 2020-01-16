@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.view;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -48,6 +49,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -96,6 +98,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private RecyclerView rvPetsParticipants;
     private FloatingActionButton fabExitPlay;
     private Integer checkExitAdd = null;
+    private NestedScrollView nestedScroll;
 
     private List<Pet> participantsList = new ArrayList<>();
 
@@ -135,6 +138,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         quantityParticipants = findViewById(R.id.quantityParticipants);
         quantityParticipants.setText("0");
         fabExitPlay = findViewById(R.id.fabExitPlay);
+        nestedScroll = findViewById(R.id.nestedScroll);
 
         //Adapter
         circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
@@ -251,7 +255,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
             joinToCreatorPlayDate(creatorId, playId);
         });
 
-        builder.setNegativeButton("Cancelar", (dialog, which) -> Toast.makeText(getApplicationContext(), "No se eliminó de sus juegos", Toast.LENGTH_SHORT).show());
+        builder.setNegativeButton("Cancelar", (dialog, which) -> Snackbar.make(nestedScroll,getString(R.string.error_delete),Snackbar.LENGTH_SHORT).show());
 
         builder.show();
     }
@@ -267,14 +271,14 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
             playRefMasc.set(playJoined).addOnSuccessListener(aVoid ->{
                 fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_location_off_black_24dp));
                 checkExitAdd = 2;
-                Toast.makeText(this, "Se agrego la cita a tus juegos", Toast.LENGTH_SHORT).show();
+                Snackbar.make(nestedScroll,getString(R.string.play_added),Snackbar.LENGTH_SHORT).show();
             });
         }
         else if (checkExitAdd == 2){
             playRefMasc.delete().addOnCompleteListener(task -> {
                 fabExitPlay.setImageDrawable(getDrawable(R.drawable.ic_add_location_black_24dp));
                 checkExitAdd = 1;
-                Toast.makeText(this, "Se eliminó la cita de tus juegos", Toast.LENGTH_SHORT).show();
+                Snackbar.make(nestedScroll,getString(R.string.play_deleted),Snackbar.LENGTH_SHORT).show();
             });
         }
     }

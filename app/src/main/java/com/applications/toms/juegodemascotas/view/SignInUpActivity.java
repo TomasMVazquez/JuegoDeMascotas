@@ -10,11 +10,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.view.fragment.SignInFragment;
 import com.applications.toms.juegodemascotas.view.fragment.SignUpFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -25,6 +27,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
 
     private static FirebaseAuth mAuth;
     private Context context;
+    private FrameLayout frameSignInUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
         context = getApplicationContext();
         //Firebase Instance for DataBase
         mAuth = FirebaseAuth.getInstance();
+
+        frameSignInUp = findViewById(R.id.frameSignInUp);
 
         //Get extras from the intent to understand if we need to create Sign in Fragment or Sign up fragment
         Intent intent = getIntent();
@@ -73,7 +78,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
                         // Sign in success, update UI with the signed-in user's information
                         setSignInUpResult(true);
                     } else {
-                        Toast.makeText(SignInUpActivity.this, context.getString(R.string.no_account_toast), Toast.LENGTH_SHORT).show();
+                        Snackbar.make(frameSignInUp,getString(R.string.no_account_toast),Snackbar.LENGTH_SHORT).show();
                         setSignInUpResult(false);
                     }
                 });
@@ -85,7 +90,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Toast.makeText(SignInUpActivity.this, context.getString(R.string.btn_register_toast), Toast.LENGTH_SHORT).show();
+                        Snackbar.make(frameSignInUp,getString(R.string.btn_register_toast),Snackbar.LENGTH_SHORT).show();
                         setSignInUpResult(false);
                     }
                 });
@@ -106,7 +111,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
                         setSignInUpResult(true);
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(SignInUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Snackbar.make(frameSignInUp,e.toString(),Snackbar.LENGTH_SHORT).show());
     }
 
     //Set result for the intent for result from the login

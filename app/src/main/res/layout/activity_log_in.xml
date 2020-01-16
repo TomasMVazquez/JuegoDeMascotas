@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".view.LogInActivity"
     android:background="@drawable/border_dark_primary"
+    android:id="@+id/rlLog"
     >
 
     <LinearLayout

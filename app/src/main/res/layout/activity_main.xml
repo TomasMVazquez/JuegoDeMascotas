@@ -13,7 +13,7 @@
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:openDrawer="start">
+        tools:openDrawer="end">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -44,6 +44,14 @@
 
             </LinearLayout>
 
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/coordinatorSnackMain"
+                android:layout_gravity="bottom"
+                android:elevation="10dp"
+                android:layout_marginTop="5dp"
+                />
         </FrameLayout>
 
         <com.google.android.material.navigation.NavigationView

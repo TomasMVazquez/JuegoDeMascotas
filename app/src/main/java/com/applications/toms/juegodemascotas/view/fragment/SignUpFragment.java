@@ -134,8 +134,8 @@ public class SignUpFragment extends Fragment {
 
     //interface
     public interface onSignUpNotify{
-        public void signUp(String email, String pass);
-        public void goSignIn();
+        void signUp(String email, String pass);
+        void goSignIn();
     }
 
 }

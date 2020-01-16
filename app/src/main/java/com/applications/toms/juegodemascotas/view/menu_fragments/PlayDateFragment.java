@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -24,6 +25,7 @@ import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.MapAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -52,6 +54,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
 
     private static Context context;
     private static Activity activity;
+    private FrameLayout containerlayDates;
 
     private MapAdapter mapAdapter;
     private FirebaseUser currentUser;
@@ -69,6 +72,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_play_date, container, false);
 
+        containerlayDates = view.findViewById(R.id.containerlayDates);
         //Application conext
         context = getApplicationContext();
         activity = getActivity();
@@ -107,7 +111,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                 getActivity().finish();
             });
         } else {
-            fabNewPlayDate.setOnClickListener(v -> Toast.makeText(context, "Debes estar Logeado para crear un Juego", Toast.LENGTH_SHORT).show());
+            fabNewPlayDate.setOnClickListener(v -> Snackbar.make(containerlayDates,getString(R.string.play_need_login),Snackbar.LENGTH_SHORT).show());
         }
 
         return view;
@@ -136,11 +140,11 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
             PlayDate playClicked = documentSnapshot.toObject(PlayDate.class);
             if (!playClicked.getParticipants().contains(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                 playRef.update(context.getString(R.string.collection_participants), FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getUid()));
-                Toast.makeText(context, "Se agrego la cita a tus juegos", Toast.LENGTH_SHORT).show();
+                Snackbar.make(containerlayDates,getString(R.string.play_added),Snackbar.LENGTH_SHORT).show();
                 joinToCreatorPlayDate(playClicked.getCreator().getUserId(), juegoId);
                 addPlayToMyPlays(playClicked);
             } else {
-                Toast.makeText(context, "Ya te encuentras unido a este juego", Toast.LENGTH_SHORT).show();
+                Snackbar.make(containerlayDates,getString(R.string.play_already_joined),Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -153,12 +157,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                 .collection(context.getString(R.string.collection_my_plays))
                 .document(playJoined.getIdPlay());
 
-        playRefMasc.set(playJoined).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "onSuccess: Creado en MyPlays");
-            }
-        });
+        playRefMasc.set(playJoined).addOnSuccessListener(aVoid -> Log.d(TAG, "onSuccess: Creado en MyPlays"));
     }
 
     //Join user to play

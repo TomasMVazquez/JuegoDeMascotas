@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -89,6 +91,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
     private String size="";
     private String idPlace;
     private List<Pet> myPets = new ArrayList<Pet>();
+    private LinearLayout llNewPlayDate;
 
     private static String userFirestore;
     private static String playFirestore;
@@ -121,6 +124,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         etHourPlayDate = findViewById(R.id.etHourPlayDate);
         etTitlePlayDate = findViewById(R.id.etTitlePlayDate);
         btnNewPlayDate = findViewById(R.id.btnNewPlayDate);
+        llNewPlayDate = findViewById(R.id.llNewPlayDate);
 
         etDatePlayDate.clearFocus();
 
@@ -197,7 +201,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
             if (checkCompleteData()){
                 addNewPlayToDB();
             }else {
-                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                Snackbar.make(llNewPlayDate,errorMsg,Snackbar.LENGTH_SHORT).show();
                 errorMsg = "";
             }
         });
@@ -455,7 +459,7 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                         moveCamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),DEFAULT_ZOOM,getResources().getString(R.string.myLocation));
                     }else {
                         Log.d(TAG, "onComplete: current location is null");
-                        Toast.makeText(NewPlayDate.this, "Unable to get location", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(llNewPlayDate,getString(R.string.error_location),Snackbar.LENGTH_SHORT).show();
                     }
                 });
             }

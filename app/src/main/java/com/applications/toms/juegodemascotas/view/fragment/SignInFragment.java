@@ -15,12 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.view.LogInActivity;
 import com.applications.toms.juegodemascotas.view.SignInUpActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,7 +35,7 @@ public class SignInFragment extends Fragment {
 
     private Context context;
     private Activity activity;
-
+    private FrameLayout flSignin;
     private EditText etSigInPass;
     private EditText etSigIn;
 
@@ -48,6 +50,7 @@ public class SignInFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
+        flSignin = view.findViewById(R.id.flSignin);
 
         //Interface
         onSignInNotify signInNotify = (SignInFragment.onSignInNotify) getContext();
@@ -86,7 +89,7 @@ public class SignInFragment extends Fragment {
             if (!etSigIn.getText().toString().equals("")){
                 signInNotify.resetPass(etSigIn.getText().toString());
             }else {
-                Toast.makeText(context, "Ingrese su Email y vuelva a clickear", Toast.LENGTH_SHORT).show();
+                Snackbar.make(flSignin,getString(R.string.error_email_signin),Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -103,9 +106,9 @@ public class SignInFragment extends Fragment {
 
     //Interface
     public interface onSignInNotify {
-        public void signIn(String email, String pass);
-        public void resetPass(String email);
-        public void goSignUp();
+        void signIn(String email, String pass);
+        void resetPass(String email);
+        void goSignUp();
     }
 
 }

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -30,6 +31,7 @@ import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -63,6 +65,7 @@ public class AddPetFragment extends Fragment implements FragmentTitles {
     private EditText etAddPetRaza;
     private EditText etAddPetInfo;
     private Boolean uploadingPhoto;
+    private LinearLayout llAddPet;
 
     public AddPetFragment() {
         // Required empty public constructor
@@ -83,6 +86,7 @@ public class AddPetFragment extends Fragment implements FragmentTitles {
         etAddPetBirth = view.findViewById(R.id.etAddPetBirth);
         etAddPetRaza = view.findViewById(R.id.etAddPetRaza);
         etAddPetInfo = view.findViewById(R.id.etAddPetInfo);
+        llAddPet = view.findViewById(R.id.llAddPet);
 
         //Birth date picker
         etAddPetBirth.setOnFocusChangeListener((v, hasFocus) -> {
@@ -140,7 +144,7 @@ public class AddPetFragment extends Fragment implements FragmentTitles {
                 MainActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AddPetFragment.this).commit();
             } else {
-                Toast.makeText(getActivity(), "Faltan completar datos", Toast.LENGTH_SHORT).show();
+                Snackbar.make(llAddPet,getString(R.string.error_missing_data),Snackbar.LENGTH_SHORT).show();
             }
         });
 

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
@@ -21,6 +22,7 @@ import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.view.adapter.PetsAdapter;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -38,6 +40,7 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
     private static PetsAdapter petsAdapter;
     private PetController petController;
     private Context context;
+    private FrameLayout flSearch;
 
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
@@ -67,6 +70,8 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
         context = getContext();
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        flSearch = view.findViewById(R.id.flSearch);
 
         SearchView searchView = view.findViewById(R.id.searchView);
         searchView.setQueryHint(getString(R.string.search));
@@ -147,14 +152,14 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
     //Add it as a friend when clicking the heart icon.
     @Override
     public void addFriend(Pet pet) {
-        Toast.makeText(context, "Agregando a " + pet.getNombre() + " a mi lista de amigos", Toast.LENGTH_SHORT).show();
+        Snackbar.make(flSearch,"Agregando a " + pet.getNombre() + " a mi lista de amigos",Snackbar.LENGTH_SHORT).show();
 
         //Create on the current user a document with firend list
         CollectionReference myFriendCol = db.collection(getString(R.string.collection_users))
                 .document(currentUser.getUid()).collection(getString(R.string.collection_my_friends));
 
         myFriendCol.document(pet.getIdPet()).set(pet).addOnSuccessListener(aVoid -> {
-            Toast.makeText(context, "¡Agregado!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(flSearch,"¡Agregado!",Snackbar.LENGTH_SHORT).show();
         });
     }
 }

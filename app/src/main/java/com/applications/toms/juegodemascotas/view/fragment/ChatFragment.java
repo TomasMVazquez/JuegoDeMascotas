@@ -210,7 +210,8 @@ public class ChatFragment extends Fragment implements FragmentTitles {
                                     .document(currentUser.getUid()).collection(getString(R.string.collection_my_friends));
 
                             myFriendCol.document(pet.getIdPet()).set(pet).addOnSuccessListener(aVoid -> {
-                                //TODO agregar Snackbar confirmando
+                                Snackbar snackbarConfirm = Snackbar.make(coordinatorSnack,context.getString(R.string.add_friend_confirmation),Snackbar.LENGTH_SHORT);
+                                snackbarConfirm.show();
                             });
                         }
                     });
