@@ -290,23 +290,15 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                 );
 
         //Agrego el juego a las collectiones
-        playRefMasc.document(idPlay).set(newPlay).addOnSuccessListener(aVoid -> {
-            //TODO
-            Log.d(TAG, "addNewPlayToDB: Creado en el Owner");
-        }).addOnFailureListener(aVoid -> {
-            //TODO
-        });
+        playRefMasc.document(idPlay).set(newPlay);
 
         playRef.set(newPlay).addOnCompleteListener(task -> {
            if (task.isSuccessful()){
-               //TODO
                Log.d(TAG, "addNewPlayToDB: Creado en collection");
                prog.dismiss();
                Intent i = new Intent(NewPlayDate.this,MainActivity.class);
                startActivity(i);
                finish();
-           }else {
-               //TODO
            }
         });
     }
@@ -328,8 +320,6 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                 now.get(Calendar.DAY_OF_MONTH) // Inital day selection
         );
         dpd.setMinDate(now);
-        // If you're calling this from a support Fragment
-        // dpd.show(getFragmentManager(), "Datepickerdialog");
         // If you're calling this from an AppCompatActivity
          dpd.show(getSupportFragmentManager(), "Datepickerdialog");
     }
@@ -352,19 +342,14 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
 
         ImageButton searchBtn = findViewById(R.id.searchBtn);
 
-        searchBtn.setOnClickListener(v -> {
-            searchInMap();
-        });
+        searchBtn.setOnClickListener(v -> searchInMap());
 
-        etPlayLocation.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        etPlayLocation.setOnEditorActionListener((v, actionId, event) -> {
 
-                if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
-                    geoLocate();
-                }
-                return false;
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
+                geoLocate();
             }
+            return false;
         });
 
         hideSoftKeyboard();
@@ -428,7 +413,6 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
                 });
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.d(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
@@ -463,18 +447,15 @@ public class NewPlayDate extends AppCompatActivity implements OnMapReadyCallback
         try {
             if (mLocationPermissionGranted){
                 final Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if (task.isSuccessful()){
-                            Location currentLocation = (Location) task.getResult();
-                            myLocationBias = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
-                            Log.d(TAG, "onComplete: Fond Location - LAT " + currentLocation.getLatitude() + " -LON " + currentLocation.getLongitude());
-                            moveCamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),DEFAULT_ZOOM,getResources().getString(R.string.myLocation));
-                        }else {
-                            Log.d(TAG, "onComplete: current location is null");
-                            Toast.makeText(NewPlayDate.this, "Unable to get location", Toast.LENGTH_SHORT).show();
-                        }
+                location.addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        Location currentLocation = (Location) task.getResult();
+                        myLocationBias = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+                        Log.d(TAG, "onComplete: Fond Location - LAT " + currentLocation.getLatitude() + " -LON " + currentLocation.getLongitude());
+                        moveCamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),DEFAULT_ZOOM,getResources().getString(R.string.myLocation));
+                    }else {
+                        Log.d(TAG, "onComplete: current location is null");
+                        Toast.makeText(NewPlayDate.this, "Unable to get location", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

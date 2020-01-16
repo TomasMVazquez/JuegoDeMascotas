@@ -69,7 +69,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
     }
 
     public interface PetsAdapterInterface{
-        void goToProfileFromPets(String idOwner, Pet pet); //TODO REVISAR
+        void goToProfileFromPets(String idOwner, Pet pet);
         void goToChat(String userToChat);
         void addFriend(Pet pet);
     }

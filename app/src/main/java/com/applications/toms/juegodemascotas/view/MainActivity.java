@@ -122,13 +122,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         }
 
         //Update new Photo
-        userRef.update("fotoDuenio", newPhoto)
-                .addOnSuccessListener(aVoid -> {
-                    //TODO updateProfilePicture addOnSuccessListener is it necessary?
-                })
-                .addOnFailureListener(e -> {
-                    //TODO updateProfilePicture addOnFailureListener is it necessary?
-                });
+        userRef.update("fotoDuenio", newPhoto);
 
 
         final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
@@ -146,13 +140,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                 "fechaNacimiento", birth,
                 "direccion", dir,
                 "infoDuenio", about
-        )
-                .addOnSuccessListener(aVoid -> {
-                    //TODO updateProfile addOnSuccessListener is it necessary?
-                })
-                .addOnFailureListener(e -> {
-                    //TODO updateProfile addOnFailureListener is it necessary?
-                });
+        );
     }
 
     //Update pet profile info
@@ -163,41 +151,15 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
                 .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
 
-        userRefMasc.update("fotoMascota", newPhoto).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //TODO
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //TODO
-            }
-        });
+        userRefMasc.update("fotoMascota", newPhoto);
 
         DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
                 .document(idPet);
 
-        mascRef.update("fotoMascota", newPhoto).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //TODO
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //TODO
-            }
-        });
+        mascRef.update("fotoMascota", newPhoto);
 
         StorageReference nuevaFotoPet = mStorage.getReference().child(idOwner).child(newPhoto);
-        final UploadTask uploadTaskPet = nuevaFotoPet.putFile(uriTemp);
-        uploadTaskPet.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                //Todo
-            }
-        });
+        nuevaFotoPet.putFile(uriTemp);
 
     }
 
@@ -207,32 +169,12 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
                 .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
 
-        userRefMasc.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //todo
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //todo
-            }
-        });
+        userRefMasc.delete();
 
         DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
                 .document(idPet);
 
-        mascRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //todo
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                //todo
-            }
-        });
+        mascRef.delete();
     }
 
     //Add pet to database
@@ -245,24 +187,12 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         final String idPet = userRefMasc.document().getId();
         Pet newPet = new Pet(idPet, name, raza, size, sex, birth, photo, info, currentUser.getUid());
 
-        userRefMasc.document(idPet).set(newPet)
-                .addOnSuccessListener(aVoid -> {
-                    //TODO
-                })
-                .addOnFailureListener(e -> {
-                    //TODO
-                });
+        userRefMasc.document(idPet).set(newPet);
 
         DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
                 .document(idPet);
 
-        petsRef.set(newPet).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                //TODO
-            } else {
-                //TODO
-            }
-        });
+        petsRef.set(newPet);
     }
 
     @Override
@@ -292,10 +222,18 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         //crush -- this is useful to test the app so a QA can send the error report
 //        new UCEHandler.Builder(this).build();
 
+        fragmentManager = getSupportFragmentManager();
+
+        Intent intent = getIntent();
+        if (intent.getExtras()!=null){
+            Bundle profBundle = intent.getExtras();
+            profileChange(profBundle.getString(ProfileFragment.KEY_TYPE),profBundle.getString(ProfileFragment.KEY_USER_ID),profBundle.getString(ProfileFragment.KEY_PET_ID));
+        }
+
         //Check if service is ok for Maps
         if (Util.isServicesOk(this)) {
             Log.d(TAG, "onCreate: Check Service OK!");
-        } // TODO Main Util.isServicesOk add what happend if not
+        } // TODO Agregar Snack Bar si no hay conexion
 
         //get instance from Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -314,12 +252,8 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         actionBar = getSupportActionBar();
         assert actionBar != null;
         changeActionBarTitle(getResources().getString(R.string.app_name));
-        //TODO Since we have de search view the title is not shown
-//        SearchView searchView = findViewById(R.id.searchView);
-//        searchView.setQueryHint(getString(R.string.search));
 
         //Getting de SupportFragmentManager, declared globally
-        fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(() -> {
             if (fragmentManager.getBackStackEntryCount() > 0) {
                 FragmentTitles currentFragment = (FragmentTitles) fragmentManager.findFragmentById(R.id.mainContainer);
@@ -430,26 +364,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         viewPager.setCurrentItem(0);
         //Page transformer when you change fragment by sliding
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
-
-        //ViewPager Listener TODO ViewPager Lisetner doing nothing, is it necessary?
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 1){
-
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
         presentShowcaseView();
     }
@@ -601,7 +515,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     //Create DataBase if first time or not if not
     public void createDataBaseOwner() {
 
-        //TODO createDataBaseOwner FUNCIONA PERO MEJORAR ESTA PARTE ??
         currentUser = mAuth.getCurrentUser();
 
         String name = "";
@@ -762,7 +675,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     public void goToAddPet() {
         AddPetFragment addPetFragment = new AddPetFragment();
         Log.d("FRAGMENT CREADO = ", "AddPet");
-        //TODO Title stays fixed even when you go back
         changeActionBarTitle(getString(R.string.add_pet_title));
         fragments(addPetFragment, AddPetFragment.TAG);
     }
@@ -784,7 +696,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         bundle.putString(ProfileFragment.KEY_TYPE,keyType);
         bundle.putString(ProfileFragment.KEY_USER_ID,idOwner);
         bundle.putString(ProfileFragment.KEY_PET_ID,petId);
-        //TODO: Check if its ok to call the ProfileFragment constructor every time
         ProfileFragment myProfileFragment = new ProfileFragment();
         myProfileFragment.setArguments(bundle);
         fragments(myProfileFragment,myProfileFragment.TAG);

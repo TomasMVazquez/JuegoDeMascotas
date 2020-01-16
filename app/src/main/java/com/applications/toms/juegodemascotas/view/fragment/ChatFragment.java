@@ -210,8 +210,7 @@ public class ChatFragment extends Fragment implements FragmentTitles {
                                     .document(currentUser.getUid()).collection(getString(R.string.collection_my_friends));
 
                             myFriendCol.document(pet.getIdPet()).set(pet).addOnSuccessListener(aVoid -> {
-                                //TODO Talvez no es necesario el addonsuccess
-//                                Toast.makeText(context, "¡Agregado!", Toast.LENGTH_SHORT).show();
+                                //TODO agregar Snackbar confirmando
                             });
                         }
                     });
@@ -259,7 +258,6 @@ public class ChatFragment extends Fragment implements FragmentTitles {
     }
 
     private void addMessageBox(String user, String message, String time, int type){
-        //TODO Esta parte es para armar el mensaje -> Arreglar como se veria ok
         TextView textView = new TextView(context);
         String mensaje = time + ": " + message;
         textView.setText(mensaje);

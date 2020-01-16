@@ -29,8 +29,6 @@ public class DaoPet {
 
     //return all pets from DataBase
     public void fetchPetList(Context context, ResultListener<List<Pet>> listResultListener){
-        //Data Base Instance
-//        FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
         //DataBase Collection of owners/users
         CollectionReference petRef = mDatabase.collection(context.getString(R.string.collection_pets));
         //extract list of owners

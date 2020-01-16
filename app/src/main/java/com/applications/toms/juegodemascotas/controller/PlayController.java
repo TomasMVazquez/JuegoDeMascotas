@@ -19,7 +19,6 @@ public class PlayController {
         daoPlay = new DaoPlay();
     }
 
-    //TODO: Confirm if that solution to the duplicated data is the best
     //return all plays
     public void givePlayDateList(List<PlayDate> currentPlayDateList, Context context, ResultListener<List<PlayDate>> resultListener) {
         if (Util.isOnline(context)) {

@@ -157,7 +157,6 @@ public class UpdateProfileFragment extends Fragment implements FragmentTitles {
     }
 
 
-    //TODO UpdateProfileFragment new DATE PICKER??
     //Date picker
     public void showTruitonDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();

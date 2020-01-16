@@ -162,7 +162,6 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
         //edit btn profile info
         fabEditProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
-                //TODO
                 UpdateProfileFragment updateProfileFragment = new UpdateProfileFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -180,13 +179,11 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
 
     @Override
     public void goToUserProfile(String keyType, String idOwner, String idPet) {
-        //TODO
         profileFragmentListener.profileChange(keyType, idOwner, idPet);
     }
 
     @Override
     public void goToPetProfile(String keyType, String idOwner, String idPet) {
-        //TODO
         profileFragmentListener.profileChange(keyType, idOwner, idPet);
     }
 
@@ -274,8 +271,6 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
                     });
                 }
                 photoOwnerActual = profileData.getAvatar();
-            } else {
-                //TODO
             }
 
         } else if (type.equals("2")) {

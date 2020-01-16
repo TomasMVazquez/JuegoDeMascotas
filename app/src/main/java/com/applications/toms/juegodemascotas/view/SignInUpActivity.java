@@ -52,7 +52,6 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         setSignInUpResult(false);
     }
 

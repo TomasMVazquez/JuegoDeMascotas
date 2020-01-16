@@ -205,7 +205,6 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully, show authenticated UI.
-            //updateUI(account);
             firebaseAuthWithGoogle(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -231,15 +230,12 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         Toast.makeText(LogInActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
-//                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                         updateUI(null);
                     }
 
-                    // ...
                 });
     }
 
-    //If connection failed TODO LOGIN onConnectionFailed doing nothing...
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 

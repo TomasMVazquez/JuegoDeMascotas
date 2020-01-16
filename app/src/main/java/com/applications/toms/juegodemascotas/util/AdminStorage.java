@@ -73,18 +73,8 @@ public class AdminStorage {
 
         docRef
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: Delete Success");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: " + e.getMessage());
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "onSuccess: Delete Success"))
+                .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
     }
 
     //delete user play
@@ -98,18 +88,8 @@ public class AdminStorage {
 
         docRef
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: Delete Success");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: " + e.getMessage());
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "onSuccess: Delete Success"))
+                .addOnFailureListener(e -> Log.d(TAG, "onFailure: " + e.getMessage()));
     }
 
     //Verification of today vs play date

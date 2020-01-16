@@ -20,7 +20,6 @@ import java.util.List;
 public class DaoOwner {
 
     private List<Owner> ownerList = new ArrayList<>();
-    private List<Pet> friendsList = new ArrayList<>();
     private FirebaseFirestore mDatabase;
 
     //DAO to look for owners and owners data
@@ -66,7 +65,6 @@ public class DaoOwner {
         friendRef.addSnapshotListener(((queryDocumentSnapshots, e) -> {
             try {
 
-                //friendsList.addAll(queryDocumentSnapshots.toObjects(Pet.class));
                 friendsResultListener.finish(queryDocumentSnapshots.toObjects(Pet.class));
 
             }catch (Exception exp){

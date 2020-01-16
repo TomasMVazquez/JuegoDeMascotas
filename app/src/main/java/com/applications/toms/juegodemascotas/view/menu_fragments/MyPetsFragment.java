@@ -120,7 +120,6 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
 
     @Override
     public void goToProfile(String idOwner, String petId) {
-        //TODO Make go to profile (after making profile fragment)
         myPetsInterface.petSelectedListener(idOwner,petId);
     }
 

@@ -23,7 +23,6 @@ public class PetController {
 
     //Return pets list
     public void givePetList(Context context, ResultListener<List<Pet>> resultListener) {
-//        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)) {
             daoPet.fetchPetList(context, resultado -> resultListener.finish(resultado));
         } else {
@@ -33,7 +32,6 @@ public class PetController {
 
     //return one pet
     public void givePet(String petId, Context context, ResultListener<Pet> resultListener) {
-//        DaoPet daoPet = new DaoPet();
         if (Util.isOnline(context)) {
             daoPet.fetchPet(petId, context, resultado -> resultListener.finish(resultado));
         } else {
@@ -42,7 +40,6 @@ public class PetController {
 
     }
 
-    //TODO: Confirm if overloarding is ok here
     //return owners pets
     public void giveOwnerPets(List<Pet> currentPetList, String ownerId, Context context, ResultListener<List<Pet>> resultListener) {
         if (Util.isOnline(context)) {
@@ -63,7 +60,6 @@ public class PetController {
 
     //return owners pets
     public void giveOwnerPets(String ownerId, Context context, ResultListener<List<Pet>> resultListener) {
-//        DaoPet daoPet = new DaoPet();
         daoPet.fetchOwnerPets(ownerId, context, resultado -> resultListener.finish(resultado));
     }
 

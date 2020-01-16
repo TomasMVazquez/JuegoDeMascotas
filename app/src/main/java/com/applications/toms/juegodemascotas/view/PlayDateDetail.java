@@ -3,6 +3,9 @@ package com.applications.toms.juegodemascotas.view;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +30,7 @@ import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.CirculePetsAdapter;
+import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -64,6 +68,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     private static final String TAG = "PlayDateDetail";
     public static final String KEY_PLAY_DETAIL = "play";
+    public static final int KEY_PROFILE = 333;
 
     //Atributos
     private AppBarLayout appBarLayout;
@@ -117,8 +122,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
-        playRef = db.collection(getString(R.string.collection_play))
-                .document(playId);
+        playRef = db.collection(getString(R.string.collection_play)).document(playId);
 
         //Busco los objetos
         mapPlayDetail = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapPlayDetail);
@@ -163,14 +167,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
         //Go to profile in case they click it
         ivOwnerCreator.setOnClickListener(v -> {
-            //TODO CHANGE TO FRAGMENTS 4
-//            Intent intent1 = new Intent(PlayDateDetail.this,ProfileActivity.class);
-//            Bundle bundle1 = new Bundle();
-//            bundle1.putString(ProfileActivity.KEY_TYPE,"1");
-//            bundle1.putString(ProfileActivity.KEY_USER_ID,creatorId);
-//            bundle1.putString(ProfileActivity.KEY_PET_ID,"0");
-//            intent1.putExtras(bundle1);
-//            startActivity(intent1);
+            goToSomeProfile("1",creatorId,"0");
         });
 
         //Collapsing Toolbar
@@ -192,22 +189,16 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
                 }
 
                 // SCROLL TOP
-
                 if (scrollRange + verticalOffset == 0){
-//                    collapsingToolbarLayout.setTitle("Collapsed");
                     collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
-//                    toolbar.setTitleTextColor(getColor(R.color.colorWhite));
                     toolbar.setBackgroundColor(getColor(R.color.colorPrimary));
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     isShow = true;
                 }
 
                 //SCROLL DOWN
-
                 else if (isShow){
-//                    collapsingToolbarLayout.setTitle("Expanded");
                     collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-//                    collapsingToolbarLayout.setExpandedTitleColor(getColor(R.color.colorWhite));
                     toolbar.setBackgroundColor(Color.TRANSPARENT);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                     isShow = false;
@@ -378,6 +369,16 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     @Override
     public void goToPetProfile(String keyType, String idOwner, String idPet) {
-        //TODO Go To Profile
+        goToSomeProfile(keyType,idOwner,idPet);
+    }
+
+    private void goToSomeProfile(String keyType, String idOwner, String petId){
+        Intent intent = new Intent(PlayDateDetail.this,MainActivity.class);
+        Bundle profBundle = new Bundle();
+        profBundle.putString(ProfileFragment.KEY_TYPE,keyType);
+        profBundle.putString(ProfileFragment.KEY_USER_ID,idOwner);
+        profBundle.putString(ProfileFragment.KEY_PET_ID,petId);
+        intent.putExtras(profBundle);
+        startActivity(intent,profBundle);
     }
 }

@@ -66,7 +66,6 @@ public class Util {
         if (available == ConnectionResult.SUCCESS){
             //Everything is find and user can do maps request
             Log.d(TAG, "isServicesOk: Google Play services is working");
-//            Toast.makeText(this, " Service ok ", Toast.LENGTH_SHORT).show();
             return true;
         }
         else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)){

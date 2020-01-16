@@ -49,9 +49,7 @@ public class OwnerController {
     public void giveFriends(List<Pet> currenPetList, String ownerId, Context context, ResultListener<List<Pet>> friendsListener) {
         if (Util.isOnline(context)) {
             daoOwner.fetchFriends(ownerId, context, result -> {
-                //friendsListener.finish(result);
                 List<Pet> duplicatedPetFriendsList = new ArrayList<>();
-                //Check if the data is duplicated
                 for(Pet petFromCloud : result){
                     if(currenPetList.contains(petFromCloud))
                         duplicatedPetFriendsList.add(petFromCloud);
