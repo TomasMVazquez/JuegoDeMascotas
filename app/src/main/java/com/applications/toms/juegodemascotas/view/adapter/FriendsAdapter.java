@@ -122,7 +122,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         private void confirmDialogDemo(Pet pet, int index) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(context.getString(R.string.dialog_confirm_title));
-            builder.setMessage(context.getString(R.string.dialog_confirm_text));
+            builder.setMessage(context.getString(R.string.dialog_confirm_text_delete_friend));
             builder.setCancelable(false);
             builder.setIcon(context.getDrawable(R.drawable.juego_mascota));
 

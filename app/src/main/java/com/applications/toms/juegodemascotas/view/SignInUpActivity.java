@@ -2,11 +2,14 @@ package com.applications.toms.juegodemascotas.view;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +30,8 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
 
     private static FirebaseAuth mAuth;
     private Context context;
-    private FrameLayout frameSignInUp;
+    private CoordinatorLayout coordinatorSnackSign;
+    private ProgressDialog prog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
         //Firebase Instance for DataBase
         mAuth = FirebaseAuth.getInstance();
 
-        frameSignInUp = findViewById(R.id.frameSignInUp);
+        coordinatorSnackSign = findViewById(R.id.coordinatorSnackSign);
 
         //Get extras from the intent to understand if we need to create Sign in Fragment or Sign up fragment
         Intent intent = getIntent();
@@ -57,7 +61,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
 
     @Override
     public void onBackPressed() {
-        setSignInUpResult(false);
+        setSignInUpResult(false,null);
     }
 
     //Metodos
@@ -72,27 +76,46 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
 
     //Handle email Access
     private void handleEmailAccess(final String email, final String pass){
+
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        setSignInUpResult(true);
+
+                        setSignInUpResult(true,null);
                     } else {
-                        Snackbar.make(frameSignInUp,getString(R.string.no_account_toast),Snackbar.LENGTH_SHORT).show();
-                        setSignInUpResult(false);
+                        Intent i = new Intent();
+                        Bundle b = new Bundle();
+                        b.putString(LogInActivity.KEY_MSG,getString(R.string.no_account_toast));
+                        i.putExtras(b);
+                        setSignInUpResult(false,i);
                     }
                 });
     }
 
     //Reset pass with email access
     private void resetEmailAccess(String email){
+        //Progess dialog
+        prog = new ProgressDialog(SignInUpActivity.this);
+        prog.setTitle("Por favor espere");
+        prog.setMessage("Estamos enviando mail de recuperación");
+        prog.setCancelable(false);
+        prog.setIndeterminate(true);
+        prog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        prog.show();
+
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Snackbar.make(frameSignInUp,getString(R.string.btn_register_toast),Snackbar.LENGTH_SHORT).show();
-                        setSignInUpResult(false);
+                        Intent i = new Intent();
+                        Bundle b = new Bundle();
+                        b.putString(LogInActivity.KEY_MSG,getString(R.string.btn_register_toast));
+                        i.putExtras(b);
+                        setSignInUpResult(false,i);
                     }
+                    prog.dismiss();
                 });
     }
 
@@ -108,19 +131,19 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
 
                         mAuth.getCurrentUser().updateProfile(profileUpdates);
 
-                        setSignInUpResult(true);
+                        setSignInUpResult(true,null);
                     }
                 })
-                .addOnFailureListener(e -> Snackbar.make(frameSignInUp,e.toString(),Snackbar.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Snackbar.make(coordinatorSnackSign,e.toString(),Snackbar.LENGTH_SHORT).show());
     }
 
     //Set result for the intent for result from the login
-    private void setSignInUpResult(Boolean result){
+    private void setSignInUpResult(Boolean result, Intent data){
         if (result){
             setResult(Activity.RESULT_OK);
             finish();
         }else {
-            setResult(Activity.RESULT_CANCELED);
+            setResult(Activity.RESULT_CANCELED, data);
             finish();
         }
     }

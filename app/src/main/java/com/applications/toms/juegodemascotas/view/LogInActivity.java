@@ -58,6 +58,7 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
     public static final int RC_SIGN_IN = 103;
     public static final int KEY_SIGN_IN = 102;
     private static final String TAG = "LOGIN";
+    public static final String KEY_MSG = "msg";
 
     private RelativeLayout rlLog;
 
@@ -166,6 +167,8 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         }else {
             if (requestCode != KEY_SIGN_IN) {
                 updateUI(null);
+            }else{
+                Snackbar.make(rlLog,data.getExtras().getString(KEY_MSG),Snackbar.LENGTH_LONG).show();
             }
         }
     }

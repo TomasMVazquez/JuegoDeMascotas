@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.view.LogInActivity;
+import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.SignInUpActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
