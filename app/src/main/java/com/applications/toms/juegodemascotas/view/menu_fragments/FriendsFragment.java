@@ -41,6 +41,11 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
     private FriendsInterface friendsInterface;
     private List<Pet> petFriendList = new ArrayList<>();
 
+    private OwnerController ownerController;
+    private FirebaseUser currentUser;
+    private Context context;
+    private FriendsAdapter friendsAdapter;
+
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -56,11 +61,11 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
         activity = getActivity();
-        Context context = getApplicationContext();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        context = getApplicationContext();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Adapter
-        FriendsAdapter friendsAdapter = new FriendsAdapter(petFriendList, context,this);
+        friendsAdapter = new FriendsAdapter(petFriendList, context,this);
 
         //Recycler View
         RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerFriends);
@@ -72,7 +77,7 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         recyclerPlayDates.setAdapter(friendsAdapter);
 
         if (currentUser != null){
-            OwnerController ownerController = new OwnerController();
+            ownerController = new OwnerController();
             ownerController.giveFriends(petFriendList, currentUser.getUid(), context, result -> {
                 petFriendList.addAll(result);
                 friendsAdapter.setPetList(petFriendList);
@@ -85,6 +90,12 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
     @Override
     public void goToChat(String userToChat) {
         friendsInterface.getChat(userToChat);
+    }
+
+    @Override
+    public void update(int index) {
+        petFriendList.remove(index);
+        friendsAdapter.setPetList(petFriendList);
     }
 
     public interface FriendsInterface{

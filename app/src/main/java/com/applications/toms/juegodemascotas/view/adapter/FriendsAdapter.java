@@ -1,12 +1,15 @@
 package com.applications.toms.juegodemascotas.view.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +18,12 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.List;
@@ -73,6 +82,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
     public interface FriendAdapterInterface{
         void goToChat(String userToChat);
+        void update(int index);
     }
 
     public class FriendViewHolder extends RecyclerView.ViewHolder{
@@ -95,18 +105,40 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             });
 
             itemView.setOnLongClickListener(v -> {
-                //TODO on long click option to delete from list of friends
+                confirmDialogDemo(petList.get(getAdapterPosition()),getAdapterPosition());
                 return false;
             });
 
         }
 
-        public void cargar(Pet pet){
+        private void cargar(Pet pet){
             tvCVNameFriend.setText(pet.getNombre());
 
             PetController petController = new PetController();
             petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCVFriend));
 
+        }
+
+        private void confirmDialogDemo(Pet pet, int index) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(context.getString(R.string.dialog_confirm_title));
+            builder.setMessage(context.getString(R.string.dialog_confirm_text));
+            builder.setCancelable(false);
+            builder.setIcon(context.getDrawable(R.drawable.juego_mascota));
+
+            builder.setPositiveButton(context.getString(R.string.dialog_confirm_accept), (dialog, which) ->{
+                //Create on the current user a document with firend list
+                CollectionReference myFriendCol = FirebaseFirestore.getInstance().collection(context.getString(R.string.collection_users))
+                        .document(FirebaseAuth.getInstance().getUid()).collection(context.getString(R.string.collection_my_friends));
+
+                myFriendCol.document(pet.getIdPet()).delete();
+                notifyDataSetChanged();
+                friendAdapterInterface.update(index);
+            });
+
+            builder.setNegativeButton(context.getString(R.string.dialog_confirm_cancel), (dialog, which) -> dialog.cancel());
+
+            builder.show();
         }
     }
 

@@ -245,17 +245,17 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
 
     private void confirmDialogDemo() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Confirmación");
-        builder.setMessage("Por favor confirmar que usted NO quiere participar de este juego");
+        builder.setTitle(getString(R.string.dialog_confirm_title));
+        builder.setMessage(getString(R.string.dialog_confirm_text));
         builder.setCancelable(false);
         builder.setIcon(getDrawable(R.drawable.juego_mascota));
 
-        builder.setPositiveButton("Confirmar", (dialog, which) ->{
+        builder.setPositiveButton(getString(R.string.dialog_confirm_accept), (dialog, which) ->{
             playRef.update(getString(R.string.collection_participants), FieldValue.arrayRemove(currentUser.getUid()));
             joinToCreatorPlayDate(creatorId, playId);
         });
 
-        builder.setNegativeButton("Cancelar", (dialog, which) -> Snackbar.make(nestedScroll,getString(R.string.error_delete),Snackbar.LENGTH_SHORT).show());
+        builder.setNegativeButton(getString(R.string.dialog_confirm_cancel), (dialog, which) -> Snackbar.make(nestedScroll,getString(R.string.error_delete),Snackbar.LENGTH_SHORT).show());
 
         builder.show();
     }
