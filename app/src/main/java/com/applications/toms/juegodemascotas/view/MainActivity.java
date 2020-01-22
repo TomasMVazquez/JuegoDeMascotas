@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
         userRef.update(
                 "nombre", name,
-                "sexo", sex,
+                "sex", sex,
                 "fechaNacimiento", birth,
                 "direccion", dir,
                 "infoDuenio", about

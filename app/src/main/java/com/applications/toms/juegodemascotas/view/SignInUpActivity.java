@@ -107,11 +107,15 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
 
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
+                    Intent i = new Intent();
+                    Bundle b = new Bundle();
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        Intent i = new Intent();
-                        Bundle b = new Bundle();
                         b.putString(LogInActivity.KEY_MSG,getString(R.string.btn_register_toast));
+                        i.putExtras(b);
+                        setSignInUpResult(false,i);
+                    }else {
+                        b.putString(LogInActivity.KEY_MSG,task.getException().getMessage());
                         i.putExtras(b);
                         setSignInUpResult(false,i);
                     }

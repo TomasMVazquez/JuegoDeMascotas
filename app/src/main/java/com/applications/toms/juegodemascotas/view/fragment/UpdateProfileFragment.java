@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.view.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -21,9 +23,12 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
+import com.applications.toms.juegodemascotas.view.MainActivity;
+import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,7 +58,6 @@ public class UpdateProfileFragment extends Fragment implements FragmentTitles {
     public UpdateProfileFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,8 +111,8 @@ public class UpdateProfileFragment extends Fragment implements FragmentTitles {
         //Boton Update
         Button btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
         btnUpdateProfile.setOnClickListener(v -> {
-            OnFragmentNotify onFragmentFNotify= (OnFragmentNotify) getContext();
-            onFragmentFNotify.saveAndCompleteProfileUpdates(etUpdateName.getText().toString(),
+            ProfileFragment.saveAndCompleteProfileUpdates(
+                      etUpdateName.getText().toString(),
                     etUpdateDireccion.getText().toString(),
                     etUpdateBirth.getText().toString(),
                     sex,
@@ -124,10 +128,6 @@ public class UpdateProfileFragment extends Fragment implements FragmentTitles {
         return R.string.btn_update;
     }
 
-    //interface comunication to activity
-    public interface OnFragmentNotify{
-        void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about);
-    }
 
     //CheckDataBaseInfo
     public void checkDataBaseInfo(final String userID){

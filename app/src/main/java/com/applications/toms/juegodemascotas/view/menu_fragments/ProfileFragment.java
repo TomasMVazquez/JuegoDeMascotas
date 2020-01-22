@@ -59,8 +59,8 @@ import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class    ProfileFragment extends Fragment implements UpdateProfileFragment.OnFragmentNotify,
-        CirculePetsAdapter.AdapterInterfaceCircule, CirculeOwnerAdapter.AdapterInterfaceCirculeOwner,
+public class    ProfileFragment extends Fragment implements CirculePetsAdapter.AdapterInterfaceCircule,
+        CirculeOwnerAdapter.AdapterInterfaceCirculeOwner,
         FragmentTitles {
 
     public static final String TAG = "ProfileFragment";
@@ -75,6 +75,7 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
     private static CirculeOwnerAdapter circuleOwnerAdapter;
     private static FirebaseUser currentUser;
     private ProfileFragmentListener profileFragmentListener;
+
     //Atributos
     private Activity activity;
     private Context context;
@@ -82,9 +83,9 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
     private PetController petController;
     private FirebaseStorage mStorage;
     private ImageView ivProfile;
-    private TextView tvName;
-    private TextView tvDir;
-    private TextView tvAboutProfile;
+    private static TextView tvName;
+    private static TextView tvDir;
+    private static TextView tvAboutProfile;
     private TextView tvMyPetsOwner;
     private RecyclerView rvMyPetsOwner;
     private FloatingActionButton fabImageProfile;
@@ -208,8 +209,8 @@ public class    ProfileFragment extends Fragment implements UpdateProfileFragmen
     }
 
     //Actualizar el profile y salvarlo
-    @Override
-    public void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about) {
+
+    public static void saveAndCompleteProfileUpdates(String name, String dir, String birth, String sex, String about) {
         tvName.setText(name);
         tvDir.setText(dir);
         tvAboutProfile.setText(about);
