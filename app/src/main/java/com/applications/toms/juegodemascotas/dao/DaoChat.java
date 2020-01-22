@@ -12,6 +12,7 @@ import com.applications.toms.juegodemascotas.model.Message;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.ResultListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -56,6 +57,22 @@ public class DaoChat {
             }
 
         });
+
+    }
+
+    public void deleteChat(String chatID,String userTwo, String userID, Context context, ResultListener<Boolean> resultListener){
+        DocumentReference chatRef = mDatabase.collection(context.getString(R.string.collection_users))
+                .document(userID).collection(context.getString(R.string.collection_my_chats)).document(userTwo);
+
+        chatRef.delete()
+                .addOnCompleteListener(task -> {
+                    mDatabase.collection(context.getString(R.string.collection_chats)).document(chatID).delete();
+                    resultListener.finish(true);
+                })
+                .addOnFailureListener(e -> {
+                    resultListener.finish(false);
+                        }
+                );
 
     }
 
@@ -111,7 +128,9 @@ public class DaoChat {
         DocumentReference ownerRef = mDatabase.collection(context.getString(R.string.collection_users))
                 .document(userId);
         ownerRef.addSnapshotListener((documentSnapshot, e) -> {
-            resultListener.finish(documentSnapshot.get("name").toString());
+            if (documentSnapshot.exists()) {
+                resultListener.finish(documentSnapshot.get("name").toString());
+            }
         });
 
     }

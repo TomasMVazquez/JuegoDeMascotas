@@ -42,7 +42,6 @@ public class OwnerController {
 
     //return owners avatar
     public void giveOwnerAvatar(String userId, String avatar, Context context, ResultListener<Uri> resultListener) {
-//        DaoOwner daoOwner = new DaoOwner();
         daoOwner.fetchOwnerAvatar(userId, avatar, context, resultListener);
     }
 

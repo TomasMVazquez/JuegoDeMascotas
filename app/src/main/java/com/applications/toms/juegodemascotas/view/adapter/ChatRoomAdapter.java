@@ -133,17 +133,27 @@ public class ChatRoomAdapter extends RecyclerView.Adapter {
             }else {
                 Log.d(TAG, "cargar: user 1 = " + chat.getUserOne());
                 ownerController.giveOwnerData(chat.getUserOne(), context, result -> {
-                    Log.d(TAG, "cargar: result = " + result);
-                    tvChatName.setText(result.getName());
-                    if (result.getAvatar() == null){
-                        Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewUserToChat);
-                    }else {
-                        String [] avatar = result.getAvatar().split("=");
-                        if (avatar.length > 1){
-                            Glide.with(context).load(result.getAvatar()).into(ivCardViewUserToChat);
-                        }else {
-                            ownerController.giveOwnerAvatar(result.getUserId(),result.getAvatar(),context, results -> Glide.with(context).load(results).into(ivCardViewUserToChat));
+                    if (result!=null) {
+                        Log.d(TAG, "cargar: result = " + result);
+                        tvChatName.setText(result.getName());
+                        if (result.getAvatar() == null) {
+                            Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewUserToChat);
+                        } else {
+                            String[] avatar = result.getAvatar().split("=");
+                            if (avatar.length > 1) {
+                                Glide.with(context).load(result.getAvatar()).into(ivCardViewUserToChat);
+                            } else {
+                                ownerController.giveOwnerAvatar(result.getUserId(), result.getAvatar(), context, results -> Glide.with(context).load(results).into(ivCardViewUserToChat));
+                            }
                         }
+                    }else {
+                        ChatController chatController = new ChatController();
+                        chatController.deleteChat(chat.getIdChat(),chat.getUserOne(),currentUser.getUid(),context,result1 -> {
+                            if (result1){
+                                Log.d(TAG, "cargar:chat eliminado");
+                            }
+                        });
+
                     }
                 });
             }

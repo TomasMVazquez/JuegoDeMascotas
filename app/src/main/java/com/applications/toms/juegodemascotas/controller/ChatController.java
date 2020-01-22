@@ -51,4 +51,8 @@ public class ChatController {
         }
     }
 
+    public void deleteChat(String chatID,String userTwo, String userID, Context context, ResultListener<Boolean> resultListener){
+        daoChat.deleteChat(chatID,userTwo,userID,context,resultListener);
+    }
+
 }

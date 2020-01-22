@@ -45,8 +45,12 @@ public class DaoOwner {
                 .document(ownerId);
 
         ownerRef.get().addOnSuccessListener(documentSnapshot -> {
-            Owner owner = documentSnapshot.toObject(Owner.class);
-            ownerResultListener.finish(owner);
+            if (documentSnapshot.exists()) {
+                Owner owner = documentSnapshot.toObject(Owner.class);
+                ownerResultListener.finish(owner);
+            }else {
+                ownerResultListener.finish(null);
+            }
         });
     }
 
