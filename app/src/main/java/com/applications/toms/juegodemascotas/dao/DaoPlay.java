@@ -30,7 +30,7 @@ public class DaoPlay {
         CollectionReference playRef = mDatabase.collection(context.getString(R.string.collection_play));
 
         playRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots != null){
+            if (queryDocumentSnapshots.getDocuments().size() > 0){
                 playDateList.addAll(queryDocumentSnapshots.toObjects(PlayDate.class));
                 listResultListener.finish(playDateList);
             }else {

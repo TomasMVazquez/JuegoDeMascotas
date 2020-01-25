@@ -48,7 +48,7 @@ public class DaoOwner {
             if (documentSnapshot.exists()) {
                 Owner owner = documentSnapshot.toObject(Owner.class);
                 ownerResultListener.finish(owner);
-            }else {
+            } else {
                 ownerResultListener.finish(null);
             }
         });

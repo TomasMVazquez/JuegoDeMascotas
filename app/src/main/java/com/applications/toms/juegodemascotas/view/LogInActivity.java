@@ -167,8 +167,6 @@ public class LogInActivity extends AppCompatActivity implements GoogleApiClient.
         }else {
             if (requestCode != KEY_SIGN_IN) {
                 updateUI(null);
-            }else{
-                Snackbar.make(rlLog,data.getExtras().getString(KEY_MSG),Snackbar.LENGTH_LONG).show();
             }
         }
     }

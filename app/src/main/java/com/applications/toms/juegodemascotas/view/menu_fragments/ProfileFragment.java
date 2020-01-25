@@ -157,14 +157,16 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
         petId = bundle.getString(KEY_PET_ID);
 
         //Get Owner Data
-        fetchOwnerData(idUser);
+        if (idUser!=null) {
+            fetchOwnerData(idUser);
+        }
 
         //edit btn for avatar
         fabImageProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
-                EasyImage.openChooserWithGallery(getActivity(), getResources().getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
+                EasyImage.openChooserWithGallery(getActivity(), context.getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
             } else if (type.equals("2")) {
-                EasyImage.openChooserWithGallery(getActivity(), getResources().getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
+                EasyImage.openChooserWithGallery(getActivity(), context.getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
             }
         });
 
@@ -270,7 +272,7 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
     private void completeDataInProfile(Owner profileData) {
         if (type.equals("1")) {
             //Text MyOwner or MyPets
-            tvMyPetsOwner.setText(getResources().getString(R.string.my_pets));
+            tvMyPetsOwner.setText(context.getString(R.string.my_pets));
             //adaptador
             rvMyPetsOwner.setAdapter(circulePetsAdapter);
             //My Pets
@@ -284,7 +286,7 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
             if (profileData.getAvatar() != null) {
                 String[] avatar = profileData.getAvatar().split("=");
                 if (avatar.length > 1) {
-                    Glide.with(this).load(profileData.getAvatar()).into(ivProfile);
+                    Glide.with(getActivity()).load(profileData.getAvatar()).into(ivProfile);
                 } else {
                     ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), context, result -> {
                         Log.d(TAG, "completeDataInProfile: uri: " + result);
@@ -298,7 +300,7 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
             //If is a pet and Im the owner I can delete, this is the icon
             fabEditProfile.setImageDrawable(context.getDrawable(R.drawable.ic_delete_forever_white_24dp));
             //Text MyOwner or MyPets
-            tvMyPetsOwner.setText(getResources().getString(R.string.my_owner));
+            tvMyPetsOwner.setText(context.getString(R.string.my_owner));
             //Adapter
             rvMyPetsOwner.setAdapter(circuleOwnerAdapter);
             //Busco la mascota elegida

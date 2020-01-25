@@ -66,6 +66,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rohitss.uceh.UCEHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -222,7 +223,14 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         //print hash --
         Util.printHash(this);
         //crush -- this is useful to test the app so a QA can send the error report
-//        new UCEHandler.Builder(this).build();
+        new UCEHandler
+                .Builder(this)
+                .setTrackActivitiesEnabled(true)
+                .setBackgroundModeEnabled(true)
+                .setUCEHEnabled(false)
+                .addCommaSeparatedEmailAddresses("tomas.manuel.vazquez@gmail.com")
+                .build();
+
 
         coordinatorSnack = findViewById(R.id.coordinatorSnackMain);
         fragmentManager = getSupportFragmentManager();

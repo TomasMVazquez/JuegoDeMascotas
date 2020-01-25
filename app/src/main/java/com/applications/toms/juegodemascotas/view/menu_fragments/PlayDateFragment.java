@@ -100,9 +100,11 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         //If user is not loged in then not bring anything else get plays and addbtn
         if (currentUser != null) {
             playController.givePlayDateList(currentPlayDateList, context, result -> {
-                Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
-                currentPlayDateList = result;
-                mapAdapter.setPlayDates(currentPlayDateList);
+                if (result!=null) {
+                    Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
+                    currentPlayDateList = result;
+                    mapAdapter.setPlayDates(currentPlayDateList);
+                }
             });
 
             fabNewPlayDate.setOnClickListener(v -> {

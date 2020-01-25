@@ -19,10 +19,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.view.SignInUpActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 /**
@@ -35,6 +38,7 @@ public class SignUpFragment extends Fragment {
     private EditText etPassSigUp;
     private EditText etEmailSigUp;
     private TextInputLayout tiPassSignUp;
+    private LinearLayout llEmailLogIn;
 
     public SignUpFragment() {
         // Required empty public constructor
@@ -58,6 +62,7 @@ public class SignUpFragment extends Fragment {
         etPassSigUp = view.findViewById(R.id.etPassSigUp);
         etEmailSigUp = view.findViewById(R.id.etEmailSigUp);
         tiPassSignUp = view.findViewById(R.id.tiPassSignUp);
+        llEmailLogIn = view.findViewById(R.id.llEmailLogIn);
 
         TextView txtPriv2 = view.findViewById(R.id.txtPriv2);
         txtPriv2.setMovementMethod(LinkMovementMethod.getInstance());
@@ -96,8 +101,16 @@ public class SignUpFragment extends Fragment {
 
         //Create account btn
         btnSignUp.setOnClickListener(v -> {
-            signUpNotify.signUp(etEmailSigUp.getText().toString(), etPassSigUp.getText().toString());
-            etPassSigUp.setText("");
+            if (isValidEmail(etEmailSigUp.getText())) {
+                if (!etPassSigUp.getText().toString().isEmpty()) {
+                    signUpNotify.signUp(etEmailSigUp.getText().toString(), etPassSigUp.getText().toString());
+                    etPassSigUp.setText("");
+                }else {
+                    Snackbar.make(llEmailLogIn,getContext().getString(R.string.pass_login),Snackbar.LENGTH_SHORT).show();
+                }
+            }else {
+                Snackbar.make(llEmailLogIn,getContext().getString(R.string.email_login),Snackbar.LENGTH_SHORT).show();
+            }
         });
 
         //go Sign In if enter to sign up by mistake
@@ -125,6 +138,14 @@ public class SignUpFragment extends Fragment {
         }else {
             tiPassSignUp.setError(getResources().getString(R.string.pass_error_1));
         }
+    }
+
+    //Validation of the email
+    public final static boolean isValidEmail(CharSequence target) {
+        if (target == null)
+            return false;
+
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     //Check if there is a numeric character
