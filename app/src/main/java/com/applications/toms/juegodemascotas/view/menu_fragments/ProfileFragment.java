@@ -59,30 +59,32 @@ import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class    ProfileFragment extends Fragment implements CirculePetsAdapter.AdapterInterfaceCircule,
+public class    ProfileFragment extends Fragment implements
+        CirculePetsAdapter.AdapterInterfaceCircule,
         CirculeOwnerAdapter.AdapterInterfaceCirculeOwner,
         FragmentTitles {
 
     public static final String TAG = "ProfileFragment";
     private static final String SHOWCASE_ID = "simple profile";
-
+    public static final int KEY_CAMERA_OWNER_PICTURE = 301;
+    public static final int KEY_CAMERA_PET_PICTURE = 302;
     public static final String KEY_TYPE = "type";
     public static final String KEY_USER_ID = "user_id";
     public static final String KEY_PET_ID = "pet_id";
-    public static final int KEY_CAMERA_OWNER_PICTURE = 301;
-    public static final int KEY_CAMERA_PET_PICTURE = 302;
+
     private static CirculePetsAdapter circulePetsAdapter;
     private static CirculeOwnerAdapter circuleOwnerAdapter;
     private static FirebaseUser currentUser;
     private ProfileFragmentListener profileFragmentListener;
+    private static StorageReference raiz;
 
     //Atributos
-    private Activity activity;
+    private static Activity activity;
     private Context context;
     private OwnerController ownerController;
     private PetController petController;
     private FirebaseStorage mStorage;
-    private ImageView ivProfile;
+    private static ImageView ivProfile;
     private static TextView tvName;
     private static TextView tvDir;
     private static TextView tvAboutProfile;
@@ -93,11 +95,11 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
     private FrameLayout containerProfile;
 
     private String type;
-    private String petId;
-    private String idUser;
+    private static String petId;
+    private static String idUser;
     private List<Pet> petsList = new ArrayList<Pet>();
-    private String photoPetActual;
-    private String photoOwnerActual;
+    private static String photoPetActual;
+    private static String photoOwnerActual;
     private Boolean disableBack;
 
     public ProfileFragment() {
@@ -107,7 +109,14 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        activity = getActivity();
         profileFragmentListener = (ProfileFragmentListener) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        activity = null;
     }
 
     @Override
@@ -129,7 +138,6 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
         containerProfile = view.findViewById(R.id.containerProfile);
 
         context = getContext();
-        activity = getActivity();
 
         //Controllers
         ownerController = new OwnerController();
@@ -139,6 +147,7 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
+        raiz = mStorage.getReference();
 
         //Adapter
         circulePetsAdapter = new CirculePetsAdapter(new ArrayList<>(), context, this);
@@ -270,6 +279,9 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
 
     //Bring Data to profile
     private void completeDataInProfile(Owner profileData) {
+        if (activity == null){
+            return;
+        }
         if (type.equals("1")) {
             //Text MyOwner or MyPets
             tvMyPetsOwner.setText(context.getString(R.string.my_pets));
@@ -343,67 +355,44 @@ public class    ProfileFragment extends Fragment implements CirculePetsAdapter.A
         builder.show();
     }
 
-    //On Activity Result de las fotos
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new EasyImage.Callbacks() {
-            @Override
-            public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
-
-            }
-
-            @Override
-            public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
-                StorageReference raiz = mStorage.getReference();
-                if (list.size() > 0) {
-                    File file = list.get(0);
-                    final Uri uri = Uri.fromFile(file);
-                    final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
-
-                    switch (i) {
-                        case KEY_CAMERA_OWNER_PICTURE:
-                            final StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(uriTemp.getLastPathSegment());
-
-                            //Poner nueva foto
-                            Glide.with(getActivity()).load(uri).into(ivProfile);
-                            //Actualizar foto de Firebase User
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setPhotoUri(uri)
-                                    .build();
-                            currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    //Cambiamos un metodo local por uno en el main
-                                    MainActivity.updateProfilePicture(photoOwnerActual, nuevaFoto.getName(), uriTemp);
-                                }
-                            });
-
-                            break;
-
-                        case KEY_CAMERA_PET_PICTURE:
-                            final StorageReference nuevaFotoPet = raiz.child(idUser).child(uriTemp.getLastPathSegment());
-                            //Poner nueva foto
-                            Glide.with(getActivity()).load(uri).into(ivProfile);
-                            MainActivity.updatePhotoPet(idUser, petId, photoPetActual, uriTemp.getLastPathSegment(), uriTemp);
-
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCanceled(EasyImage.ImageSource imageSource, int i) {
-
-            }
-        });
-    }
 
     @Override
     public int getFragmentTitle() {
         return R.string.my_profile;
+    }
+
+    public static void avatarUpdate(int key,Uri uri,Uri uriTemp) {
+
+        switch (key) {
+            case KEY_CAMERA_OWNER_PICTURE:
+                final StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(uriTemp.getLastPathSegment());
+
+                //Poner nueva foto
+                Glide.with(activity).load(uri).into(ivProfile);
+                //Actualizar foto de Firebase User
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(uri)
+                        .build();
+                currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        //Cambiamos un metodo local por uno en el main
+                        MainActivity.updateProfilePicture(photoOwnerActual, nuevaFoto.getName(), uriTemp);
+                    }
+                });
+
+                break;
+
+            case KEY_CAMERA_PET_PICTURE:
+                final StorageReference nuevaFotoPet = raiz.child(idUser).child(uriTemp.getLastPathSegment());
+                //Poner nueva foto
+                Glide.with(activity).load(uri).into(ivProfile);
+                MainActivity.updatePhotoPet(idUser, petId, photoPetActual, uriTemp.getLastPathSegment(), uriTemp);
+
+                break;
+            default:
+                break;
+        }
     }
 
     public interface ProfileFragmentListener {

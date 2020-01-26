@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 
@@ -51,6 +52,7 @@ import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransforme
 import com.applications.toms.juegodemascotas.view.menu_fragments.PlaysToGoFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.SearchFragment;
+import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +61,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -66,17 +69,20 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.rohitss.uceh.UCEHandler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pl.aprilapps.easyphotopicker.EasyImage;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.ShowcaseTooltip;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify,
         FriendsFragment.FriendsInterface, SearchFragment.SearchInterface, MyPetsFragment.MyPetsInterface,
@@ -125,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         }
 
         //Update new Photo
-        userRef.update("fotoDuenio", newPhoto);
+        userRef.update("avatar", newPhoto);
 
 
         final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
@@ -138,11 +144,11 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                 .document(currentUser.getUid());
 
         userRef.update(
-                "nombre", name,
+                "name", name,
                 "sex", sex,
-                "fechaNacimiento", birth,
-                "direccion", dir,
-                "infoDuenio", about
+                "birthDate", birth,
+                "address", dir,
+                "aboutMe", about
         );
     }
 
@@ -222,21 +228,12 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
         //print hash --
         Util.printHash(this);
-        //crush -- this is useful to test the app so a QA can send the error report
-        new UCEHandler
-                .Builder(this)
-                .setTrackActivitiesEnabled(true)
-                .setBackgroundModeEnabled(true)
-                .setUCEHEnabled(false)
-                .addCommaSeparatedEmailAddresses("tomas.manuel.vazquez@gmail.com")
-                .build();
-
 
         coordinatorSnack = findViewById(R.id.coordinatorSnackMain);
         fragmentManager = getSupportFragmentManager();
 
         Intent intent = getIntent();
-        if (intent.getExtras()!=null){
+        if (intent.getExtras()!= null && intent.getExtras().size() > 1){
             Bundle profBundle = intent.getExtras();
             profileChange(profBundle.getString(ProfileFragment.KEY_TYPE),profBundle.getString(ProfileFragment.KEY_USER_ID),profBundle.getString(ProfileFragment.KEY_PET_ID));
         }
@@ -385,6 +382,9 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         presentShowcaseView();
     }
 
+
+    //Methods
+
     void presentShowcaseView() {
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500);
@@ -447,7 +447,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     }
 
 
-
     @SuppressLint("WrongConstant")
     @Override
     public void onBackPressed() {
@@ -498,17 +497,51 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         }
     }
 
+    public static void doRestart(Context c) {
+        try {
+            //check if the context is given
+            if (c != null) {
+                //fetch the packagemanager so we can get the default launch activity
+                // (you can replace this intent with any other activity if you want
+                PackageManager pm = c.getPackageManager();
+                //check if we got the PackageManager
+                if (pm != null) {
+                    //create the intent with the default start activity for your application
+                    Intent mStartActivity = pm.getLaunchIntentForPackage(
+                            c.getPackageName()
+                    );
+                    if (mStartActivity != null) {
+                        mStartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        //create a pending intent so the application is restarted after System.exit(0) was called.
+                        // We use an AlarmManager to call this intent in 100ms
+                        int mPendingIntentId = 223344;
+                        PendingIntent mPendingIntent = PendingIntent
+                                .getActivity(c, mPendingIntentId, mStartActivity,
+                                        PendingIntent.FLAG_CANCEL_CURRENT);
+                        AlarmManager mgr = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                        //kill the application
+                        FirebaseAuth.getInstance().signOut();
+                        LoginManager.getInstance().logOut();
+                        System.exit(0);
+                    } else {
+                        Log.e(TAG, "Was not able to restart application, mStartActivity null");
+                    }
+                } else {
+                    Log.e(TAG, "Was not able to restart application, PM null");
+                }
+            } else {
+                Log.e(TAG, "Was not able to restart application, Context null");
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "Was not able to restart application");
+        }
+    }
+
     //Go to Login
     public void goLogIn() {
         if (currentUser != null) {
-            Intent mStartActivity = new Intent(MainActivity.this, MainActivity.class);
-            int mPendingIntentId = 123456;
-            PendingIntent mPendingIntent = PendingIntent.getActivity(MainActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-            AlarmManager mgr = (AlarmManager)MainActivity.this.getSystemService(Context.ALARM_SERVICE);
-            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-            FirebaseAuth.getInstance().signOut();
-            LoginManager.getInstance().logOut();
-            System.exit(0);
+            doRestart(this);
         } else {
             Intent intent = new Intent(MainActivity.this, LogInActivity.class);
             startActivityForResult(intent, KEY_LOGIN);
@@ -519,6 +552,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case KEY_LOGIN:
@@ -527,7 +561,33 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                     break;
             }
         }
+
+        //On Activity Result de las fotos
+        EasyImage.handleActivityResult(requestCode, resultCode, data, MainActivity.this, new EasyImage.Callbacks() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource imageSource, int i) {
+
+            }
+
+            @Override
+            public void onImagesPicked(@NonNull List<File> list, EasyImage.ImageSource imageSource, int i) {
+
+                if (list.size() > 0) {
+                    File file = list.get(0);
+                    final Uri uri = Uri.fromFile(file);
+                    final Uri uriTemp = Uri.fromFile(new File(uri.getPath()));
+                    ProfileFragment.avatarUpdate(i, uri,uriTemp);
+                }
+            }
+
+            @Override
+            public void onCanceled(EasyImage.ImageSource imageSource, int i) {
+
+            }
+        });
+
     }
+
 
     //Create DataBase if first time or not if not
     public void createDataBaseOwner() {
@@ -717,4 +777,5 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         myProfileFragment.setArguments(bundle);
         fragments(myProfileFragment,myProfileFragment.TAG);
     }
+
 }
