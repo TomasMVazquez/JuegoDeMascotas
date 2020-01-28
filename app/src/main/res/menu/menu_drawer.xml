@@ -33,4 +33,10 @@
         android:title="@string/search"
         android:icon="@drawable/ic_search"
         />
+
+    <item
+        android:id="@+id/aboutLibraries"
+        android:title="@string/about_libraries"
+        android:icon="@drawable/ic_libraries_48dp"
+        />
 </menu>

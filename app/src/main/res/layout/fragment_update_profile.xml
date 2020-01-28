@@ -45,6 +45,7 @@
                     android:layout_height="match_parent"
                     android:hint="@string/updateName"
                     android:inputType="textPersonName"
+                    android:background="@color/colorWhite"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,6 +61,7 @@
                     android:layout_height="match_parent"
                     android:hint="@string/updateDir"
                     android:inputType="textPostalAddress|textCapWords"
+                    android:background="@color/colorWhite"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,6 +113,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/updateBirth"
                     android:inputType="date"
+                    android:background="@color/colorWhite"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,6 +132,7 @@
                     android:lines="5"
                     android:textAlignment="textStart"
                     android:ellipsize="start"
+                    android:background="@color/colorWhite"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 

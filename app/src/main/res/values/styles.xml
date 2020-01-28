@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -24,6 +24,27 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textStyle">normal</item>
+    </style>
+
+    // define a custom style
+    <style name="CustomAboutLibrariesStyle" parent="Theme.MaterialComponents">
+        <!-- AboutLibraries specific values -->
+        <item name="aboutLibrariesWindowBackground">?android:colorBackground</item>
+        <item name="aboutLibrariesCardBackground">?cardBackgroundColor</item>
+        <item name="aboutLibrariesDescriptionTitle">?android:textColorPrimary</item>
+        <item name="aboutLibrariesDescriptionText">?android:textColorSecondary</item>
+        <item name="aboutLibrariesDescriptionDivider">@color/opensource_divider</item>
+        <item name="aboutLibrariesOpenSourceTitle">?android:textColorPrimary</item>
+        <item name="aboutLibrariesOpenSourceText">?android:textColorSecondary</item>
+        <item name="aboutLibrariesSpecialButtonText">?android:textColorPrimary</item>
+        <item name="aboutLibrariesOpenSourceDivider">@color/opensource_divider</item>
+    </style>
+
+    // define the custom styles for the theme
+    <style name="SampleApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        ...
+        <item name="aboutLibrariesStyle">@style/CustomAboutLibrariesStyle</item>
+        ...
     </style>
 
 </resources>

@@ -69,6 +69,8 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -346,6 +348,18 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                             Log.d("FRAGMENT CREADO = ", "Search");
                         }
                         fragments(searchFragment, SearchFragment.TAG);
+                        return true;
+                    case R.id.aboutLibraries:
+                        new LibsBuilder()
+                                .withActivityTitle(getString(R.string.app_name))
+                                .withAboutDescription(getString(R.string.app_desc))
+                                .withAboutIconShown(true)
+                                .withAutoDetect(true)
+                                .withAboutVersionShown(true)
+                                .withLicenseDialog(true)
+                                .withLicenseShown(true)
+                                .start(this);
+
                         return true;
                 }
             }else {
