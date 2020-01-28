@@ -30,6 +30,26 @@ public class PetController {
         }
     }
 
+    //Return pets list
+    public void givePetListDup(List<Pet> currentPetList,Context context, ResultListener<List<Pet>> resultListener) {
+        if (Util.isOnline(context)) {
+            daoPet.fetchPetList(context, resultado -> {
+                List<Pet> duplicatedPetsList = new ArrayList<>();
+                //Check if the data is duplicated, method Overloaded to test it
+                for (Pet pet : resultado) {
+                    if (currentPetList.contains(pet))
+                        duplicatedPetsList.add(pet);
+                }
+                resultado.removeAll(duplicatedPetsList);
+                if (resultado.isEmpty())
+                    resultado = null;
+                resultListener.finish(resultado);
+            });
+        } else {
+            resultListener.finish(new ArrayList<>());
+        }
+    }
+
     //return one pet
     public void givePet(String petId, Context context, ResultListener<Pet> resultListener) {
         if (Util.isOnline(context)) {

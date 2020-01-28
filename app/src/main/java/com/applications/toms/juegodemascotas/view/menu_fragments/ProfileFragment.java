@@ -78,6 +78,8 @@ public class    ProfileFragment extends Fragment implements
     private ProfileFragmentListener profileFragmentListener;
     private static StorageReference raiz;
 
+    private MaterialShowcaseView.Builder materialShowcaseView;
+
     //Atributos
     private static Activity activity;
     private Context context;
@@ -192,7 +194,9 @@ public class    ProfileFragment extends Fragment implements
             }
         });
 
-        presentShowcaseView(1000);
+        if (activity!=null) {
+            presentShowcaseView(1000);
+        }
 
         view.setFocusableInTouchMode(true);
         view.requestFocus();
@@ -301,7 +305,6 @@ public class    ProfileFragment extends Fragment implements
                     Glide.with(getActivity()).load(profileData.getAvatar()).into(ivProfile);
                 } else {
                     ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), context, result -> {
-                        Log.d(TAG, "completeDataInProfile: uri: " + result);
                         Glide.with(getActivity()).load(result).into(ivProfile);
                     });
                 }

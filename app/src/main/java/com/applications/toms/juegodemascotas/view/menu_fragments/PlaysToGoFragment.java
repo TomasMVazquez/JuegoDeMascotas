@@ -37,6 +37,7 @@ public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.Map
     private static FirebaseUser currentUser;
     private static Context context;
     private PlayController playController;
+    private List<PlayDate> playDateList = new ArrayList<>();
 
     private MyPlaysMapAdapter myPlaysMapAdapter;
 
@@ -72,7 +73,8 @@ public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.Map
     }
 
     private void refreshPlays(){
-        playController.giveOwnerPlayDateList(currentUser.getUid(), context, result -> {
+        playController.giveOwnerPlayDateListDup(playDateList,currentUser.getUid(), context, result -> {
+            playDateList.addAll(result);
             Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
             myPlaysMapAdapter.setMyPlays(result);
         });

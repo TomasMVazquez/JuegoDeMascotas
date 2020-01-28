@@ -29,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +42,7 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
     private PetController petController;
     private Context context;
     private FrameLayout flSearch;
+    private List<Pet> petList = new ArrayList<>();
 
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
@@ -96,7 +98,10 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
 
         //If the user is logged then get all pets from DataBase
         if (currentUser != null){
-            petController.givePetList(context,result -> petsAdapter.setPetList(result));
+            petController.givePetListDup(petList,context,result -> {
+                petList.addAll(result);
+                petsAdapter.setPetList(result);
+            });
         }
 
         //For search Logic while writing or when enter

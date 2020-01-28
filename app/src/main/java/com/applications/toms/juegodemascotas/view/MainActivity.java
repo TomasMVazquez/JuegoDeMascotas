@@ -450,11 +450,17 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     @SuppressLint("WrongConstant")
     @Override
     public void onBackPressed() {
+
         if (drawerLayout.isDrawerOpen(Gravity.START)){
             drawerLayout.closeDrawers();
+        }else if (fragmentManager.getBackStackEntryCount() > 0) {
+            while (fragmentManager.getBackStackEntryCount() > 0) {
+                fragmentManager.popBackStackImmediate();
+            }
         }else {
             super.onBackPressed();
         }
+
     }
 
     //Change ActionBar Title

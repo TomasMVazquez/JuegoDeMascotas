@@ -60,5 +60,26 @@ public class PlayController {
 
     }
 
+    //return owners plays
+    public void giveOwnerPlayDateListDup(List<PlayDate> currentPlayDateList,String ownerId, Context context, ResultListener<List<PlayDate>> resultListener) {
+        if (Util.isOnline(context)) {
+            daoPlay.fetchOwnerPlays(ownerId, context, result -> {
+                List<PlayDate> duplicatedPlayDateList = new ArrayList<>();
+                //Check if the data is duplicated
+                for (PlayDate pplayDate : result) {
+                    if (currentPlayDateList.contains(pplayDate))
+                        duplicatedPlayDateList.add(pplayDate);
+                }
+                result.removeAll(duplicatedPlayDateList);
+                if (result.isEmpty())
+                    result = null;
+                resultListener.finish(result);
+            });
+        } else {
+            resultListener.finish(new ArrayList<>());
+        }
+
+    }
+
 
 }
