@@ -5,12 +5,15 @@
 
     <application
         android:allowBackup="true"
+        android:versionCode="1"
+        android:versionName="1.0"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:debuggable="false"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="ExtraText">
+        tools:ignore="ExtraText,HardcodedDebugMode">
         <activity
             android:name=".view.SignInUpActivity"
             android:parentActivityName=".view.LogInActivity" />
