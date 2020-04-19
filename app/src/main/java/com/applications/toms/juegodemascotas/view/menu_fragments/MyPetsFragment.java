@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
@@ -52,6 +53,8 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
     private MyPetsAdapter myPetsAdapter;
     private MyPetsInterface myPetsInterface;
 
+    private TextView emptyStateMyPets;
+
     public MyPetsFragment() {
         // Required empty public constructor
     }
@@ -80,6 +83,8 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
 
         //view FAB
         fabAddPet = view.findViewById(R.id.fabAddPet);
+
+        emptyStateMyPets = view.findViewById(R.id.emptyStateMyPets);
 
         //Adapter
         myPetsAdapter = new MyPetsAdapter(new ArrayList<>(),context,this);
@@ -125,7 +130,14 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
 
     //Refresh Recycler
     private void refreshPets(){
-        petController.giveOwnerPets(currentUser.getUid(),context,resultado -> myPetsAdapter.setPetList(resultado));
+        petController.giveOwnerPets(currentUser.getUid(),context,resultado -> {
+            myPetsAdapter.setPetList(resultado);
+            if (resultado.size()>0){
+                emptyStateMyPets.setVisibility(View.GONE);
+            }else {
+                emptyStateMyPets.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void presentShowcaseView(int withDelay) {

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.ChatController;
@@ -30,6 +31,8 @@ public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.Adapte
     //Atributos
     private ChatRoomAdapter chatRoomAdapter;
 
+    private TextView emptyStateChatRoom;
+
     public ChatRoomFragment() {
         // Required empty public constructor
     }
@@ -47,6 +50,8 @@ public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.Adapte
 
         ChatController chatController = new ChatController();
 
+        emptyStateChatRoom = view.findViewById(R.id.emptyStateChatRoom);
+
         //Recycler View
         RecyclerView recyclerViewPets = view.findViewById(R.id.recyclerChats);
         recyclerViewPets.hasFixedSize();
@@ -59,6 +64,11 @@ public class ChatRoomFragment extends Fragment implements ChatRoomAdapter.Adapte
         chatController.giveMyChatsList(currentUser.getUid(), getContext(), result -> {
             Log.d(TAG, "onCreateView: chat list = " + result);
             chatRoomAdapter.setChats(result);
+            if (result.size()>0){
+                emptyStateChatRoom.setVisibility(View.GONE);
+            }else {
+                emptyStateChatRoom.setVisibility(View.VISIBLE);
+            }
         });
 
         return view;

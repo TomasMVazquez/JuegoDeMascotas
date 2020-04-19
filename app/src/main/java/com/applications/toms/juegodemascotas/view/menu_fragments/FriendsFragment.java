@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,6 +47,8 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
     private Context context;
     private FriendsAdapter friendsAdapter;
 
+    private TextView emptyStateFirends;
+
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -67,6 +70,8 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         //Adapter
         friendsAdapter = new FriendsAdapter(petFriendList, context,this);
 
+        emptyStateFirends = view.findViewById(R.id.emptyStateFirends);
+
         //Recycler View
         RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerFriends);
         recyclerPlayDates.hasFixedSize();
@@ -81,7 +86,14 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
             ownerController.giveFriends(petFriendList, currentUser.getUid(), context, result -> {
                 petFriendList.addAll(result);
                 friendsAdapter.setPetList(petFriendList);
+                if (petFriendList.size()>0){
+                    emptyStateFirends.setVisibility(View.GONE);
+                }else {
+                    emptyStateFirends.setVisibility(View.VISIBLE);
+                }
             });
+        }else {
+            emptyStateFirends.setVisibility(View.VISIBLE);
         }
 
         return view;

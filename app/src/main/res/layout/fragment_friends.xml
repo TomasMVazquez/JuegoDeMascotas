@@ -12,9 +12,22 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerFriends"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"/>
 
-        </androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:id="@+id/emptyStateFirends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_state_friends"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:drawableTop="@drawable/es_friends"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:visibility="gone"
+            />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
