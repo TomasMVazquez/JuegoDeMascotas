@@ -41,8 +41,6 @@ public class PetController {
                         duplicatedPetsList.add(pet);
                 }
                 resultado.removeAll(duplicatedPetsList);
-                if (resultado.isEmpty())
-                    resultado = null;
                 resultListener.finish(resultado);
             });
         } else {

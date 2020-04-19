@@ -241,9 +241,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         }
 
         //Check if service is ok for Maps
-        if (Util.isServicesOk(this)) {
-            Log.d(TAG, "onCreate: Check Service OK!");
-        } else {
+        if (!Util.isServicesOk(this)) {
             Snackbar.make(coordinatorSnack,getString(R.string.problems_google),Snackbar.LENGTH_LONG).show();
         }
 
