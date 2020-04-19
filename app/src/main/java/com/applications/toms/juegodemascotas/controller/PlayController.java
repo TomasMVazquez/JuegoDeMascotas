@@ -71,8 +71,6 @@ public class PlayController {
                         duplicatedPlayDateList.add(pplayDate);
                 }
                 result.removeAll(duplicatedPlayDateList);
-                if (result.isEmpty())
-                    result = null;
                 resultListener.finish(result);
             });
         } else {

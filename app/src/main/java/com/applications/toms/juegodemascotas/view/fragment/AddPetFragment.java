@@ -3,13 +3,17 @@ package com.applications.toms.juegodemascotas.view.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -140,6 +144,7 @@ public class AddPetFragment extends Fragment implements FragmentTitles {
         //Btn Add pet
         Button btnAddPet = view.findViewById(R.id.btnAddPet);
         btnAddPet.setOnClickListener(v -> {
+            hideSoftKeyboard(view);
             if (checkCompleteData()){
                 MainActivity.addPetToDataBase(etAddPetName.getText().toString(),etAddPetRaza.getText().toString(),size,etAddPetBirth.getText().toString(),sex,photo,etAddPetInfo.getText().toString());
                 getActivity().getSupportFragmentManager().beginTransaction().remove(AddPetFragment.this).commit();
@@ -149,6 +154,12 @@ public class AddPetFragment extends Fragment implements FragmentTitles {
         });
 
         return view;
+    }
+
+    //Esconder el teclado
+    private void hideSoftKeyboard(View view){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     //Add Pet Avatar
