@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
@@ -49,6 +50,8 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
 
     private SearchInterface searchInterface;
 
+    private TextView emptyStateSearch;
+
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -78,6 +81,8 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
         SearchView searchView = view.findViewById(R.id.searchView);
         searchView.setQueryHint(getString(R.string.search));
 
+        emptyStateSearch = view.findViewById(R.id.emptyStateSearch);
+
         //Get Firebase User instance
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -101,7 +106,14 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
             petController.givePetListDup(petList,context,result -> {
                 petList.addAll(result);
                 petsAdapter.setPetList(result);
+                if (result.size()>0){
+                    emptyStateSearch.setVisibility(View.GONE);
+                }else {
+                    emptyStateSearch.setVisibility(View.VISIBLE);
+                }
             });
+        }else {
+            emptyStateSearch.setVisibility(View.VISIBLE);
         }
 
         //For search Logic while writing or when enter
