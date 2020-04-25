@@ -59,7 +59,7 @@ import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class    ProfileFragment extends Fragment implements
+public class ProfileFragment extends Fragment implements
         CirculePetsAdapter.AdapterInterfaceCircule,
         CirculeOwnerAdapter.AdapterInterfaceCirculeOwner,
         FragmentTitles {
@@ -377,6 +377,7 @@ public class    ProfileFragment extends Fragment implements
                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                         .setPhotoUri(uri)
                         .build();
+
                 currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         //Cambiamos un metodo local por uno en el main

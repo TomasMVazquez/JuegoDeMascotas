@@ -41,6 +41,7 @@ import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.util.AdminStorage;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
+import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
@@ -55,8 +56,11 @@ import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment
 import com.applications.toms.juegodemascotas.view.menu_fragments.SearchFragment;
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -135,11 +139,35 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
             storageReference.delete();
         }
 
-        //Update new Photo
-        userRef.update("avatar", newPhoto);
-
-
         final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>(){
+
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()){
+                    throw task.getException();
+                }
+
+                return nuevaFoto.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    String mUri = downloadUri.toString();
+
+                    userRef.update(Keys.KEY_OWNER_IMAGEURL,mUri);
+                }else {
+                    Snackbar.make(coordinatorSnack,context.getString(R.string.error_image_db),Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Snackbar.make(coordinatorSnack,e.getMessage(),Snackbar.LENGTH_SHORT).show();
+            }
+        });
         uploadTask.addOnSuccessListener(taskSnapshot -> Snackbar.make(coordinatorSnack,context.getString(R.string.problems_login),Snackbar.LENGTH_SHORT).show());
     }
 
