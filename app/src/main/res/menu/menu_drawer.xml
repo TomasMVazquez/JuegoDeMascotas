@@ -35,6 +35,12 @@
         />
 
     <item
+        android:id="@+id/users"
+        android:title="@string/collection_users"
+        android:icon="@drawable/ic_search"
+        />
+
+    <item
         android:id="@+id/aboutLibraries"
         android:title="@string/about_libraries"
         android:icon="@drawable/ic_libraries_48dp"

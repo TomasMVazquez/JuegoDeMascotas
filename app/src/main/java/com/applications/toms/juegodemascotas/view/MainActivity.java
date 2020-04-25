@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import com.applications.toms.juegodemascotas.NewChat.UsersFragment;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Chat;
 import com.applications.toms.juegodemascotas.model.Owner;
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     private SearchFragment searchFragment;
     private ChatRoomFragment chatRoomFragment;
     private MyPetsFragment myPetsFragment;
+
+    private UsersFragment usersFragment;
 
     //Update Owner profile Avatar
     public static void updateProfilePicture(String oldPhoto, final String newPhoto, Uri uriTemp) {
@@ -358,6 +361,15 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                                 .withLicenseShown(true)
                                 .start(this);
 
+                        return true;
+
+                    case R.id.users:
+                        changeActionBarTitle(getString(R.string.search));
+                        if (usersFragment == null) {
+                            usersFragment = new UsersFragment();
+                            Log.d("FRAGMENT CREADO = ", "Search");
+                        }
+                        fragments(usersFragment, UsersFragment.TAG);
                         return true;
                 }
             }else {
@@ -616,14 +628,17 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         if (currentUser.getDisplayName() != null) {
             name = currentUser.getDisplayName();
         } else {
-            name = currentUser.getEmail();
+            String[] emialName = currentUser.getEmail().split("@");
+            name = emialName[0];
         }
         String photo = null;
         if (currentUser.getPhotoUrl() != null) {
             photo = currentUser.getPhotoUrl().toString() + "?height=500";
+        }else {
+            photo = getString(R.string.image_default);
         }
 
-        final Owner newOwner = new Owner(currentUser.getUid(), name, currentUser.getEmail(), photo);
+        final Owner newOwner = new Owner(currentUser.getUid(), name, currentUser.getEmail(), photo,name.toLowerCase(),getString(R.string.status_off));
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings
                 .Builder()
