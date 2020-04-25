@@ -14,6 +14,11 @@ public class Keys {
     public static final String KEY_OWNER_TOKEN = "token";
     public static final String KEY_OWNER_EMAIL = "email";
 
+    //PETS
+    public static final String KEY_PET = "Pets";
+    public static final String KEY_MY_PETS = "myPets";
+    public static final String KEY_PET_IMAGEURL = "fotoMascota";
+
     // CHAT
     public static final String KEY_CHATS = "Chats";
     public static final String KEY_CHATS_ID = "id";

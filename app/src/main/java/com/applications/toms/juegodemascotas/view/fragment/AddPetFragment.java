@@ -32,8 +32,13 @@ import androidx.fragment.app.Fragment;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
+import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -219,11 +224,35 @@ public class AddPetFragment extends Fragment implements FragmentTitles {
                             Glide.with(AddPetFragment.this).load(uri).into(ivAddPetPhoto);
                             photo = uriTemp.getLastPathSegment();
 
-                            final StorageReference oneFoto = raiz.child(mAuth.getCurrentUser().getUid()).child(uriTemp.getLastPathSegment());
-                            UploadTask uploadTask = oneFoto.putFile(uriTemp);
-                            uploadTask
-                                    .addOnProgressListener(taskSnapshot -> uploadingPhoto = false)
-                                    .addOnSuccessListener(taskSnapshot -> uploadingPhoto = true);
+                            final StorageReference mascRef = raiz.child(mAuth.getCurrentUser().getUid()).child(uriTemp.getLastPathSegment());
+                            UploadTask uploadTask = mascRef.putFile(uriTemp);
+
+                            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>(){
+
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()){
+                                        throw task.getException();
+                                    }
+
+                                    return mascRef.getDownloadUrl();
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()){
+                                        Uri downloadUri = task.getResult();
+                                        photo = downloadUri.toString();
+                                    }else {
+                                        Snackbar.make(llAddPet,getString(R.string.error_image_db),Snackbar.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Snackbar.make(llAddPet,e.getMessage(),Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
                             break;
                     }
                 }

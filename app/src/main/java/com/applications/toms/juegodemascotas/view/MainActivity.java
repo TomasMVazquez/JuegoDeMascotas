@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     public static void updateProfilePicture(String oldPhoto, final String newPhoto, Uri uriTemp) {
         StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(newPhoto);
 
-        final DocumentReference userRef = db.collection("Owners")
+        final DocumentReference userRef = db.collection(Keys.KEY_OWNER)
                 .document(currentUser.getUid());
 
         //Delete old photo
@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         }
 
         final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
+
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>(){
 
             @Override
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                 Snackbar.make(coordinatorSnack,e.getMessage(),Snackbar.LENGTH_SHORT).show();
             }
         });
-        uploadTask.addOnSuccessListener(taskSnapshot -> Snackbar.make(coordinatorSnack,context.getString(R.string.problems_login),Snackbar.LENGTH_SHORT).show());
+
     }
 
     //Update owner profile info
@@ -200,18 +201,43 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
         storageReference.delete();
 
-        DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
-                .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
+        DocumentReference userRefMasc = db.collection(Keys.KEY_OWNER)
+                .document(idOwner).collection(Keys.KEY_MY_PETS).document(idPet);
 
-        userRefMasc.update("fotoMascota", newPhoto);
-
-        DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
+        DocumentReference mascRef = db.collection(Keys.KEY_PET)
                 .document(idPet);
 
-        mascRef.update("fotoMascota", newPhoto);
-
         StorageReference nuevaFotoPet = mStorage.getReference().child(idOwner).child(newPhoto);
-        nuevaFotoPet.putFile(uriTemp);
+        UploadTask uploadTask = nuevaFotoPet.putFile(uriTemp);
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>(){
+
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()){
+                    throw task.getException();
+                }
+
+                return nuevaFotoPet.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    String mUri = downloadUri.toString();
+
+                    mascRef.update(Keys.KEY_PET_IMAGEURL, mUri);
+                    userRefMasc.update(Keys.KEY_PET_IMAGEURL, mUri);
+                }else {
+                    Snackbar.make(coordinatorSnack,context.getString(R.string.error_image_db),Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Snackbar.make(coordinatorSnack,e.getMessage(),Snackbar.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
