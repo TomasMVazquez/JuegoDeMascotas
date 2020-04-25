@@ -126,6 +126,16 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
     private UsersFragment usersFragment;
 
+    //Método de cambio de estado en la base de datos
+    private void status(String status){
+        DocumentReference userRef = db.collection(Keys.KEY_OWNER).document(currentUser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(Keys.KEY_OWNER_STATUS,status);
+
+        userRef.update(hashMap);
+    }
+
     //Update Owner profile Avatar
     public static void updateProfilePicture(String oldPhoto, final String newPhoto, Uri uriTemp) {
         StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(newPhoto);
@@ -251,6 +261,17 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         if (currentUser != null) {
             //Delete old plays from the user database
             AdminStorage.deleteMyOldPlayDates(context, currentUser.getUid());
+            //Cambio del estado del usuario a online estando la app en primer plano
+            status(getString(R.string.status_on));
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (currentUser != null) {
+            //Cambio del estado del usuario a offline estando la app en segundo plano
+            status(getString(R.string.status_off));
         }
     }
 
