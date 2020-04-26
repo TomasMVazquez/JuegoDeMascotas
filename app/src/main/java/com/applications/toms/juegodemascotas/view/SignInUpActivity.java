@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.util.LoadingDialog;
 import com.applications.toms.juegodemascotas.view.fragment.SignInFragment;
 import com.applications.toms.juegodemascotas.view.fragment.SignUpFragment;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,10 +34,15 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
     private CoordinatorLayout coordinatorSnackSign;
     private ProgressDialog prog;
 
+    private LoadingDialog loadingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_up);
+
+        loadingDialog = new LoadingDialog(this);
+
         //Get application context
         context = getApplicationContext();
         //Firebase Instance for DataBase
@@ -136,13 +142,18 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
                         mAuth.getCurrentUser().updateProfile(profileUpdates);
 
                         setSignInUpResult(true,null);
+                        loadingDialog.endLoadingDialog();
                     }
                 })
-                .addOnFailureListener(e -> Snackbar.make(coordinatorSnackSign,e.toString(),Snackbar.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    loadingDialog.endLoadingDialog();
+                    Snackbar.make(coordinatorSnackSign,e.toString(),Snackbar.LENGTH_SHORT).show();
+                });
     }
 
     //Set result for the intent for result from the login
     private void setSignInUpResult(Boolean result, Intent data){
+        loadingDialog.endLoadingDialog();
         if (result){
             setResult(Activity.RESULT_OK);
             finish();
@@ -156,6 +167,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
     //Method to sign in
     @Override
     public void signIn(String email, String pass) {
+        loadingDialog.startLoadingDialog();
         handleEmailAccess(email,pass);
     }
 
@@ -176,6 +188,7 @@ public class SignInUpActivity extends LogInActivity implements SignInFragment.on
     //Method to sign up
     @Override
     public void signUp(String email, String pass) {
+        loadingDialog.startLoadingDialog();
         createEmailAccess(email,pass);
     }
 

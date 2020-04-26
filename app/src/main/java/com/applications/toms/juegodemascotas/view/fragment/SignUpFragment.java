@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.util.LoadingDialog;
+import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.SignInUpActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -101,6 +103,9 @@ public class SignUpFragment extends Fragment {
 
         //Create account btn
         btnSignUp.setOnClickListener(v -> {
+
+            Util.hideKeyboard(getActivity());
+
             if (isValidEmail(etEmailSigUp.getText())) {
                 if (!etPassSigUp.getText().toString().isEmpty()) {
                     signUpNotify.signUp(etEmailSigUp.getText().toString(), etPassSigUp.getText().toString());
@@ -125,7 +130,9 @@ public class SignUpFragment extends Fragment {
     //Metodo
     //Validation of the password
     private void checkPass(CharSequence sequence){
-        if (sequence.length()>5){
+        if (sequence.length() == 0){
+            tiPassSignUp.setError("");
+        }else if (sequence.length()>5){
             tiPassSignUp.setError(getResources().getString(R.string.pass_error_2));
             String pass = sequence.toString();
             for (int i = 1; i < sequence.length(); i++) {

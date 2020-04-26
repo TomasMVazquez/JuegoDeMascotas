@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="70dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="25dp"
         android:padding="10dp"
         android:background="@drawable/border_dark_primary"
@@ -47,7 +47,7 @@
                 android:id="@+id/tiSignIn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border"
+                android:layout_marginEnd="25dp"
                 >
                 <EditText
                     android:id="@+id/etSigIn"
@@ -64,13 +64,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@drawable/border"
                 >
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tiSignInPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="25dp"
                     >
                     <EditText
                         android:id="@+id/etSigInPass"
@@ -92,7 +92,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerInParent="true"
                     android:scaleType="fitCenter"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="-1dp"
                     />
 
             </RelativeLayout>
