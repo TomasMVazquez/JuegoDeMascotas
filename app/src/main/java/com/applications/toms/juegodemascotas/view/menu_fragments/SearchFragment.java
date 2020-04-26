@@ -174,7 +174,7 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
     //Add it as a friend when clicking the heart icon.
     @Override
     public void addFriend(Pet pet) {
-        Snackbar.make(flSearch,"Agregando a " + pet.getNombre() + " a mi lista de amigos",Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(flSearch,"Agregando a " + pet.getName() + " a mi lista de amigos",Snackbar.LENGTH_SHORT).show();
 
         //Create on the current user a document with firend list
         CollectionReference myFriendCol = db.collection(getString(R.string.collection_users))

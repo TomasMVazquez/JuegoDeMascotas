@@ -315,20 +315,20 @@ public class ProfileFragment extends Fragment implements
             for (Pet pet : petsList) {
                 if (pet.getIdPet().equals(petId)) {
                     //Name
-                    tvName.setText(pet.getNombre());
+                    tvName.setText(pet.getName());
                     //Info
-                    String additionalInfo = pet.getRaza() + " - " + pet.getTamanio() + " - " + pet.getSexo();
+                    String additionalInfo = pet.getBreed() + " - " + pet.getSize() + " - " + pet.getSex();
                     tvDir.setText(additionalInfo);
-                    tvAboutProfile.setText(pet.getInfoMascota());
+                    tvAboutProfile.setText(pet.getInfo());
                     //Adapter
                     List<Owner> ownerList = new ArrayList<>();
                     ownerList.add(profileData);
                     circuleOwnerAdapter.setOwner(ownerList);
                     //Photo
-                    if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+                    if (pet.getPhoto().equals(context.getString(R.string.image_default))){
                         Glide.with(context).load(context.getDrawable(R.drawable.dog_48)).into(ivProfile);
                     }else {
-                        Glide.with(context).load(pet.getFotoMascota()).into(ivProfile);
+                        Glide.with(context).load(pet.getPhoto()).into(ivProfile);
                     }
                 }
             }

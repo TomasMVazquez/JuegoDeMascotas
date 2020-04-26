@@ -18,7 +18,15 @@ public class Keys {
     //PETS
     public static final String KEY_PET = "Pets";
     public static final String KEY_MY_PETS = "myPets";
-    public static final String KEY_PET_IMAGEURL = "fotoMascota";
+    public static final String KEY_PET_ID = "idPet";
+    public static final String KEY_PET_NAME = "name";
+    public static final String KEY_PET_BREED = "breed";
+    public static final String KEY_PET_SIZE = "size";
+    public static final String KEY_PET_SEX = "sex";
+    public static final String KEY_PET_DATE_BIRTH = "dateBirth";
+    public static final String KEY_PET_PHOTO = "photo";
+    public static final String KEY_PET_INFO = "info";
+    public static final String KEY_PET_OWNER_ID = "ownerId";
     public static final String KEY_PET_SEARCH = "search";
 
     // CHAT

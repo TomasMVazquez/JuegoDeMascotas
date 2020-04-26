@@ -23,6 +23,7 @@ import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.OwnerController;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
+import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.MainActivity;
 import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -108,6 +109,9 @@ public class UpdateProfileFragment extends Fragment implements FragmentTitles {
         //Boton Update
         Button btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
         btnUpdateProfile.setOnClickListener(v -> {
+
+            Util.hideKeyboard(getActivity());
+
             ProfileFragment.saveAndCompleteProfileUpdates(
                       etUpdateName.getText().toString(),
                     etUpdateDireccion.getText().toString(),

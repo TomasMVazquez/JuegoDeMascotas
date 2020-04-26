@@ -6,14 +6,14 @@ public class Pet {
 
     //atributos
     private String idPet;
-    private String nombre;
-    private String raza;
-    private String tamanio;
-    private String sexo;
-    private String fechaNacimiento;
-    private String fotoMascota;
-    private String infoMascota;
-    private String miDuenioId;
+    private String name;
+    private String breed;
+    private String size;
+    private String sex;
+    private String dateBirth;
+    private String photo;
+    private String info;
+    private String ownerId;
     private String search;
 
     //Constructor
@@ -21,77 +21,61 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(String idPet, String nombre,String search, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, String miDuenio) {
+    public Pet(String idPet, String name,String search, String breed, String size, String sex, String dateBirth, String photo, String info, String ownerId) {
         this.idPet = idPet;
-        this.nombre = nombre;
+        this.name = name;
         this.search = search;
-        this.raza = raza;
-        this.tamanio = tamanio;
-        this.sexo = sexo;
-        this.fechaNacimiento = fechaNacimiento;
-        this.fotoMascota = fotoMascota;
-        this.infoMascota = infoMascota;
-        this.miDuenioId = miDuenio;
+        this.breed = breed;
+        this.size = size;
+        this.sex = sex;
+        this.dateBirth = dateBirth;
+        this.photo = photo;
+        this.info = info;
+        this.ownerId = ownerId;
     }
 
     //Getter
+
     public String getIdPet() {
         return idPet;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public String getRaza() {
-        return raza;
+    public String getBreed() {
+        return breed;
     }
 
-    public String getTamanio() {
-        return tamanio;
+    public String getSize() {
+        return size;
     }
 
-    public String getSexo() {
-        return sexo;
+    public String getSex() {
+        return sex;
     }
 
-    public String getFechaNacimiento() {
-        return fechaNacimiento;
+    public String getDateBirth() {
+        return dateBirth;
     }
 
-    public String getFotoMascota() {
-        return fotoMascota;
+    public String getPhoto() {
+        return photo;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
     }
 
     public String getSearch() {
         return search;
     }
 
-    //Setter
-    public void setFotoMascota(String fotoMascota) {
-        this.fotoMascota = fotoMascota;
-    }
-
-    public String getInfoMascota() {
-        return infoMascota;
-    }
-
-    public void setInfoMascota(String infoMascota) {
-        this.infoMascota = infoMascota;
-    }
-
-    public String getMiDuenioId() {
-        return miDuenioId;
-    }
-
-    //toString
-    @Override
-    public String toString() {
-        return "Pet{" +
-                "nombre='" + nombre + '\'' +
-                ", raza='" + raza + '\'' +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -100,11 +84,11 @@ public class Pet {
         if (o == null || getClass() != o.getClass())
             return false;
         Pet pet = (Pet) o;
-        return idPet.equals(pet.idPet) && miDuenioId.equals(pet.miDuenioId);
+        return idPet.equals(pet.idPet) && ownerId.equals(pet.ownerId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPet, miDuenioId);
+        return Objects.hash(idPet, ownerId);
     }
 }

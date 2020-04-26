@@ -44,7 +44,7 @@ public class DaoPet {
         petRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
             for (QueryDocumentSnapshot snapshot:queryDocumentSnapshots){
                 Pet pet = snapshot.toObject(Pet.class);
-                if (!pet.getMiDuenioId().equals(fuser.getUid())){
+                if (!pet.getOwnerId().equals(fuser.getUid())){
                     petList.add(pet);
                 }
             }
@@ -68,7 +68,7 @@ public class DaoPet {
                 for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                     Pet pet = snapshot.toObject(Pet.class);
 
-                    if (!pet.getMiDuenioId().equals(fuser.getUid())) {
+                    if (!pet.getOwnerId().equals(fuser.getUid())) {
                         petList.add(pet);
                     }
                 }

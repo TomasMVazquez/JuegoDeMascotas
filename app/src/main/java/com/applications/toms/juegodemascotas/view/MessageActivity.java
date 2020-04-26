@@ -53,6 +53,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.annotation.Nullable;
@@ -538,8 +539,8 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private static String getCurrentDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_1);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_1, Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getDefault());
         Date today = Calendar.getInstance().getTime();
         return dateFormat.format(today);
     }

@@ -214,8 +214,8 @@ public class MainActivity extends AppCompatActivity implements
                     Uri downloadUri = task.getResult();
                     String mUri = downloadUri.toString();
 
-                    mascRef.update(Keys.KEY_PET_IMAGEURL, mUri);
-                    userRefMasc.update(Keys.KEY_PET_IMAGEURL, mUri);
+                    mascRef.update(Keys.KEY_PET_PHOTO, mUri);
+                    userRefMasc.update(Keys.KEY_PET_PHOTO, mUri);
                 }else {
                     Snackbar.make(coordinatorSnack,context.getString(R.string.error_image_db),Snackbar.LENGTH_SHORT).show();
                 }
@@ -232,12 +232,12 @@ public class MainActivity extends AppCompatActivity implements
     //Delete pet
     public static void deleteProfilePet(final String idOwner, final String idPet) {
 
-        DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
-                .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
+        DocumentReference userRefMasc = db.collection(Keys.KEY_OWNER)
+                .document(idOwner).collection(Keys.KEY_MY_PETS).document(idPet);
 
         userRefMasc.delete();
 
-        DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
+        DocumentReference mascRef = db.collection(Keys.KEY_PET)
                 .document(idPet);
 
         mascRef.delete();
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements
 
         userRefMasc.document(idPet).set(newPet);
 
-        DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
+        DocumentReference petsRef = db.collection(Keys.KEY_PET)
                 .document(idPet);
 
         petsRef.set(newPet);
@@ -291,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

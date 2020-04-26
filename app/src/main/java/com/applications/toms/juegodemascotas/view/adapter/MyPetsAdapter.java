@@ -98,14 +98,14 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
 
         //metodo cargar tarjeta
         private void cargar(Pet pet){
-            tvCVNameMyPet.setText(pet.getNombre());
+            tvCVNameMyPet.setText(pet.getName());
             tvCVIdMyPet.setText(pet.getIdPet());
-            tvCVIdMyOwner.setText(pet.getMiDuenioId());
+            tvCVIdMyOwner.setText(pet.getOwnerId());
 
-            if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+            if (pet.getPhoto().equals(context.getString(R.string.image_default))){
                 ivCVMyPet.setImageResource(R.drawable.dog_48);
             }else {
-                Glide.with(context).load(pet.getFotoMascota()).into(ivCVMyPet);
+                Glide.with(context).load(pet.getPhoto()).into(ivCVMyPet);
             }
         }
 

@@ -102,7 +102,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             chatCardViewFriend.setOnClickListener(v -> {
                 Pet pet = petList.get(getAdapterPosition());
                 Intent intent = new Intent(context, MessageActivity.class);
-                intent.putExtra(Keys.KEY_MSG_USERID,pet.getMiDuenioId());
+                intent.putExtra(Keys.KEY_MSG_USERID,pet.getOwnerId());
                 context.startActivity(intent);
             });
 
@@ -114,11 +114,11 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         }
 
         private void cargar(Pet pet){
-            tvCVNameFriend.setText(pet.getNombre());
-            if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+            tvCVNameFriend.setText(pet.getName());
+            if (pet.getPhoto().equals(context.getString(R.string.image_default))){
                 ivCVFriend.setImageResource(R.drawable.dog_48);
             }else {
-                Glide.with(context).load(pet.getFotoMascota()).into(ivCVFriend);
+                Glide.with(context).load(pet.getPhoto()).into(ivCVFriend);
             }
 
         }
