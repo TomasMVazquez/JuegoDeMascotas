@@ -59,7 +59,7 @@ import uk.co.deanwild.materialshowcaseview.shape.CircleShape;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class    ProfileFragment extends Fragment implements
+public class ProfileFragment extends Fragment implements
         CirculePetsAdapter.AdapterInterfaceCircule,
         CirculeOwnerAdapter.AdapterInterfaceCirculeOwner,
         FragmentTitles {
@@ -85,7 +85,6 @@ public class    ProfileFragment extends Fragment implements
     private Context context;
     private OwnerController ownerController;
     private PetController petController;
-    private FirebaseStorage mStorage;
     private static ImageView ivProfile;
     private static TextView tvName;
     private static TextView tvDir;
@@ -148,7 +147,7 @@ public class    ProfileFragment extends Fragment implements
         //Instance of FireBase
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mStorage = FirebaseStorage.getInstance();
+        FirebaseStorage mStorage = FirebaseStorage.getInstance();
         raiz = mStorage.getReference();
 
         //Adapter
@@ -299,16 +298,10 @@ public class    ProfileFragment extends Fragment implements
             tvAboutProfile.setText(profileData.getAboutMe());
             tvDir.setText(profileData.getAddress());
             //Photo Profile
-            if (profileData.getAvatar() != null) {
-                String[] avatar = profileData.getAvatar().split("=");
-                if (avatar.length > 1) {
-                    Glide.with(getActivity()).load(profileData.getAvatar()).into(ivProfile);
-                } else {
-                    ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), context, result -> {
-                        Glide.with(getActivity()).load(result).into(ivProfile);
-                    });
-                }
-                photoOwnerActual = profileData.getAvatar();
+            if (profileData.getAvatar().equals(context.getString(R.string.image_default))){
+                ivProfile.setImageResource(R.drawable.shadow_profile);
+            }else {
+                Glide.with(context).load(profileData.getAvatar()).into(ivProfile);
             }
 
         } else if (type.equals("2")) {
@@ -322,18 +315,21 @@ public class    ProfileFragment extends Fragment implements
             for (Pet pet : petsList) {
                 if (pet.getIdPet().equals(petId)) {
                     //Name
-                    tvName.setText(pet.getNombre());
+                    tvName.setText(pet.getName());
                     //Info
-                    String additionalInfo = pet.getRaza() + " - " + pet.getTamanio() + " - " + pet.getSexo();
+                    String additionalInfo = pet.getBreed() + " - " + pet.getSize() + " - " + pet.getSex();
                     tvDir.setText(additionalInfo);
-                    tvAboutProfile.setText(pet.getInfoMascota());
+                    tvAboutProfile.setText(pet.getInfo());
                     //Adapter
                     List<Owner> ownerList = new ArrayList<>();
                     ownerList.add(profileData);
                     circuleOwnerAdapter.setOwner(ownerList);
                     //Photo
-                    photoPetActual = pet.getFotoMascota();
-                    petController.givePetAvatar(profileData.getUserId(), pet.getFotoMascota(), context, result -> Glide.with(getActivity()).load(result).into(ivProfile));
+                    if (pet.getPhoto().equals(context.getString(R.string.image_default))){
+                        Glide.with(context).load(context.getDrawable(R.drawable.dog_48)).into(ivProfile);
+                    }else {
+                        Glide.with(context).load(pet.getPhoto()).into(ivProfile);
+                    }
                 }
             }
         }
@@ -353,7 +349,7 @@ public class    ProfileFragment extends Fragment implements
             startActivity(intent);
         });
 
-        builder.setNegativeButton("No", (dialog, which) -> Snackbar.make(containerProfile,getString(R.string.error_profile_delete),Snackbar.LENGTH_SHORT).show());
+        builder.setNeutralButton("No", (dialog, which) -> Snackbar.make(containerProfile,getString(R.string.error_profile_delete),Snackbar.LENGTH_SHORT).show());
 
         builder.show();
     }
@@ -377,6 +373,7 @@ public class    ProfileFragment extends Fragment implements
                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                         .setPhotoUri(uri)
                         .build();
+
                 currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         //Cambiamos un metodo local por uno en el main

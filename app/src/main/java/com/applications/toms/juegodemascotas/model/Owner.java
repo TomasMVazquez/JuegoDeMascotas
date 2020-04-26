@@ -13,17 +13,22 @@ public class Owner implements Serializable {
     private String address;
     private String avatar;
     private String aboutMe;
+    private String status;
+    private String search;
+    private String token;
 
     //Constructor
 
     public Owner() {
     }
 
-    public Owner(String userId, String name, String email, String avatar) {
+    public Owner(String userId, String name, String email, String avatar, String search, String status) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.avatar = avatar;
+        this.search = search;
+        this.status = status;
     }
 
     public Owner(String userId, String name, String email, String address, String sex, String birthDate, String avatar, String aboutMe) {
@@ -71,6 +76,18 @@ public class Owner implements Serializable {
         return aboutMe;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
     //Setter
     public void setName(String name) {
         this.name = name;
@@ -91,6 +108,7 @@ public class Owner implements Serializable {
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
     }
+
 
     //toString
 

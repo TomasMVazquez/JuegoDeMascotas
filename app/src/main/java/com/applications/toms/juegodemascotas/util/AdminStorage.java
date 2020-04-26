@@ -99,9 +99,6 @@ public class AdminStorage {
             Date now = new Date();
             Date date=new SimpleDateFormat("dd/MM/yyyy hh:mm")
                     .parse(playDate.getDatePlay() + " " + playDate.getTimePlay());
-            Log.d(TAG, "onComplete: Fecha " + date);
-
-            Log.d(TAG, "onComplete: hoy " + now);
             if (date.compareTo(now) > 0) {
                 //"Date1 is after Date2"
                 return false;

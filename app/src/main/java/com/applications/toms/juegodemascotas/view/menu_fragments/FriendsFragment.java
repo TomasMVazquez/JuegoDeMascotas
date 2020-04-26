@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,22 +37,15 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
     private static final String TAG = "FriendsFragment";
     private static final String SHOWCASE_ID = "simple friends";
 
-    private static Activity activity;
 
-    private FriendsInterface friendsInterface;
     private List<Pet> petFriendList = new ArrayList<>();
 
-    private OwnerController ownerController;
-    private FirebaseUser currentUser;
-    private Context context;
     private FriendsAdapter friendsAdapter;
+
+    private TextView emptyStateFirends;
 
     public FriendsFragment() {
         // Required empty public constructor
-    }
-
-    public void setFriendsInterface(FriendsInterface friendsInterface) {
-        this.friendsInterface = friendsInterface;
     }
 
     @Override
@@ -60,12 +54,13 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        activity = getActivity();
-        context = getApplicationContext();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        Context context = getApplicationContext();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Adapter
         friendsAdapter = new FriendsAdapter(petFriendList, context,this);
+
+        emptyStateFirends = view.findViewById(R.id.emptyStateFirends);
 
         //Recycler View
         RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerFriends);
@@ -77,29 +72,28 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         recyclerPlayDates.setAdapter(friendsAdapter);
 
         if (currentUser != null){
-            ownerController = new OwnerController();
+            OwnerController ownerController = new OwnerController();
             ownerController.giveFriends(petFriendList, currentUser.getUid(), context, result -> {
                 petFriendList.addAll(result);
                 friendsAdapter.setPetList(petFriendList);
+                if (petFriendList.size()>0){
+                    emptyStateFirends.setVisibility(View.GONE);
+                }else {
+                    emptyStateFirends.setVisibility(View.VISIBLE);
+                }
             });
+        }else {
+            emptyStateFirends.setVisibility(View.VISIBLE);
         }
 
         return view;
     }
 
-    @Override
-    public void goToChat(String userToChat) {
-        friendsInterface.getChat(userToChat);
-    }
 
     @Override
     public void update(int index) {
         petFriendList.remove(index);
         friendsAdapter.setPetList(petFriendList);
-    }
-
-    public interface FriendsInterface{
-        void getChat(String userToChat);
     }
 
 }

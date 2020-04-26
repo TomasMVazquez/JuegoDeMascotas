@@ -6,9 +6,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 
 import android.os.Bundle;
@@ -17,33 +15,31 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import com.applications.toms.juegodemascotas.view.menu_fragments.UsersFragment;
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Chat;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
-import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.util.AdminStorage;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
+import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
-import com.applications.toms.juegodemascotas.view.fragment.ChatFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.ChatRoomFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.FriendsFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.MyPetsFragment;
@@ -52,31 +48,31 @@ import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransforme
 import com.applications.toms.juegodemascotas.view.menu_fragments.PlaysToGoFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.SearchFragment;
-import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -84,10 +80,9 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.ShowcaseTooltip;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify,
-        FriendsFragment.FriendsInterface, SearchFragment.SearchInterface, MyPetsFragment.MyPetsInterface,
+public class MainActivity extends AppCompatActivity implements
+        SearchFragment.SearchInterface,
+        MyPetsFragment.MyPetsInterface,
         ProfileFragment.ProfileFragmentListener {
 
     public static final int KEY_LOGIN = 101;
@@ -119,11 +114,21 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     private ChatRoomFragment chatRoomFragment;
     private MyPetsFragment myPetsFragment;
 
+    private UsersFragment usersFragment;
+
+    //Método de cambio de estado en la base de datos
+    private void status(String status){
+        DocumentReference userRef = db.collection(Keys.KEY_OWNER).document(currentUser.getUid());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(Keys.KEY_OWNER_STATUS,status);
+        userRef.update(hashMap);
+    }
+
     //Update Owner profile Avatar
     public static void updateProfilePicture(String oldPhoto, final String newPhoto, Uri uriTemp) {
         StorageReference nuevaFoto = raiz.child(currentUser.getUid()).child(newPhoto);
 
-        final DocumentReference userRef = db.collection("Owners")
+        final DocumentReference userRef = db.collection(Keys.KEY_OWNER)
                 .document(currentUser.getUid());
 
         //Delete old photo
@@ -132,12 +137,37 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
             storageReference.delete();
         }
 
-        //Update new Photo
-        userRef.update("avatar", newPhoto);
-
-
         final UploadTask uploadTask = nuevaFoto.putFile(uriTemp);
-        uploadTask.addOnSuccessListener(taskSnapshot -> Snackbar.make(coordinatorSnack,context.getString(R.string.problems_login),Snackbar.LENGTH_SHORT).show());
+
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>(){
+
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()){
+                    throw task.getException();
+                }
+
+                return nuevaFoto.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    String mUri = downloadUri.toString();
+
+                    userRef.update(Keys.KEY_OWNER_IMAGEURL,mUri);
+                }else {
+                    Snackbar.make(coordinatorSnack,context.getString(R.string.error_image_db),Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Snackbar.make(coordinatorSnack,e.getMessage(),Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     //Update owner profile info
@@ -159,30 +189,55 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
         storageReference.delete();
 
-        DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
-                .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
+        DocumentReference userRefMasc = db.collection(Keys.KEY_OWNER)
+                .document(idOwner).collection(Keys.KEY_MY_PETS).document(idPet);
 
-        userRefMasc.update("fotoMascota", newPhoto);
-
-        DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
+        DocumentReference mascRef = db.collection(Keys.KEY_PET)
                 .document(idPet);
 
-        mascRef.update("fotoMascota", newPhoto);
-
         StorageReference nuevaFotoPet = mStorage.getReference().child(idOwner).child(newPhoto);
-        nuevaFotoPet.putFile(uriTemp);
+        UploadTask uploadTask = nuevaFotoPet.putFile(uriTemp);
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>(){
+
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()){
+                    throw task.getException();
+                }
+
+                return nuevaFotoPet.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    String mUri = downloadUri.toString();
+
+                    mascRef.update(Keys.KEY_PET_PHOTO, mUri);
+                    userRefMasc.update(Keys.KEY_PET_PHOTO, mUri);
+                }else {
+                    Snackbar.make(coordinatorSnack,context.getString(R.string.error_image_db),Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Snackbar.make(coordinatorSnack,e.getMessage(),Snackbar.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
     //Delete pet
     public static void deleteProfilePet(final String idOwner, final String idPet) {
 
-        DocumentReference userRefMasc = db.collection(context.getResources().getString(R.string.collection_users))
-                .document(idOwner).collection(context.getResources().getString(R.string.collection_my_pets)).document(idPet);
+        DocumentReference userRefMasc = db.collection(Keys.KEY_OWNER)
+                .document(idOwner).collection(Keys.KEY_MY_PETS).document(idPet);
 
         userRefMasc.delete();
 
-        DocumentReference mascRef = db.collection(context.getResources().getString(R.string.collection_pets))
+        DocumentReference mascRef = db.collection(Keys.KEY_PET)
                 .document(idPet);
 
         mascRef.delete();
@@ -196,11 +251,11 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                 .document(currentUser.getUid()).collection(myPetsFirestore);
 
         final String idPet = userRefMasc.document().getId();
-        Pet newPet = new Pet(idPet, name, raza, size, sex, birth, photo, info, currentUser.getUid());
+        Pet newPet = new Pet(idPet, name,name.toLowerCase(), raza, size, sex, birth, photo, info, currentUser.getUid());
 
         userRefMasc.document(idPet).set(newPet);
 
-        DocumentReference petsRef = db.collection(context.getResources().getString(R.string.collection_pets))
+        DocumentReference petsRef = db.collection(Keys.KEY_PET)
                 .document(idPet);
 
         petsRef.set(newPet);
@@ -220,11 +275,23 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         if (currentUser != null) {
             //Delete old plays from the user database
             AdminStorage.deleteMyOldPlayDates(context, currentUser.getUid());
+            //Cambio del estado del usuario a online estando la app en primer plano
+            status(getString(R.string.status_on));
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (currentUser != null) {
+            //Cambio del estado del usuario a offline estando la app en segundo plano
+            status(getString(R.string.status_off));
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -298,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                             }
                         return true;
                     case R.id.my_profile:
-                        Log.d(TAG, "onCreate: Profile Fragment");
                         Bundle bundle = new Bundle();
                         bundle.putString(ProfileFragment.KEY_TYPE, "1");
                         bundle.putString(ProfileFragment.KEY_USER_ID, currentUser.getUid());
@@ -306,47 +372,46 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                         changeActionBarTitle(getString(R.string.my_profile));
                         if (profileFragment == null) {
                             profileFragment = new ProfileFragment();
-                            Log.d("FRAGMENT CREADO = ", "Profile");
                         }
                         profileFragment.setArguments(bundle);
                         fragments(profileFragment, ProfileFragment.TAG);
                         return true;
                     case R.id.my_pets:
-                        Log.d(TAG, "onCreate: MyPets Fragment");
                         changeActionBarTitle(getString(R.string.my_pets));
                         if (myPetsFragment == null) {
                             myPetsFragment = new MyPetsFragment();
-                            Log.d("FRAGMENT CREADO = ", "MyPets");
                         }
                         fragments(myPetsFragment, MyPetsFragment.TAG);
                         return true;
                     case R.id.plays:
-                        Log.d(TAG, "onCreate: Plays To Go Fragment");
                         changeActionBarTitle(getString(R.string.plays));
                         if (playsToGoFragment == null) {
                             playsToGoFragment = new PlaysToGoFragment();
-                            Log.d("FRAGMENT CREADO = ", "PlaysToGo");
                         }
                         fragments(playsToGoFragment, PlaysToGoFragment.TAG);
                         return true;
                     case R.id.chat:
-                        Log.d(TAG, "onCreate: Get type 1 -> showRoom");
                         changeActionBarTitle(getString(R.string.collection_chats));
                         if (chatRoomFragment == null) {
                             chatRoomFragment = new ChatRoomFragment();
-                            Log.d("FRAGMENT CREADO = ", "ChatRoom");
                         }
                         fragments(chatRoomFragment, ChatRoomFragment.TAG);
                         return true;
                     case R.id.searchDog:
-                        Log.d(TAG, "onCreate: -> SearchFragment");
                         changeActionBarTitle(getString(R.string.search));
                         if (searchFragment == null) {
                             searchFragment = new SearchFragment();
-                            Log.d("FRAGMENT CREADO = ", "Search");
                         }
                         fragments(searchFragment, SearchFragment.TAG);
                         return true;
+                    case R.id.users:
+                        changeActionBarTitle(getString(R.string.search));
+                        if (usersFragment == null) {
+                            usersFragment = new UsersFragment();
+                        }
+                        fragments(usersFragment, UsersFragment.TAG);
+                        return true;
+
                     case R.id.aboutLibraries:
                         new LibsBuilder()
                                 .withActivityTitle(getString(R.string.app_name))
@@ -368,7 +433,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
 
         //TABS FRAGMENTS
         List<Fragment> fragmentList = new ArrayList<>();
-        Log.d("FRAGMENT CREADO = ", "PlayDate + Firends");
         fragmentList.add(new PlayDateFragment());
         fragmentList.add(new FriendsFragment());
 
@@ -392,10 +456,36 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         presentShowcaseView();
+
+        getToken();
     }
 
-
     //Methods
+    private void getToken() {
+        //Buscar Token y guardarlo para las notificaciones
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        //LLamar al método para actualizar el token en la base de datos
+                        updateTokenDB(token);
+                    }
+                });
+    }
+
+    private void updateTokenDB(String token){
+        if (currentUser != null) {
+            DocumentReference userRef = db.collection(Keys.KEY_OWNER).document(currentUser.getUid());
+            userRef.update(Keys.KEY_OWNER_TOKEN, token);
+        }
+    }
 
     void presentShowcaseView() {
         ShowcaseConfig config = new ShowcaseConfig();
@@ -459,11 +549,9 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     }
 
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onBackPressed() {
-
-        if (drawerLayout.isDrawerOpen(Gravity.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawers();
         }else if (fragmentManager.getBackStackEntryCount() > 0) {
             while (fragmentManager.getBackStackEntryCount() > 0) {
@@ -616,14 +704,17 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         if (currentUser.getDisplayName() != null) {
             name = currentUser.getDisplayName();
         } else {
-            name = currentUser.getEmail();
+            String[] emialName = currentUser.getEmail().split("@");
+            name = emialName[0];
         }
         String photo = null;
         if (currentUser.getPhotoUrl() != null) {
             photo = currentUser.getPhotoUrl().toString() + "?height=500";
+        }else {
+            photo = getString(R.string.image_default);
         }
 
-        final Owner newOwner = new Owner(currentUser.getUid(), name, currentUser.getEmail(), photo);
+        final Owner newOwner = new Owner(currentUser.getUid(), name, currentUser.getEmail(), photo,name.toLowerCase(),getString(R.string.status_off));
 
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings
                 .Builder()
@@ -655,102 +746,28 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     //CHECK INSTANCE OF FRAGMENT ***to implement the listenings
     @Override
     public void onAttachFragment(@NonNull Fragment fragment) {
-        if (fragment instanceof FriendsFragment) {
-            FriendsFragment friendsFragment = (FriendsFragment) fragment;
-            friendsFragment.setFriendsInterface(this);
-        }
-        if (fragment instanceof SearchFragment) {
-            SearchFragment searchFragment = (SearchFragment) fragment;
-            searchFragment.setSearchInterface(this);
-        }
         if (fragment instanceof MyPetsFragment) {
             MyPetsFragment myPetsFragment = (MyPetsFragment) fragment;
             myPetsFragment.setMyPetsInterface(this);
         }
+        /* TODO-->
+        if (fragment instanceof FriendsFragment) {
+            Log.d(TAG, "onAttachFragment: Firends");
+            FriendsFragment friendsFragment = (FriendsFragment) fragment;
+            //friendsFragment.setFriendsInterface(this);
+        }
+        if (fragment instanceof SearchFragment) {
+            Log.d(TAG, "onAttachFragment: Search");
+            SearchFragment searchFragment = (SearchFragment) fragment;
+           // searchFragment.setSearchInterface(this);
+        }
 
-    }
+        if (fragment instanceof UsersFragment){
+            Log.d(TAG, "onAttachFragment: Users");
+            UsersFragment usersFragment = (UsersFragment) fragment;
+        }
+         */
 
-    //****CHAT FRAGMENT ****
-    //GO to Chat with an specific owner
-    @Override
-    public void enterChat(String chatId) {
-        showChat(chatId);
-    }
-
-    //Show Chat
-    private void showChat(String chatId) {
-        Log.d(TAG, "showChat: showing...");
-        Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.KEY_ID_CHAT, chatId);
-        ChatFragment chatFragment = new ChatFragment();
-        Log.d("FRAGMENT CREADO = ", "Chat");
-        chatFragment.setArguments(bundle);
-        fragments(chatFragment, ChatFragment.TAG);
-    }
-
-    //Check Database to see if the chat already exists
-    public void checkChatExists(String userToChat) {
-
-        CollectionReference myChatCol = db.collection(getString(R.string.collection_users))
-                .document(currentUser.getUid()).collection(getString(R.string.collection_my_chats));
-
-        Log.d(TAG, "checkChatExists: " + userToChat);
-
-        myChatCol.document(userToChat).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Log.d(TAG, "checkChatExists: result=yes");
-                String idChat = (String) documentSnapshot.getData().get(getString(R.string.id_chat));
-                showChat(idChat);
-            } else {
-                Log.d(TAG, "checkChatExists: result=no -> create");
-                createChat(userToChat);
-            }
-        });
-
-    }
-
-    //If doesnt exists create one
-    private void createChat(String userToChat) {
-        Log.d(TAG, "createChat: Creating ...");
-        //Room Chat collections create new Chat and get the ID
-        CollectionReference chatCollection = db.collection(getString(R.string.collection_chats));
-        DocumentReference chatRef = chatCollection.document();
-        String idNewChat = chatRef.getId();
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(getString(R.string.id_chat), idNewChat);
-
-        Chat newChat = new Chat(idNewChat, userToChat, currentUser.getUid());
-
-        chatRef.set(newChat);
-
-        Log.d(TAG, "createChat: ChatRomm ID = " + idNewChat);
-
-        //Create on the current user a document with the chatting and set the idchat
-        CollectionReference myChatCol = db.collection(getString(R.string.collection_users))
-                .document(currentUser.getUid()).collection(getString(R.string.collection_my_chats));
-        myChatCol.document(userToChat).set(map);
-
-        //Create the chat in the other user aswell
-        CollectionReference otherChatCol = db.collection(getString(R.string.collection_users))
-                .document(userToChat).collection(getString(R.string.collection_my_chats));
-        otherChatCol.document(currentUser.getUid()).set(map);
-
-        //Go To chat
-        showChat(idNewChat);
-    }
-
-    //Go to chat from Friends Fragment
-    @Override
-    public void getChat(String userToChat) {
-        checkChatExists(userToChat);
-    }
-
-    //****SEARCH FRAGMENT ****
-    //Go to Chat from Search Fragment
-    @Override
-    public void chatFromSearch(String userToChat) {
-        checkChatExists(userToChat);
     }
 
     @Override
@@ -769,7 +786,6 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     @Override
     public void goToAddPet() {
         AddPetFragment addPetFragment = new AddPetFragment();
-        Log.d("FRAGMENT CREADO = ", "AddPet");
         changeActionBarTitle(getString(R.string.add_pet_title));
         fragments(addPetFragment, AddPetFragment.TAG);
     }

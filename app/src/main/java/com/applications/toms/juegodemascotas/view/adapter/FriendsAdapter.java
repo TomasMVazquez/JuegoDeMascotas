@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.view.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.Keys;
+import com.applications.toms.juegodemascotas.view.MessageActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,9 +63,8 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         View view = inflater.inflate(R.layout.card_view_friend,parent,false);
 
         //holder
-        FriendViewHolder friendViewHolder = new FriendViewHolder(view);
 
-        return friendViewHolder;
+        return new FriendViewHolder(view);
     }
 
     @Override
@@ -81,27 +83,27 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     }
 
     public interface FriendAdapterInterface{
-        void goToChat(String userToChat);
         void update(int index);
     }
 
-    public class FriendViewHolder extends RecyclerView.ViewHolder{
+    private class FriendViewHolder extends RecyclerView.ViewHolder{
 
         //Atributos
         private CircularImageView ivCVFriend;
         private TextView tvCVNameFriend;
-        private ImageView chatCardViewFriend;
 
-        public FriendViewHolder(@NonNull View itemView) {
+        private FriendViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ivCVFriend = itemView.findViewById(R.id.ivCVFriend);
             tvCVNameFriend = itemView.findViewById(R.id.tvCVNameFriend);
-            chatCardViewFriend = itemView.findViewById(R.id.chatCardViewFriend);
+            ImageView chatCardViewFriend = itemView.findViewById(R.id.chatCardViewFriend);
 
             chatCardViewFriend.setOnClickListener(v -> {
                 Pet pet = petList.get(getAdapterPosition());
-                friendAdapterInterface.goToChat(pet.getMiDuenioId());
+                Intent intent = new Intent(context, MessageActivity.class);
+                intent.putExtra(Keys.KEY_MSG_USERID,pet.getOwnerId());
+                context.startActivity(intent);
             });
 
             itemView.setOnLongClickListener(v -> {
@@ -112,10 +114,12 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         }
 
         private void cargar(Pet pet){
-            tvCVNameFriend.setText(pet.getNombre());
-
-            PetController petController = new PetController();
-            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCVFriend));
+            tvCVNameFriend.setText(pet.getName());
+            if (pet.getPhoto().equals(context.getString(R.string.image_default))){
+                ivCVFriend.setImageResource(R.drawable.dog_48);
+            }else {
+                Glide.with(context).load(pet.getPhoto()).into(ivCVFriend);
+            }
 
         }
 
@@ -128,15 +132,14 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
             builder.setPositiveButton(context.getString(R.string.dialog_confirm_accept), (dialog, which) ->{
                 //Create on the current user a document with firend list
-                CollectionReference myFriendCol = FirebaseFirestore.getInstance().collection(context.getString(R.string.collection_users))
-                        .document(FirebaseAuth.getInstance().getUid()).collection(context.getString(R.string.collection_my_friends));
+                CollectionReference myFriendCol = FirebaseFirestore.getInstance().collection(Keys.KEY_OWNER)
+                        .document(FirebaseAuth.getInstance().getUid()).collection(Keys.KEY_OWNER_MY_FRIENDS);
 
                 myFriendCol.document(pet.getIdPet()).delete();
                 notifyDataSetChanged();
                 friendAdapterInterface.update(index);
             });
-
-            builder.setNegativeButton(context.getString(R.string.dialog_confirm_cancel), (dialog, which) -> dialog.cancel());
+            builder.setNeutralButton(context.getString(R.string.dialog_confirm_cancel), (dialog, which) -> dialog.cancel());
 
             builder.show();
         }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
@@ -38,10 +39,6 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
     public static final String TAG = "MyPetsFragment";
     private static final String SHOWCASE_ID = "simple my pets";
 
-
-    private static String userFirestore;
-    private static String myPetsFirestore;
-
     private static FirebaseUser currentUser;
     private static Activity activity;
     private static Context context;
@@ -51,6 +48,8 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
     //Atributos
     private MyPetsAdapter myPetsAdapter;
     private MyPetsInterface myPetsInterface;
+
+    private TextView emptyStateMyPets;
 
     public MyPetsFragment() {
         // Required empty public constructor
@@ -75,11 +74,13 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
         currentUser = mAuth.getCurrentUser();
 
         //String text to get to an specific database
-        userFirestore = getResources().getString(R.string.collection_users);
-        myPetsFirestore = getResources().getString(R.string.collection_my_pets);
+        String userFirestore = getResources().getString(R.string.collection_users);
+        String myPetsFirestore = getResources().getString(R.string.collection_my_pets);
 
         //view FAB
         fabAddPet = view.findViewById(R.id.fabAddPet);
+
+        emptyStateMyPets = view.findViewById(R.id.emptyStateMyPets);
 
         //Adapter
         myPetsAdapter = new MyPetsAdapter(new ArrayList<>(),context,this);
@@ -125,7 +126,14 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
 
     //Refresh Recycler
     private void refreshPets(){
-        petController.giveOwnerPets(currentUser.getUid(),context,resultado -> myPetsAdapter.setPetList(resultado));
+        petController.giveOwnerPets(currentUser.getUid(),context,resultado -> {
+            myPetsAdapter.setPetList(resultado);
+            if (resultado.size()>0){
+                emptyStateMyPets.setVisibility(View.GONE);
+            }else {
+                emptyStateMyPets.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void presentShowcaseView(int withDelay) {

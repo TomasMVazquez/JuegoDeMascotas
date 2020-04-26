@@ -51,16 +51,6 @@ public class PlayController {
     }
 
     //return owners plays
-    public void giveOwnerPlayDateList(String ownerId, Context context, ResultListener<List<PlayDate>> resultListener) {
-        if (Util.isOnline(context)) {
-            daoPlay.fetchOwnerPlays(ownerId, context, resultListener);
-        } else {
-            resultListener.finish(new ArrayList<>());
-        }
-
-    }
-
-    //return owners plays
     public void giveOwnerPlayDateListDup(List<PlayDate> currentPlayDateList,String ownerId, Context context, ResultListener<List<PlayDate>> resultListener) {
         if (Util.isOnline(context)) {
             daoPlay.fetchOwnerPlays(ownerId, context, result -> {
