@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.NewChat.notifications;
+package com.applications.toms.juegodemascotas.notifications;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

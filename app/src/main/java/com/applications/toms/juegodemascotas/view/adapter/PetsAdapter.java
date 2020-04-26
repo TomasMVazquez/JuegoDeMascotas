@@ -1,6 +1,7 @@
 package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.Keys;
+import com.applications.toms.juegodemascotas.view.MessageActivity;
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -70,7 +73,6 @@ public class PetsAdapter extends RecyclerView.Adapter {
 
     public interface PetsAdapterInterface{
         void goToProfileFromPets(String idOwner, Pet pet);
-        void goToChat(String userToChat);
         void addFriend(Pet pet);
     }
 
@@ -105,7 +107,9 @@ public class PetsAdapter extends RecyclerView.Adapter {
             //Go to chat on Click
             chatCardView.setOnClickListener(v -> {
                 Pet pet = petList.get(getAdapterPosition());
-                adapterInterface.goToChat(pet.getMiDuenioId());
+                Intent intent = new Intent(context, MessageActivity.class);
+                intent.putExtra(Keys.KEY_MSG_USERID,pet.getMiDuenioId());
+                context.startActivity(intent);
             });
 
             //Click on Add Firend Heart
@@ -122,9 +126,11 @@ public class PetsAdapter extends RecyclerView.Adapter {
             tvCVIdPet.setText(pet.getIdPet());
             tvCVIdOwner.setText(pet.getMiDuenioId());
 
-            PetController petController = new PetController();
-            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCVPets));
-
+            if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+                ivCVPets.setImageResource(R.drawable.dog_48);
+            }else {
+                Glide.with(context).load(pet.getFotoMascota()).into(ivCVPets);
+            }
         }
 
     }

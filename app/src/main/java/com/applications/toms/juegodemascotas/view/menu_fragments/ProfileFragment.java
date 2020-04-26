@@ -299,16 +299,10 @@ public class ProfileFragment extends Fragment implements
             tvAboutProfile.setText(profileData.getAboutMe());
             tvDir.setText(profileData.getAddress());
             //Photo Profile
-            if (profileData.getAvatar() != null) {
-                String[] avatar = profileData.getAvatar().split("=");
-                if (avatar.length > 1) {
-                    Glide.with(getActivity()).load(profileData.getAvatar()).into(ivProfile);
-                } else {
-                    ownerController.giveOwnerAvatar(profileData.getUserId(), profileData.getAvatar(), context, result -> {
-                        Glide.with(getActivity()).load(result).into(ivProfile);
-                    });
-                }
-                photoOwnerActual = profileData.getAvatar();
+            if (profileData.getAvatar().equals(context.getString(R.string.image_default))){
+                ivProfile.setImageResource(R.drawable.shadow_profile);
+            }else {
+                Glide.with(context).load(profileData.getAvatar()).into(ivProfile);
             }
 
         } else if (type.equals("2")) {
@@ -332,8 +326,11 @@ public class ProfileFragment extends Fragment implements
                     ownerList.add(profileData);
                     circuleOwnerAdapter.setOwner(ownerList);
                     //Photo
-                    photoPetActual = pet.getFotoMascota();
-                    petController.givePetAvatar(profileData.getUserId(), pet.getFotoMascota(), context, result -> Glide.with(getActivity()).load(result).into(ivProfile));
+                    if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+                        Glide.with(context).load(context.getDrawable(R.drawable.dog_48)).into(ivProfile);
+                    }else {
+                        Glide.with(context).load(pet.getFotoMascota()).into(ivProfile);
+                    }
                 }
             }
         }

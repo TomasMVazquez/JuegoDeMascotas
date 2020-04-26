@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.NewChat;
+package com.applications.toms.juegodemascotas.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,17 +16,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applications.toms.juegodemascotas.NewChat.model.Message;
-import com.applications.toms.juegodemascotas.NewChat.notifications.APIService;
-import com.applications.toms.juegodemascotas.NewChat.notifications.Client;
-import com.applications.toms.juegodemascotas.NewChat.notifications.Data;
-import com.applications.toms.juegodemascotas.NewChat.notifications.MyResponse;
-import com.applications.toms.juegodemascotas.NewChat.notifications.Sender;
+import com.applications.toms.juegodemascotas.model.Message;
+import com.applications.toms.juegodemascotas.notifications.APIService;
+import com.applications.toms.juegodemascotas.notifications.Client;
+import com.applications.toms.juegodemascotas.notifications.Data;
+import com.applications.toms.juegodemascotas.notifications.MyResponse;
+import com.applications.toms.juegodemascotas.notifications.Sender;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.util.ResultListener;
-import com.applications.toms.juegodemascotas.view.MainActivity;
+import com.applications.toms.juegodemascotas.view.adapter.MessageAdapter;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,11 +45,15 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.annotation.Nullable;
 
@@ -61,6 +65,8 @@ import retrofit2.Response;
 public class MessageActivity extends AppCompatActivity {
 
     private static final String TAG = "TOM-MessageActivity";
+
+    private static final String DATE_FORMAT_1 = "yy-MM-dd HH:mm";
 
     //Componentes
     private CircleImageView profile_image;
@@ -206,6 +212,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put(Keys.KEY_MESSAGES_REC,receiver);
         hashMap.put(Keys.KEY_MESSAGES_MSG,message);
         hashMap.put(Keys.KEY_CHATS_ISSEEN,false);
+        hashMap.put(Keys.KEY_MESSAGES_TIME,getCurrentDate());
 
         //Mandar mensaje a la base de datos
         getChatDB(sender, receiver, new ResultListener<String>() {
@@ -530,6 +537,12 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    private static String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_1);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date today = Calendar.getInstance().getTime();
+        return dateFormat.format(today);
+    }
 
     @Override
     protected void onRestart() {

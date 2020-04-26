@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.NewChat.notifications;
+package com.applications.toms.juegodemascotas.notifications;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

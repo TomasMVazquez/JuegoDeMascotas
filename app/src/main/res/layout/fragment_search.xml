@@ -20,6 +20,7 @@
             android:layoutDirection="rtl"
             android:iconifiedByDefault="true"
             android:background="@color/colorPrimary"
+            android:importantForAutofill="noExcludeDescendants"
             >
 
         </androidx.appcompat.widget.SearchView>

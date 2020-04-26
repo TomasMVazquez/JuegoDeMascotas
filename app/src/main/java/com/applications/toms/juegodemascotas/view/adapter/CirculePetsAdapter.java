@@ -102,8 +102,11 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         public void cargar(Pet pet){
             tvUid.setText(pet.getMiDuenioId());
             tvPetId.setText(pet.getIdPet());
-            PetController petController = new PetController();
-            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCardViewProfile));
+            if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+                ivCardViewProfile.setImageResource(R.drawable.dog_48);
+            }else {
+                Glide.with(context).load(pet.getFotoMascota()).into(ivCardViewProfile);
+            }
         }
 
     }

@@ -18,9 +18,11 @@ public class Keys {
     public static final String KEY_PET = "Pets";
     public static final String KEY_MY_PETS = "myPets";
     public static final String KEY_PET_IMAGEURL = "fotoMascota";
+    public static final String KEY_PET_SEARCH = "search";
 
     // CHAT
     public static final String KEY_CHATS = "Chats";
+    public static final String KEY_MY_CHATS = "myChats";
     public static final String KEY_CHATS_ID = "id";
     public static final String KEY_CHATS_SENDER = "sender";
     public static final String KEY_CHATS_RECEIVER = "receiver";
@@ -33,6 +35,7 @@ public class Keys {
     public static final String KEY_MESSAGES_MSG = "message";
     public static final String KEY_MESSAGES_REC = "receiver";
     public static final String KEY_MESSAGES_SEN = "sender";
+    public static final String KEY_MESSAGES_TIME = "time";
 
     //Storage
     public static final String KEY_STORAGE = "uploads";

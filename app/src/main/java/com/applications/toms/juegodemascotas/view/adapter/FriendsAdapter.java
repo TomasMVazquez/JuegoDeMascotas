@@ -3,6 +3,7 @@ package com.applications.toms.juegodemascotas.view.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.model.Pet;
+import com.applications.toms.juegodemascotas.util.Keys;
+import com.applications.toms.juegodemascotas.view.MessageActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,7 +84,6 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     }
 
     public interface FriendAdapterInterface{
-        void goToChat(String userToChat);
         void update(int index);
     }
 
@@ -101,7 +103,9 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
             chatCardViewFriend.setOnClickListener(v -> {
                 Pet pet = petList.get(getAdapterPosition());
-                friendAdapterInterface.goToChat(pet.getMiDuenioId());
+                Intent intent = new Intent(context, MessageActivity.class);
+                intent.putExtra(Keys.KEY_MSG_USERID,pet.getMiDuenioId());
+                context.startActivity(intent);
             });
 
             itemView.setOnLongClickListener(v -> {
@@ -113,9 +117,11 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
         private void cargar(Pet pet){
             tvCVNameFriend.setText(pet.getNombre());
-
-            PetController petController = new PetController();
-            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCVFriend));
+            if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+                ivCVFriend.setImageResource(R.drawable.dog_48);
+            }else {
+                Glide.with(context).load(pet.getFotoMascota()).into(ivCVFriend);
+            }
 
         }
 

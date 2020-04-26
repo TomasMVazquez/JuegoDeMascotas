@@ -99,10 +99,6 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         return view;
     }
 
-    @Override
-    public void goToChat(String userToChat) {
-        friendsInterface.getChat(userToChat);
-    }
 
     @Override
     public void update(int index) {

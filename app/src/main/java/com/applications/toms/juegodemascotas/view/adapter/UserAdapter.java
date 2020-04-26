@@ -38,6 +38,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private boolean ischat;
 
     private String theLastMessage;
+    private String theLastMessageTime;
 
     public UserAdapter(Context mContext, List<Owner> mUsers, boolean ischat) {
         this.mContext = mContext;
@@ -68,7 +69,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
 
         if (ischat){
-            lastMessage(user.getUserId(), holder.last_msg, holder.alert);
+            lastMessage(user.getUserId(), holder.last_msg,holder.last_msg_time, holder.alert);
         }else {
             holder.last_msg.setVisibility(View.GONE);
         }
@@ -111,6 +112,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         private ImageView img_off;
         private ImageView alert;
         private TextView last_msg;
+        private TextView last_msg_time;
 
         public ViewHolder (View itemview){
             super(itemview);
@@ -121,14 +123,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             img_off = itemview.findViewById(R.id.img_off);
             alert = itemview.findViewById(R.id.alert);
             last_msg = itemview.findViewById(R.id.last_msg);
+            last_msg_time = itemview.findViewById(R.id.last_msg_time);
 
         }
 
     }
 
     //Revisar el último mensaje recibido/enviado
-    private void lastMessage(final String userid, final TextView last_msg, final ImageView alert){
+    private void lastMessage(final String userid, final TextView last_msg,final TextView last_msg_time, final ImageView alert){
         theLastMessage = "";
+        theLastMessageTime = "";
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -157,6 +161,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             if (queryDocumentSnapshots.getDocuments().size() > 0) {
                                 Message msg = queryDocumentSnapshots.getDocuments().get(0).toObject(Message.class);
                                 theLastMessage = msg.getMessage();
+                                theLastMessageTime = msg.getTime();
                                 if (!msg.isIsseen() && msg.getReceiver().equals(firebaseUser.getUid())){
                                     alert.setVisibility(View.VISIBLE);
                                 }else {
@@ -166,6 +171,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 theLastMessage = mContext.getString(R.string.no_msg);
                             }
                             last_msg.setText(theLastMessage);
+                            last_msg_time.setText(theLastMessageTime);
                         }
                     });
                 }else {

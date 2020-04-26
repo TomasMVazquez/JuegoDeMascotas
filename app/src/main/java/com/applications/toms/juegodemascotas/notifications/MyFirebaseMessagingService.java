@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.NewChat.notifications;
+package com.applications.toms.juegodemascotas.notifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.applications.toms.juegodemascotas.NewChat.MessageActivity;
+import com.applications.toms.juegodemascotas.view.MessageActivity;
 import com.applications.toms.juegodemascotas.util.Keys;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

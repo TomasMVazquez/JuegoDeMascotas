@@ -1,15 +1,18 @@
 package com.applications.toms.juegodemascotas.NewChat;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -48,8 +51,12 @@ public class UsersFragment extends Fragment implements FragmentTitles {
     private UserAdapter userAdapter;
     private List<Owner> mUser;
 
+    private FirebaseUser currentUser;
+    private FirebaseFirestore db;
+    private Context context;
+
     //Componente
-    private EditText search_users;
+    private SearchView search_users;
 
     //Constructor
     public UsersFragment() {
@@ -63,10 +70,18 @@ public class UsersFragment extends Fragment implements FragmentTitles {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
+        context = getContext();
+        db = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
         mUser = new ArrayList<>();
 
         //Componentes
         search_users = view.findViewById(R.id.search_users);
+        search_users.setQueryHint(getString(R.string.search));
+
+        TextView emptyStateSearch = view.findViewById(R.id.emptyStateSearch);
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -74,40 +89,30 @@ public class UsersFragment extends Fragment implements FragmentTitles {
         recyclerView.setAdapter(userAdapter);
 
         //Método para buscar todos los usuarios de la app
-        readUsers();
+        if (currentUser != null){
+            emptyStateSearch.setVisibility(View.GONE);
+            readUsers();
+        }else {
+            emptyStateSearch.setVisibility(View.VISIBLE);
+        }
 
-        //Búsqueda de usuarios por nombre
-        search_users.addTextChangedListener(new TextWatcher() {
+
+        //For search Logic while writing or when enter
+        search_users.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public boolean onQueryTextSubmit(String query) {
+                searchUsers(query.toLowerCase());
+                return false;
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchUsers(s.toString().toLowerCase());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        //Esconder el teclado al enter
-        search_users.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    Util.hideKeyboard(getActivity());
-                    handled = true;
-                }
-                return handled;
-
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, "onQueryTextChange: search: " + newText);
+                searchUsers(newText.toLowerCase());
+                return false;
             }
         });
+
 
         return view;
     }
@@ -150,7 +155,7 @@ public class UsersFragment extends Fragment implements FragmentTitles {
         listUserRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (search_users.getText().toString().equals("")) {
+                if (search_users.getQuery().toString().equals("")) {
                     mUser.clear();
                     for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                         Owner user = queryDocumentSnapshot.toObject(Owner.class);

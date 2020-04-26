@@ -95,16 +95,10 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         public void cargar(final Owner owner){
             tvUid.setText(owner.getUserId());
             tvPetId.setText("");
-            if (owner.getAvatar() == null){
+            if (owner.getAvatar().equals(context.getString(R.string.image_default))){
                 Glide.with(context).load(context.getDrawable(R.drawable.shadow_profile)).into(ivCardViewProfile);
             }else {
-                String [] avatar = owner.getAvatar().split("=");
-                if (avatar.length > 1){
-                    Glide.with(context).load(owner.getAvatar()).into(ivCardViewProfile);
-                }else {
-                    OwnerController ownerController = new OwnerController();
-                    ownerController.giveOwnerAvatar(owner.getUserId(),owner.getAvatar(),context,result -> Glide.with(context).load(result).into(ivCardViewProfile));
-                }
+                Glide.with(context).load(owner.getAvatar()).into(ivCardViewProfile);
             }
         }
     }

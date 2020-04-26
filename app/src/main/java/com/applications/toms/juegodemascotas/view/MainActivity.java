@@ -6,9 +6,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 
 import android.os.Bundle;
@@ -17,14 +15,12 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -33,19 +29,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
-import com.applications.toms.juegodemascotas.NewChat.UsersFragment;
+import com.applications.toms.juegodemascotas.view.menu_fragments.UsersFragment;
 import com.applications.toms.juegodemascotas.R;
-import com.applications.toms.juegodemascotas.model.Chat;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
-import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.util.AdminStorage;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
 import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.adapter.MyViewPagerAdapter;
 import com.applications.toms.juegodemascotas.view.fragment.AddPetFragment;
-import com.applications.toms.juegodemascotas.view.fragment.ChatFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.ChatRoomFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.FriendsFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.MyPetsFragment;
@@ -54,34 +47,31 @@ import com.applications.toms.juegodemascotas.view.fragment.ZoomOutPageTransforme
 import com.applications.toms.juegodemascotas.view.menu_fragments.PlaysToGoFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.ProfileFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.SearchFragment;
-import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -89,10 +79,9 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.ShowcaseTooltip;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-public class MainActivity extends AppCompatActivity implements ChatRoomFragment.onChatRoomNotify,
-        FriendsFragment.FriendsInterface, SearchFragment.SearchInterface, MyPetsFragment.MyPetsInterface,
+public class MainActivity extends AppCompatActivity implements
+        SearchFragment.SearchInterface,
+        MyPetsFragment.MyPetsInterface,
         ProfileFragment.ProfileFragmentListener {
 
     public static final int KEY_LOGIN = 101;
@@ -263,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
                 .document(currentUser.getUid()).collection(myPetsFirestore);
 
         final String idPet = userRefMasc.document().getId();
-        Pet newPet = new Pet(idPet, name, raza, size, sex, birth, photo, info, currentUser.getUid());
+        Pet newPet = new Pet(idPet, name,name.toLowerCase(), raza, size, sex, birth, photo, info, currentUser.getUid());
 
         userRefMasc.document(idPet).set(newPet);
 
@@ -479,10 +468,36 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         presentShowcaseView();
+
+        getToken();
     }
 
-
     //Methods
+    private void getToken() {
+        //Buscar Token y guardarlo para las notificaciones
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        //LLamar al método para actualizar el token en la base de datos
+                        updateTokenDB(token);
+                    }
+                });
+    }
+
+    private void updateTokenDB(String token){
+        if (currentUser != null) {
+            DocumentReference userRef = db.collection(Keys.KEY_OWNER).document(currentUser.getUid());
+            userRef.update(Keys.KEY_OWNER_TOKEN, token);
+        }
+    }
 
     void presentShowcaseView() {
         ShowcaseConfig config = new ShowcaseConfig();
@@ -747,100 +762,21 @@ public class MainActivity extends AppCompatActivity implements ChatRoomFragment.
     public void onAttachFragment(@NonNull Fragment fragment) {
         if (fragment instanceof FriendsFragment) {
             FriendsFragment friendsFragment = (FriendsFragment) fragment;
-            friendsFragment.setFriendsInterface(this);
+            //friendsFragment.setFriendsInterface(this);
         }
         if (fragment instanceof SearchFragment) {
             SearchFragment searchFragment = (SearchFragment) fragment;
-            searchFragment.setSearchInterface(this);
+           // searchFragment.setSearchInterface(this);
         }
         if (fragment instanceof MyPetsFragment) {
             MyPetsFragment myPetsFragment = (MyPetsFragment) fragment;
             myPetsFragment.setMyPetsInterface(this);
         }
+        if (fragment instanceof UsersFragment){
+            UsersFragment usersFragment = (UsersFragment) fragment;
+            //TODO
+        }
 
-    }
-
-    //****CHAT FRAGMENT ****
-    //GO to Chat with an specific owner
-    @Override
-    public void enterChat(String chatId) {
-        showChat(chatId);
-    }
-
-    //Show Chat
-    private void showChat(String chatId) {
-        Log.d(TAG, "showChat: showing...");
-        Bundle bundle = new Bundle();
-        bundle.putString(ChatFragment.KEY_ID_CHAT, chatId);
-        ChatFragment chatFragment = new ChatFragment();
-        Log.d("FRAGMENT CREADO = ", "Chat");
-        chatFragment.setArguments(bundle);
-        fragments(chatFragment, ChatFragment.TAG);
-    }
-
-    //Check Database to see if the chat already exists
-    public void checkChatExists(String userToChat) {
-
-        CollectionReference myChatCol = db.collection(getString(R.string.collection_users))
-                .document(currentUser.getUid()).collection(getString(R.string.collection_my_chats));
-
-        Log.d(TAG, "checkChatExists: " + userToChat);
-
-        myChatCol.document(userToChat).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Log.d(TAG, "checkChatExists: result=yes");
-                String idChat = (String) documentSnapshot.getData().get(getString(R.string.id_chat));
-                showChat(idChat);
-            } else {
-                Log.d(TAG, "checkChatExists: result=no -> create");
-                createChat(userToChat);
-            }
-        });
-
-    }
-
-    //If doesnt exists create one
-    private void createChat(String userToChat) {
-        Log.d(TAG, "createChat: Creating ...");
-        //Room Chat collections create new Chat and get the ID
-        CollectionReference chatCollection = db.collection(getString(R.string.collection_chats));
-        DocumentReference chatRef = chatCollection.document();
-        String idNewChat = chatRef.getId();
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(getString(R.string.id_chat), idNewChat);
-
-        Chat newChat = new Chat(idNewChat, userToChat, currentUser.getUid());
-
-        chatRef.set(newChat);
-
-        Log.d(TAG, "createChat: ChatRomm ID = " + idNewChat);
-
-        //Create on the current user a document with the chatting and set the idchat
-        CollectionReference myChatCol = db.collection(getString(R.string.collection_users))
-                .document(currentUser.getUid()).collection(getString(R.string.collection_my_chats));
-        myChatCol.document(userToChat).set(map);
-
-        //Create the chat in the other user aswell
-        CollectionReference otherChatCol = db.collection(getString(R.string.collection_users))
-                .document(userToChat).collection(getString(R.string.collection_my_chats));
-        otherChatCol.document(currentUser.getUid()).set(map);
-
-        //Go To chat
-        showChat(idNewChat);
-    }
-
-    //Go to chat from Friends Fragment
-    @Override
-    public void getChat(String userToChat) {
-        checkChatExists(userToChat);
-    }
-
-    //****SEARCH FRAGMENT ****
-    //Go to Chat from Search Fragment
-    @Override
-    public void chatFromSearch(String userToChat) {
-        checkChatExists(userToChat);
     }
 
     @Override

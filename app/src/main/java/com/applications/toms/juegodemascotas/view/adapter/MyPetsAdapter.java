@@ -102,8 +102,12 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
             tvCVNameMyPet.setText(pet.getNombre());
             tvCVIdMyPet.setText(pet.getIdPet());
             tvCVIdMyOwner.setText(pet.getMiDuenioId());
-            PetController petController = new PetController();
-            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCVMyPet));
+
+            if (pet.getFotoMascota().equals(context.getString(R.string.image_default))){
+                ivCVMyPet.setImageResource(R.drawable.dog_48);
+            }else {
+                Glide.with(context).load(pet.getFotoMascota()).into(ivCVMyPet);
+            }
         }
 
     }

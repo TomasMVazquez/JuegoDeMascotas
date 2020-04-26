@@ -14,15 +14,17 @@ public class Pet {
     private String fotoMascota;
     private String infoMascota;
     private String miDuenioId;
+    private String search;
 
     //Constructor
 
     public Pet() {
     }
 
-    public Pet(String idPet, String nombre, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, String miDuenio) {
+    public Pet(String idPet, String nombre,String search, String raza, String tamanio, String sexo, String fechaNacimiento, String fotoMascota, String infoMascota, String miDuenio) {
         this.idPet = idPet;
         this.nombre = nombre;
+        this.search = search;
         this.raza = raza;
         this.tamanio = tamanio;
         this.sexo = sexo;
@@ -59,6 +61,10 @@ public class Pet {
 
     public String getFotoMascota() {
         return fotoMascota;
+    }
+
+    public String getSearch() {
+        return search;
     }
 
     //Setter

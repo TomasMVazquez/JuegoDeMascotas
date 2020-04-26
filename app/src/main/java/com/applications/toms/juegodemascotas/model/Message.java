@@ -1,48 +1,71 @@
-package com.applications.toms.juegodemascotas.model;
-
-import java.util.Comparator;
-import java.util.PrimitiveIterator;
+package com.applications.toms.juegodemascotas.NewChat.model;
 
 public class Message {
 
     private Integer id;
+    private boolean isseen;
     private String message;
+    private String receiver;
+    private String sender;
     private String time;
-    private String user;
 
     public Message() {
     }
 
-    public Message(Integer id,String message, String time, String user) {
+    public Message(Integer id, boolean isseen, String message, String receiver, String sender, String time) {
         this.id = id;
+        this.isseen = isseen;
         this.message = message;
+        this.receiver = receiver;
         this.time = time;
-        this.user = user;
+        this.sender = sender;
     }
 
     public Integer getId() {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public boolean isIsseen() {
+        return isseen;
+    }
+
+    public void setIsseen(boolean isseen) {
+        this.isseen = isseen;
+    }
+
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
     public String getTime() {
         return time;
     }
 
-    public String getUser() {
-        return user;
+    public void setTime(String time) {
+        this.time = time;
     }
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "message='" + message + '\'' +
-                ", time='" + time + '\'' +
-                ", user='" + user + '\'' +
-                '}';
-    }
-
 }
