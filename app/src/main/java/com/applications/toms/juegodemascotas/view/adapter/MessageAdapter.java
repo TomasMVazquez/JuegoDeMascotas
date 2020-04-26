@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.NewChat;
+package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applications.toms.juegodemascotas.NewChat.model.Message;
+import com.applications.toms.juegodemascotas.model.Message;
 import com.applications.toms.juegodemascotas.R;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;

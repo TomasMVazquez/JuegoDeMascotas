@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.NewChat.model;
+package com.applications.toms.juegodemascotas.model;
 
 import java.util.List;
 

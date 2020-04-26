@@ -1,17 +1,13 @@
-package com.applications.toms.juegodemascotas.NewChat;
+package com.applications.toms.juegodemascotas.view.menu_fragments;
 
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
+
 import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 
@@ -19,11 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.applications.toms.juegodemascotas.view.adapter.UserAdapter;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
-import com.applications.toms.juegodemascotas.util.Util;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;

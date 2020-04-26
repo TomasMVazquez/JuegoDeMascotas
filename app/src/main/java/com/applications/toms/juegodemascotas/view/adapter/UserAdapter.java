@@ -1,4 +1,4 @@
-package com.applications.toms.juegodemascotas.NewChat;
+package com.applications.toms.juegodemascotas.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applications.toms.juegodemascotas.NewChat.model.Chat;
-import com.applications.toms.juegodemascotas.NewChat.model.Message;
+import com.applications.toms.juegodemascotas.view.MessageActivity;
+import com.applications.toms.juegodemascotas.model.Chat;
+import com.applications.toms.juegodemascotas.model.Message;
 import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.R;
@@ -63,7 +64,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final Owner user = mUsers.get(position);
         holder.username.setText(user.getName());
         if (user.getAvatar().equals(mContext.getString(R.string.image_default))){
-            holder.profile_image.setImageResource(R.mipmap.ic_launcher);
+            holder.profile_image.setImageResource(R.drawable.shadow_profile);
         }else {
             Glide.with(mContext.getApplicationContext()).load(user.getAvatar()).into(holder.profile_image);
         }
