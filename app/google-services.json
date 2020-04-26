@@ -21,18 +21,22 @@
             "package_name": "com.applications.toms.juegodemascotas",
             "certificate_hash": "68528757a6bdd69d734e4e2ae217664e4cdc4871"
           }
+        },
+        {
+          "client_id": "1019232112841-t9rn8ma1ck3o9fp9s4g8n0k0vbaa98tp.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAA0PJZc0ikfK2L0BySOeSxsme_9oMl8ys"
+          "current_key": "AIzaSyBulyI5FOiVlhtn5EGW6bfUlQHxv1LkSws"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1019232112841-t9rn8ma1ck3o9fp9s4g8n0k0vbaa98tp.apps.googleusercontent.com",
+              "client_id": "1019232112841-qukol2t2cnlphjtcg18gtoknv416h19j.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

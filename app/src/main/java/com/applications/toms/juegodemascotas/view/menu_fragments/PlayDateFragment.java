@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -61,6 +63,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
     private List<PlayDate> currentPlayDateList = new ArrayList<>();
 
     private static FloatingActionButton fabNewPlayDate;
+    private TextView emptyStatePlayDate;
 
     public PlayDateFragment() {
         // Required empty public constructor
@@ -88,6 +91,8 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
         //FAB view btn
         fabNewPlayDate = view.findViewById(R.id.fabNewPlayDate);
 
+        emptyStatePlayDate = view.findViewById(R.id.emptyStatePlayDate);
+
         //Recycler View
         RecyclerView recyclerPlayDates = view.findViewById(R.id.recyclerPlayDates);
         recyclerPlayDates.hasFixedSize();
@@ -104,6 +109,11 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                     Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
                     currentPlayDateList = result;
                     mapAdapter.setPlayDates(currentPlayDateList);
+                    if (currentPlayDateList.size()>0){
+                        emptyStatePlayDate.setVisibility(View.GONE);
+                    }else {
+                        emptyStatePlayDate.setVisibility(View.VISIBLE);
+                    }
                 }
             });
 
@@ -113,6 +123,7 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                 getActivity().finish();
             });
         } else {
+            emptyStatePlayDate.setVisibility(View.VISIBLE);
             fabNewPlayDate.setOnClickListener(v -> Snackbar.make(containerlayDates,getString(R.string.play_need_login),Snackbar.LENGTH_SHORT).show());
         }
 

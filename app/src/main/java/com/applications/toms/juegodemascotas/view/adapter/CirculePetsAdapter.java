@@ -53,9 +53,8 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         //inflamos view
         View view = inflater.inflate(R.layout.card_view_profile,viewGroup,false);
         //pasamos holder
-        CirculePetViewHolder petViewHolder = new CirculePetViewHolder(view);
 
-        return petViewHolder;
+        return new CirculePetViewHolder(view);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         void goToPetProfile(String keyType, String idOwner,String idPet);
     }
 
-    public class CirculePetViewHolder extends RecyclerView.ViewHolder{
+    private class CirculePetViewHolder extends RecyclerView.ViewHolder{
 
         //Atributos
         private ImageView ivCardViewProfile;
@@ -85,7 +84,7 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         private TextView tvPetId;
 
         //Constructor
-        public CirculePetViewHolder(@NonNull View itemView) {
+        private CirculePetViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ivCardViewProfile = itemView.findViewById(R.id.ivCardViewProfile);
@@ -99,11 +98,14 @@ public class CirculePetsAdapter extends RecyclerView.Adapter {
         }
 
         //metodos
-        public void cargar(Pet pet){
-            tvUid.setText(pet.getMiDuenioId());
+        private void cargar(Pet pet){
+            tvUid.setText(pet.getOwnerId());
             tvPetId.setText(pet.getIdPet());
-            PetController petController = new PetController();
-            petController.givePetAvatar(pet.getMiDuenioId(),pet.getFotoMascota(),context,result -> Glide.with(context).load(result).into(ivCardViewProfile));
+            if (pet.getPhoto().equals(context.getString(R.string.image_default))){
+                ivCardViewProfile.setImageResource(R.drawable.dog_48);
+            }else {
+                Glide.with(context).load(pet.getPhoto()).into(ivCardViewProfile);
+            }
         }
 
     }

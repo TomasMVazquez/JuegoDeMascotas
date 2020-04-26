@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PlayController;
@@ -22,6 +23,8 @@ import com.applications.toms.juegodemascotas.view.PlayDateDetail;
 import com.applications.toms.juegodemascotas.view.adapter.MyPlaysMapAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +44,8 @@ public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.Map
 
     private MyPlaysMapAdapter myPlaysMapAdapter;
 
+    private TextView emptyStatePlayGo;
+
     public PlaysToGoFragment() {
         // Required empty public constructor
     }
@@ -57,6 +62,8 @@ public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.Map
 
         playController = new PlayController();
         myPlaysMapAdapter = new MyPlaysMapAdapter(new ArrayList<>(),this);
+
+        emptyStatePlayGo = view.findViewById(R.id.emptyStatePlayGo);
 
         //Recycler View
         RecyclerView recyclerView = view.findViewById(R.id.recyclerMyPlays);
@@ -77,6 +84,11 @@ public class PlaysToGoFragment extends Fragment implements MyPlaysMapAdapter.Map
             playDateList.addAll(result);
             Collections.sort(result, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
             myPlaysMapAdapter.setMyPlays(result);
+            if (result.size()>0){
+                emptyStatePlayGo.setVisibility(View.GONE);
+            }else {
+                emptyStatePlayGo.setVisibility(View.VISIBLE);
+            }
         });
     }
 

@@ -15,18 +15,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.FragmentTitles;
+import com.applications.toms.juegodemascotas.util.Keys;
 import com.applications.toms.juegodemascotas.view.adapter.PetsAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +56,8 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
     private FirebaseFirestore db;
 
     private SearchInterface searchInterface;
+
+    private TextView emptyStateSearch;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -78,6 +88,8 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
         SearchView searchView = view.findViewById(R.id.searchView);
         searchView.setQueryHint(getString(R.string.search));
 
+        emptyStateSearch = view.findViewById(R.id.emptyStateSearch);
+
         //Get Firebase User instance
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -101,21 +113,28 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
             petController.givePetListDup(petList,context,result -> {
                 petList.addAll(result);
                 petsAdapter.setPetList(result);
+                if (petList.size()>0){
+                    emptyStateSearch.setVisibility(View.GONE);
+                }else {
+                    emptyStateSearch.setVisibility(View.VISIBLE);
+                }
             });
+        }else {
+            emptyStateSearch.setVisibility(View.VISIBLE);
         }
 
         //For search Logic while writing or when enter
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchResult(query.toUpperCase());
+                searchResult(query.toLowerCase());
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d(TAG, "onQueryTextChange: search: " + newText);
-                searchResult(newText.toUpperCase());
+                searchResult(newText.toLowerCase());
                 return false;
             }
         });
@@ -129,18 +148,21 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
     }
 
     public interface SearchInterface{
-        void chatFromSearch(String userToChat);
         void goToPetProfile(String idOwner, Pet choosenPet);
     }
 
     //Get results from search
     private void searchResult(String searchText){
+
         Log.d(TAG, "searchResult: search: " + searchText);
         petController.giveResultSearch(searchText, context, result -> {
             petsAdapter.setPetList(result);
             Log.d(TAG, "searchResult: result: " + result);
         });
+
     }
+
+
 
     //Go to a profile when clicking the card of a pet.
     @Override
@@ -148,16 +170,11 @@ public class SearchFragment extends Fragment implements PetsAdapter.PetsAdapterI
         searchInterface.goToPetProfile(idOwner,choosenPet);
     }
 
-    //Go to a chat when clicking the chat icon.
-    @Override
-    public void goToChat(String userToChat) {
-        searchInterface.chatFromSearch(userToChat);
-    }
 
     //Add it as a friend when clicking the heart icon.
     @Override
     public void addFriend(Pet pet) {
-        Snackbar.make(flSearch,"Agregando a " + pet.getNombre() + " a mi lista de amigos",Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(flSearch,"Agregando a " + pet.getName() + " a mi lista de amigos",Snackbar.LENGTH_SHORT).show();
 
         //Create on the current user a document with firend list
         CollectionReference myFriendCol = db.collection(getString(R.string.collection_users))

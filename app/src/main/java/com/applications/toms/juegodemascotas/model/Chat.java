@@ -1,51 +1,47 @@
 package com.applications.toms.juegodemascotas.model;
 
+import java.util.List;
+
 public class Chat {
 
-    //Atributos
-    private String idChat;
-    private String userOne;
-    private String userTwo;
+    private Integer id;
+    private String sender;
+    private String receiver;
+    private List<Message> Messages;
+
 
     public Chat() {
     }
 
-    public Chat(String idChat, String userOne, String userTwo) {
-        this.idChat = idChat;
-        this.userOne = userOne;
-        this.userTwo = userTwo;
+    public Integer getId() {
+        return id;
     }
 
-    public String getIdChat() {
-        return idChat;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getUserOne() {
-        return userOne;
+    public String getSender() {
+        return sender;
     }
 
-    public String getUserTwo() {
-        return userTwo;
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
-    public void setIdChat(String idChat) {
-        this.idChat = idChat;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setUserOne(String userOne) {
-        this.userOne = userOne;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
-    public void setUserTwo(String userTwo) {
-        this.userTwo = userTwo;
+    public List<Message> getMessages() {
+        return Messages;
     }
 
-    @Override
-    public String toString() {
-        return "Chat{" +
-                "idChat='" + idChat + '\'' +
-                ", userOne='" + userOne + '\'' +
-                ", userTwo='" + userTwo + '\'' +
-                '}';
+    public void setMessages(List<Message> messages) {
+        Messages = messages;
     }
 }

@@ -35,8 +35,6 @@ public class SignInFragment extends Fragment {
 
     private static final String TAG = "SignInFragment";
 
-    private Context context;
-    private Activity activity;
     private FrameLayout flSignin;
     private EditText etSigInPass;
     private EditText etSigIn;

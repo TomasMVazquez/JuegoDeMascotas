@@ -30,7 +30,13 @@
 
     <item
         android:id="@+id/searchDog"
-        android:title="@string/search"
+        android:title="@string/search_pet"
+        android:icon="@drawable/ic_search"
+        />
+
+    <item
+        android:id="@+id/users"
+        android:title="@string/search_owner"
         android:icon="@drawable/ic_search"
         />
 
