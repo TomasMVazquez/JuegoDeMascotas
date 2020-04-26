@@ -39,10 +39,6 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
     public static final String TAG = "MyPetsFragment";
     private static final String SHOWCASE_ID = "simple my pets";
 
-
-    private static String userFirestore;
-    private static String myPetsFirestore;
-
     private static FirebaseUser currentUser;
     private static Activity activity;
     private static Context context;
@@ -78,8 +74,8 @@ public class MyPetsFragment extends Fragment  implements MyPetsAdapter.AdapterIn
         currentUser = mAuth.getCurrentUser();
 
         //String text to get to an specific database
-        userFirestore = getResources().getString(R.string.collection_users);
-        myPetsFirestore = getResources().getString(R.string.collection_my_pets);
+        String userFirestore = getResources().getString(R.string.collection_users);
+        String myPetsFirestore = getResources().getString(R.string.collection_my_pets);
 
         //view FAB
         fabAddPet = view.findViewById(R.id.fabAddPet);

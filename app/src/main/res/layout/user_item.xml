@@ -74,6 +74,7 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/last_msg_time"
         tools:text="20-04-25 16:34"
+        android:textSize="12sp"
         android:layout_marginTop="5dp"
         android:paddingTop="5dp"
         />

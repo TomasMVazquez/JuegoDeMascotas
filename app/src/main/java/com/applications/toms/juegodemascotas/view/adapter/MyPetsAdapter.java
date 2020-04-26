@@ -49,9 +49,8 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         //inflamos view
         View view = inflater.inflate(R.layout.card_view_my_pet,viewGroup,false);
         //pasamos holder
-        PetViewHolder petViewHolder = new PetViewHolder(view);
 
-        return petViewHolder;
+        return new PetViewHolder(view);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         void goToProfile(String idOwner, String petId);
     }
 
-    public class PetViewHolder extends RecyclerView.ViewHolder{
+    private class PetViewHolder extends RecyclerView.ViewHolder{
 
         //Atributos
         private ImageView ivCVMyPet;
@@ -82,7 +81,7 @@ public class MyPetsAdapter extends RecyclerView.Adapter {
         private TextView tvCVIdMyOwner;
 
         //constructor
-        public PetViewHolder(@NonNull View itemView) {
+        private PetViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ivCVMyPet = itemView.findViewById(R.id.ivCVMyPet);

@@ -47,10 +47,6 @@ public class UsersFragment extends Fragment implements FragmentTitles {
     private UserAdapter userAdapter;
     private List<Owner> mUser;
 
-    private FirebaseUser currentUser;
-    private FirebaseFirestore db;
-    private Context context;
-
     //Componente
     private SearchView search_users;
 
@@ -66,9 +62,7 @@ public class UsersFragment extends Fragment implements FragmentTitles {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
-        context = getContext();
-        db = FirebaseFirestore.getInstance();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         mUser = new ArrayList<>();
 

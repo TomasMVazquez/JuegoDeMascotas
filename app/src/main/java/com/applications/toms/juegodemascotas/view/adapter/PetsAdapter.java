@@ -51,9 +51,8 @@ public class PetsAdapter extends RecyclerView.Adapter {
         //inflamos view
         View view = inflater.inflate(R.layout.card_view_pets,viewGroup,false);
         //pasamos holder
-        PetsViewHolder petViewHolder = new PetsViewHolder(view);
 
-        return petViewHolder;
+        return new PetsViewHolder(view);
     }
 
     @Override
@@ -88,7 +87,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
         private TextView tvCVIdOwner;
 
         //constructor
-        public PetsViewHolder(@NonNull View itemView) {
+        private PetsViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ivCVPets = itemView.findViewById(R.id.ivCVPets);
@@ -121,7 +120,7 @@ public class PetsAdapter extends RecyclerView.Adapter {
         }
 
         //metodo cargar tarjeta
-        public void cargar(Pet pet){
+        private void cargar(Pet pet){
             tvCVNamePets.setText(pet.getNombre());
             tvCVIdPet.setText(pet.getIdPet());
             tvCVIdOwner.setText(pet.getMiDuenioId());

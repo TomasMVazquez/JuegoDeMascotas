@@ -85,7 +85,6 @@ public class ProfileFragment extends Fragment implements
     private Context context;
     private OwnerController ownerController;
     private PetController petController;
-    private FirebaseStorage mStorage;
     private static ImageView ivProfile;
     private static TextView tvName;
     private static TextView tvDir;
@@ -148,7 +147,7 @@ public class ProfileFragment extends Fragment implements
         //Instance of FireBase
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mStorage = FirebaseStorage.getInstance();
+        FirebaseStorage mStorage = FirebaseStorage.getInstance();
         raiz = mStorage.getReference();
 
         //Adapter
@@ -350,7 +349,7 @@ public class ProfileFragment extends Fragment implements
             startActivity(intent);
         });
 
-        builder.setNegativeButton("No", (dialog, which) -> Snackbar.make(containerProfile,getString(R.string.error_profile_delete),Snackbar.LENGTH_SHORT).show());
+        builder.setNeutralButton("No", (dialog, which) -> Snackbar.make(containerProfile,getString(R.string.error_profile_delete),Snackbar.LENGTH_SHORT).show());
 
         builder.show();
     }

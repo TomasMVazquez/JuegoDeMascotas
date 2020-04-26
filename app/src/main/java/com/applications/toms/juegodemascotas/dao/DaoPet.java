@@ -52,32 +52,8 @@ public class DaoPet {
         });
     }
 
-    //Return only one pet with it petId
-    public void fetchPet(String petId, Context context, ResultListener<Pet> petResultListener){
-        //extract single Pet data
-        DocumentReference petRef = mDatabase.collection(context.getString(R.string.collection_pets))
-                .document(petId);
-
-        petRef.get().addOnSuccessListener(documentSnapshot -> {
-            Pet pet = documentSnapshot.toObject(Pet.class);
-            petResultListener.finish(pet);
-        });
-    }
-
     //return a list of pet for the search logic
     public void searchPet(String s,Context context, ResultListener<List<Pet>> listResultListener){
-        /*
-        mDatabase.collection(context.getString(R.string.collection_pets))
-                .whereGreaterThanOrEqualTo("nombre",search.toUpperCase())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        listResultListener.finish(task.getResult().toObjects(Pet.class));
-                    }
-                });
-
-         */
-
         Query query = mDatabase.collection(Keys.KEY_PET)
                 .orderBy(Keys.KEY_PET_SEARCH)
                 .startAt(s)
@@ -118,10 +94,4 @@ public class DaoPet {
         });
     }
 
-    //return pets avatar from storage
-    public void fetchPetAvatar(String ownerId, String avatar, Context context, ResultListener<Uri> uriResultListener){
-        FirebaseStorage mStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = mStorage.getReference().child(ownerId).child(avatar);
-        storageReference.getDownloadUrl().addOnSuccessListener(uri -> uriResultListener.finish(uri));
-    }
 }

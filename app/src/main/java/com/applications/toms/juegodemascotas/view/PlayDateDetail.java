@@ -255,7 +255,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
             joinToCreatorPlayDate(creatorId, playId);
         });
 
-        builder.setNegativeButton(getString(R.string.dialog_confirm_cancel), (dialog, which) -> Snackbar.make(nestedScroll,getString(R.string.error_delete),Snackbar.LENGTH_SHORT).show());
+        builder.setNeutralButton(getString(R.string.dialog_confirm_cancel), (dialog, which) -> Snackbar.make(nestedScroll,getString(R.string.error_delete),Snackbar.LENGTH_SHORT).show());
 
         builder.show();
     }

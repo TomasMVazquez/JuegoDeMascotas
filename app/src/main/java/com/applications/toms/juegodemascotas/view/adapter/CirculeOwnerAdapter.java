@@ -46,9 +46,8 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         //inflamos view
         View view = inflater.inflate(R.layout.card_view_profile,viewGroup,false);
         //pasamos holder
-        CirculeOwnerViewHolder ownerViewHolder = new CirculeOwnerViewHolder(view);
 
-        return ownerViewHolder;
+        return new CirculeOwnerViewHolder(view);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         void goToUserProfile(String keyType, String idOwner, String idPet);
     }
 
-    public class CirculeOwnerViewHolder extends RecyclerView.ViewHolder{
+    private class CirculeOwnerViewHolder extends RecyclerView.ViewHolder{
 
         //Atributos
         private ImageView ivCardViewProfile;
@@ -78,7 +77,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         private TextView tvPetId;
 
         //Constructor
-        public CirculeOwnerViewHolder(@NonNull View itemView) {
+        private CirculeOwnerViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ivCardViewProfile = itemView.findViewById(R.id.ivCardViewProfile);
@@ -92,7 +91,7 @@ public class CirculeOwnerAdapter extends RecyclerView.Adapter {
         }
 
         //metodos
-        public void cargar(final Owner owner){
+        private void cargar(final Owner owner){
             tvUid.setText(owner.getUserId());
             tvPetId.setText("");
             if (owner.getAvatar().equals(context.getString(R.string.image_default))){

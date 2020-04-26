@@ -43,9 +43,6 @@ public class UpdateProfileFragment extends Fragment implements FragmentTitles {
 
     private static final String TAG = "UpdateProfileFragment";
 
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-
     private static EditText etUpdateBirth;
     private EditText etUpdateName;
     private EditText etUpdateDireccion;
@@ -66,8 +63,8 @@ public class UpdateProfileFragment extends Fragment implements FragmentTitles {
         View view = inflater.inflate(R.layout.fragment_update_profile, container, false);
 
         //Instances from DataBase
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //Views from Layout
         etUpdateBirth = view.findViewById(R.id.etUpdateBirth);

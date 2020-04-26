@@ -23,6 +23,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -118,10 +119,8 @@ public class MainActivity extends AppCompatActivity implements
     //Método de cambio de estado en la base de datos
     private void status(String status){
         DocumentReference userRef = db.collection(Keys.KEY_OWNER).document(currentUser.getUid());
-
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(Keys.KEY_OWNER_STATUS,status);
-
         userRef.update(hashMap);
     }
 
@@ -365,7 +364,6 @@ public class MainActivity extends AppCompatActivity implements
                             }
                         return true;
                     case R.id.my_profile:
-                        Log.d(TAG, "onCreate: Profile Fragment");
                         Bundle bundle = new Bundle();
                         bundle.putString(ProfileFragment.KEY_TYPE, "1");
                         bundle.putString(ProfileFragment.KEY_USER_ID, currentUser.getUid());
@@ -373,47 +371,46 @@ public class MainActivity extends AppCompatActivity implements
                         changeActionBarTitle(getString(R.string.my_profile));
                         if (profileFragment == null) {
                             profileFragment = new ProfileFragment();
-                            Log.d("FRAGMENT CREADO = ", "Profile");
                         }
                         profileFragment.setArguments(bundle);
                         fragments(profileFragment, ProfileFragment.TAG);
                         return true;
                     case R.id.my_pets:
-                        Log.d(TAG, "onCreate: MyPets Fragment");
                         changeActionBarTitle(getString(R.string.my_pets));
                         if (myPetsFragment == null) {
                             myPetsFragment = new MyPetsFragment();
-                            Log.d("FRAGMENT CREADO = ", "MyPets");
                         }
                         fragments(myPetsFragment, MyPetsFragment.TAG);
                         return true;
                     case R.id.plays:
-                        Log.d(TAG, "onCreate: Plays To Go Fragment");
                         changeActionBarTitle(getString(R.string.plays));
                         if (playsToGoFragment == null) {
                             playsToGoFragment = new PlaysToGoFragment();
-                            Log.d("FRAGMENT CREADO = ", "PlaysToGo");
                         }
                         fragments(playsToGoFragment, PlaysToGoFragment.TAG);
                         return true;
                     case R.id.chat:
-                        Log.d(TAG, "onCreate: Get type 1 -> showRoom");
                         changeActionBarTitle(getString(R.string.collection_chats));
                         if (chatRoomFragment == null) {
                             chatRoomFragment = new ChatRoomFragment();
-                            Log.d("FRAGMENT CREADO = ", "ChatRoom");
                         }
                         fragments(chatRoomFragment, ChatRoomFragment.TAG);
                         return true;
                     case R.id.searchDog:
-                        Log.d(TAG, "onCreate: -> SearchFragment");
                         changeActionBarTitle(getString(R.string.search));
                         if (searchFragment == null) {
                             searchFragment = new SearchFragment();
-                            Log.d("FRAGMENT CREADO = ", "Search");
                         }
                         fragments(searchFragment, SearchFragment.TAG);
                         return true;
+                    case R.id.users:
+                        changeActionBarTitle(getString(R.string.search));
+                        if (usersFragment == null) {
+                            usersFragment = new UsersFragment();
+                        }
+                        fragments(usersFragment, UsersFragment.TAG);
+                        return true;
+
                     case R.id.aboutLibraries:
                         new LibsBuilder()
                                 .withActivityTitle(getString(R.string.app_name))
@@ -426,15 +423,6 @@ public class MainActivity extends AppCompatActivity implements
                                 .start(this);
 
                         return true;
-
-                    case R.id.users:
-                        changeActionBarTitle(getString(R.string.search));
-                        if (usersFragment == null) {
-                            usersFragment = new UsersFragment();
-                            Log.d("FRAGMENT CREADO = ", "Search");
-                        }
-                        fragments(usersFragment, UsersFragment.TAG);
-                        return true;
                 }
             }else {
                 goLogIn();
@@ -444,7 +432,6 @@ public class MainActivity extends AppCompatActivity implements
 
         //TABS FRAGMENTS
         List<Fragment> fragmentList = new ArrayList<>();
-        Log.d("FRAGMENT CREADO = ", "PlayDate + Firends");
         fragmentList.add(new PlayDateFragment());
         fragmentList.add(new FriendsFragment());
 
@@ -480,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            Log.d(TAG, "getInstanceId failed", task.getException());
                             return;
                         }
 
@@ -561,11 +548,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    @SuppressLint("WrongConstant")
     @Override
     public void onBackPressed() {
-
-        if (drawerLayout.isDrawerOpen(Gravity.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawers();
         }else if (fragmentManager.getBackStackEntryCount() > 0) {
             while (fragmentManager.getBackStackEntryCount() > 0) {
@@ -760,22 +745,27 @@ public class MainActivity extends AppCompatActivity implements
     //CHECK INSTANCE OF FRAGMENT ***to implement the listenings
     @Override
     public void onAttachFragment(@NonNull Fragment fragment) {
-        if (fragment instanceof FriendsFragment) {
-            FriendsFragment friendsFragment = (FriendsFragment) fragment;
-            //friendsFragment.setFriendsInterface(this);
-        }
-        if (fragment instanceof SearchFragment) {
-            SearchFragment searchFragment = (SearchFragment) fragment;
-           // searchFragment.setSearchInterface(this);
-        }
         if (fragment instanceof MyPetsFragment) {
             MyPetsFragment myPetsFragment = (MyPetsFragment) fragment;
             myPetsFragment.setMyPetsInterface(this);
         }
-        if (fragment instanceof UsersFragment){
-            UsersFragment usersFragment = (UsersFragment) fragment;
-            //TODO
+        /* TODO-->
+        if (fragment instanceof FriendsFragment) {
+            Log.d(TAG, "onAttachFragment: Firends");
+            FriendsFragment friendsFragment = (FriendsFragment) fragment;
+            //friendsFragment.setFriendsInterface(this);
         }
+        if (fragment instanceof SearchFragment) {
+            Log.d(TAG, "onAttachFragment: Search");
+            SearchFragment searchFragment = (SearchFragment) fragment;
+           // searchFragment.setSearchInterface(this);
+        }
+
+        if (fragment instanceof UsersFragment){
+            Log.d(TAG, "onAttachFragment: Users");
+            UsersFragment usersFragment = (UsersFragment) fragment;
+        }
+         */
 
     }
 
@@ -795,7 +785,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void goToAddPet() {
         AddPetFragment addPetFragment = new AddPetFragment();
-        Log.d("FRAGMENT CREADO = ", "AddPet");
         changeActionBarTitle(getString(R.string.add_pet_title));
         fragments(addPetFragment, AddPetFragment.TAG);
     }

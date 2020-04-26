@@ -63,9 +63,8 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         View view = inflater.inflate(R.layout.card_view_friend,parent,false);
 
         //holder
-        FriendViewHolder friendViewHolder = new FriendViewHolder(view);
 
-        return friendViewHolder;
+        return new FriendViewHolder(view);
     }
 
     @Override
@@ -87,19 +86,18 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         void update(int index);
     }
 
-    public class FriendViewHolder extends RecyclerView.ViewHolder{
+    private class FriendViewHolder extends RecyclerView.ViewHolder{
 
         //Atributos
         private CircularImageView ivCVFriend;
         private TextView tvCVNameFriend;
-        private ImageView chatCardViewFriend;
 
-        public FriendViewHolder(@NonNull View itemView) {
+        private FriendViewHolder(@NonNull View itemView) {
             super(itemView);
 
             ivCVFriend = itemView.findViewById(R.id.ivCVFriend);
             tvCVNameFriend = itemView.findViewById(R.id.tvCVNameFriend);
-            chatCardViewFriend = itemView.findViewById(R.id.chatCardViewFriend);
+            ImageView chatCardViewFriend = itemView.findViewById(R.id.chatCardViewFriend);
 
             chatCardViewFriend.setOnClickListener(v -> {
                 Pet pet = petList.get(getAdapterPosition());
@@ -134,15 +132,14 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
             builder.setPositiveButton(context.getString(R.string.dialog_confirm_accept), (dialog, which) ->{
                 //Create on the current user a document with firend list
-                CollectionReference myFriendCol = FirebaseFirestore.getInstance().collection(context.getString(R.string.collection_users))
-                        .document(FirebaseAuth.getInstance().getUid()).collection(context.getString(R.string.collection_my_friends));
+                CollectionReference myFriendCol = FirebaseFirestore.getInstance().collection(Keys.KEY_OWNER)
+                        .document(FirebaseAuth.getInstance().getUid()).collection(Keys.KEY_OWNER_MY_FRIENDS);
 
                 myFriendCol.document(pet.getIdPet()).delete();
                 notifyDataSetChanged();
                 friendAdapterInterface.update(index);
             });
-
-            builder.setNegativeButton(context.getString(R.string.dialog_confirm_cancel), (dialog, which) -> dialog.cancel());
+            builder.setNeutralButton(context.getString(R.string.dialog_confirm_cancel), (dialog, which) -> dialog.cancel());
 
             builder.show();
         }

@@ -223,6 +223,11 @@ public class ChatRoomFragment extends Fragment implements FragmentTitles {
                 }
 
                 userAdapter.setmUsers(sortedList);
+                if (sortedList.size()>0){
+                    emptyStateChatRoom.setVisibility(View.GONE);
+                }else {
+                    emptyStateChatRoom.setVisibility(View.VISIBLE);
+                }
             }
         });
 

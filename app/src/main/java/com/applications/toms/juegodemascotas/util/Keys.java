@@ -13,6 +13,7 @@ public class Keys {
     public static final String KEY_OWNER_SEARCH = "search";
     public static final String KEY_OWNER_TOKEN = "token";
     public static final String KEY_OWNER_EMAIL = "email";
+    public static final String KEY_OWNER_MY_FRIENDS = "myFriends";
 
     //PETS
     public static final String KEY_PET = "Pets";

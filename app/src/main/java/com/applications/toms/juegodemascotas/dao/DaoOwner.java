@@ -27,17 +27,6 @@ public class DaoOwner {
         mDatabase = FirebaseFirestore.getInstance();
     }
 
-    //return all owners from DataBase
-    public void fetchOwnerList(Context context, ResultListener<List<Owner>> listResultListener){
-        //DataBase Collection of owners/users
-        CollectionReference ownerRef = mDatabase.collection(context.getString(R.string.collection_users));
-        //extract list of owners
-        ownerRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            ownerList.addAll(queryDocumentSnapshots.toObjects(Owner.class));
-            listResultListener.finish(ownerList);
-        });
-    }
-
     //return one owner based on their user id
     public void fetchOwner(String ownerId,Context context, ResultListener<Owner> ownerResultListener){
         //extract single owner data
@@ -52,13 +41,6 @@ public class DaoOwner {
                 ownerResultListener.finish(null);
             }
         });
-    }
-
-    //return avatars owner from storage
-    public void fetchOwnerAvatar(String userId, String avatar, Context context, ResultListener<Uri> uriResultListener){
-        FirebaseStorage mStorage = FirebaseStorage.getInstance();
-        StorageReference storageReference = mStorage.getReference().child(userId).child(avatar);
-        storageReference.getDownloadUrl().addOnSuccessListener(uri -> uriResultListener.finish(uri));
     }
 
     public void fetchFriends(String ownerId,Context context, ResultListener<List<Pet>> friendsResultListener){
