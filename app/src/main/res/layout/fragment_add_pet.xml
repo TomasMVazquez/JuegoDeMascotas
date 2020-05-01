@@ -74,6 +74,7 @@
                     android:inputType="textPersonName|textCapWords"
                     android:textColor="@color/colorBlack"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,6 +91,7 @@
                     android:inputType="date"
                     android:textColor="@color/colorBlack"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -163,6 +165,7 @@
                     android:textAlignment="textStart"
                     android:ellipsize="start"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 

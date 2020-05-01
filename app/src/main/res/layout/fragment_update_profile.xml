@@ -46,6 +46,7 @@
                     android:hint="@string/updateName"
                     android:inputType="textPersonName"
                     android:background="@color/colorWhite"
+                    android:autofillHints="@string/updateName"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,7 +63,7 @@
                     android:hint="@string/updateDir"
                     android:inputType="textPostalAddress|textCapWords"
                     android:background="@color/colorWhite"
-                    />
+                    android:importantForAutofill="no" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -114,6 +115,7 @@
                     android:hint="@string/updateBirth"
                     android:inputType="date"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,7 +135,7 @@
                     android:textAlignment="textStart"
                     android:ellipsize="start"
                     android:background="@color/colorWhite"
-                    />
+                    android:importantForAutofill="noExcludeDescendants"/>
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

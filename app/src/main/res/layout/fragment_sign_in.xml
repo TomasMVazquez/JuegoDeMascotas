@@ -56,6 +56,7 @@
                     android:hint="@string/email_login"
                     android:inputType="textEmailAddress"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,6 +80,7 @@
                         android:hint="@string/pass_login"
                         android:inputType="textPassword"
                         android:background="@color/colorWhite"
+                        android:importantForAutofill="noExcludeDescendants"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
 

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
+import android.service.autofill.FillRequest;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -55,10 +58,13 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,6 +80,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class NewPlayDate extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -132,6 +139,15 @@ public class NewPlayDate extends AppCompatActivity implements
         llNewPlayDate = findViewById(R.id.llNewPlayDate);
 
         etDatePlayDate.clearFocus();
+        /*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            etTitlePlayDate.setAutofillHints(View.AUTOFILL_HINT_NAME);
+            etDatePlayDate.setAutofillHints(String.valueOf(View.AUTOFILL_TYPE_DATE));
+            etHourPlayDate.setAutofillHints(String.valueOf(View.AUTOFILL_TYPE_DATE));
+            etPlayLocation.setAutofillHints(View.AUTOFILL_HINT_POSTAL_ADDRESS);
+        }
+
+         */
 
         //controller
         ownerController = new OwnerController();
@@ -196,7 +212,7 @@ public class NewPlayDate extends AppCompatActivity implements
 
         // Setup Places Client
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), Util.googleMapsApiKey(this));
+            Places.initialize(getApplicationContext(), Objects.requireNonNull(Util.googleMapsApiKey(this)));
         }
         placesClient = Places.createClient(this);
         
@@ -211,6 +227,7 @@ public class NewPlayDate extends AppCompatActivity implements
             }
         });
 
+        //Focus on edit text search place
         etPlayLocation.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus){
                 searchInMap();
@@ -329,6 +346,9 @@ public class NewPlayDate extends AppCompatActivity implements
                 now.get(Calendar.DAY_OF_MONTH) // Inital day selection
         );
         dpd.setMinDate(now);
+        dpd.setAccentColor(getColor(R.color.colorPrimary));
+        dpd.setOkColor(getColor(R.color.colorTeal_light));
+        dpd.setCancelColor(getColor(R.color.colorTeal_light));
         // If you're calling this from an AppCompatActivity
          dpd.show(getSupportFragmentManager(), "Datepickerdialog");
     }
@@ -342,6 +362,9 @@ public class NewPlayDate extends AppCompatActivity implements
                 now.get(Calendar.MINUTE),
                 true
         );
+        tpd.setAccentColor(getColor(R.color.colorPrimary));
+        tpd.setCancelColor(getColor(R.color.colorTeal_light));
+        tpd.setOkColor(getColor(R.color.colorTeal_light));
         tpd.show(getSupportFragmentManager(),"Timepickerdialog");
     }
 
@@ -378,11 +401,11 @@ public class NewPlayDate extends AppCompatActivity implements
         }
 
         // Start the autocomplete intent.
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY, fields)
-                .setLocationBias(RectangularBounds.newInstance(
-                        biasLocation, biasLocation))
-                .build(NewPlayDate.this);
+        Intent intent =
+                    new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                            .setLocationBias(RectangularBounds.newInstance(biasLocation, biasLocation))
+                            .build(NewPlayDate.this);
+
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
@@ -390,6 +413,7 @@ public class NewPlayDate extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
@@ -476,10 +500,12 @@ public class NewPlayDate extends AppCompatActivity implements
     //Mover mapa
     private void moveCamera(LatLng latLng, float zoom,String title){
         Log.d(TAG, "moveCamera: Moving the camera to: lat: " + latLng.latitude + " , lng: " + latLng.longitude );
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
-        if (!title.equals(getResources().getString(R.string.myLocation))) {
-            MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-            mMap.addMarker(options);
+        if (mMap!=null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+            if (!title.equals(getResources().getString(R.string.myLocation))) {
+                MarkerOptions options = new MarkerOptions().position(latLng).title(title);
+                mMap.addMarker(options);
+            }
         }
         hideSoftKeyboard();
     }
@@ -565,4 +591,6 @@ public class NewPlayDate extends AppCompatActivity implements
             init();
         }
     }
+
+
 }

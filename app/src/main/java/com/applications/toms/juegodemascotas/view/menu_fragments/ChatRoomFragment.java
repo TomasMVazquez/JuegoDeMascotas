@@ -113,11 +113,16 @@ public class ChatRoomFragment extends Fragment implements FragmentTitles {
 
                 }
 
+                if (userList.size()>0){
+                    emptyStateChatRoom.setVisibility(View.GONE);
+                }else {
+                    emptyStateChatRoom.setVisibility(View.VISIBLE);
+                }
+
                 //Buscar index de los chats
                 getIndexChats(indexsList);
             }
         });
-
 
         return view;
     }
@@ -223,11 +228,7 @@ public class ChatRoomFragment extends Fragment implements FragmentTitles {
                 }
 
                 userAdapter.setmUsers(sortedList);
-                if (sortedList.size()>0){
-                    emptyStateChatRoom.setVisibility(View.GONE);
-                }else {
-                    emptyStateChatRoom.setVisibility(View.VISIBLE);
-                }
+
             }
         });
 
