@@ -130,6 +130,7 @@
     <string name="date_new_play_date">Fecha</string>
     <string name="hour_new_play_date">Hora</string>
     <string name="Title_new_play_date">Nombre del nuevo juego</string>
+    <string name="reference_new_play_date">Referencia donde encontrarse</string>
     <string name="error_location">No pudimos rastrear su ubicación</string>
 
 

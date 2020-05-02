@@ -94,6 +94,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private TextView tvDateTimePlayDetail;
     private TextView tvSizePlayDetail;
     private TextView quantityParticipants;
+    private TextView tvReferencePlayDetail;
     private ImageView ivOwnerCreator;
     private RecyclerView rvPetsCreator;
     private RecyclerView rvPetsParticipants;
@@ -140,6 +141,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         quantityParticipants.setText("0");
         fabExitPlay = findViewById(R.id.fabExitPlay);
         nestedScroll = findViewById(R.id.nestedScroll);
+        tvReferencePlayDetail = findViewById(R.id.tvReferencePlayDetail);
 
         //Adapter
         circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
@@ -317,6 +319,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         tvDateTimePlayDetail.setText(dateTime);
         tvSizePlayDetail.setText(playDateDetail.getSize());
         circulePetsCreatorsAdapter.setPetList(playDateDetail.getCreatorPets());
+        tvReferencePlayDetail.setText(playDateDetail.getReferenceLocation());
 
         PetController petController = new PetController();
         if (playDateDetail.getParticipants().size()>0) {
