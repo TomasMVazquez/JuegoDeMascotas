@@ -172,6 +172,8 @@ public class ProfileFragment extends Fragment implements
         //edit btn for avatar
         fabImageProfile.setOnClickListener(v -> {
             if (type.equals("1")) {
+                int length = currentUser.getPhotoUrl().toString().split("/").length;
+                photoOwnerActual = currentUser.getPhotoUrl().toString().split("/")[length-1];
                 EasyImage.openChooserWithGallery(getActivity(), context.getString(R.string.take_profile_picture), KEY_CAMERA_OWNER_PICTURE);
             } else if (type.equals("2")) {
                 EasyImage.openChooserWithGallery(getActivity(), context.getString(R.string.take_profile_pet_picture), KEY_CAMERA_PET_PICTURE);
@@ -327,6 +329,7 @@ public class ProfileFragment extends Fragment implements
                         Glide.with(context).load(context.getDrawable(R.drawable.dog_48)).into(ivProfile);
                     }else {
                         Glide.with(context).load(pet.getPhoto()).into(ivProfile);
+                        photoPetActual = pet.getPhoto();
                     }
                 }
             }
@@ -382,7 +385,6 @@ public class ProfileFragment extends Fragment implements
                 break;
 
             case KEY_CAMERA_PET_PICTURE:
-                final StorageReference nuevaFotoPet = raiz.child(idUser).child(uriTemp.getLastPathSegment());
                 //Poner nueva foto
                 Glide.with(activity).load(uri).into(ivProfile);
                 MainActivity.updatePhotoPet(idUser, petId, photoPetActual, uriTemp.getLastPathSegment(), uriTemp);

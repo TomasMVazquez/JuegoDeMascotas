@@ -186,8 +186,10 @@ public class MainActivity extends AppCompatActivity implements
 
     //Update pet profile info
     public static void updatePhotoPet(final String idOwner, final String idPet, String oldPhoto, final String newPhoto, Uri uriTemp) {
-        StorageReference storageReference = mStorage.getReference().child(idOwner).child(oldPhoto);
-        storageReference.delete();
+        if (oldPhoto!=null) {
+            StorageReference storageReference = mStorage.getReferenceFromUrl(oldPhoto);
+            storageReference.delete();
+        }
 
         DocumentReference userRefMasc = db.collection(Keys.KEY_OWNER)
                 .document(idOwner).collection(Keys.KEY_MY_PETS).document(idPet);
