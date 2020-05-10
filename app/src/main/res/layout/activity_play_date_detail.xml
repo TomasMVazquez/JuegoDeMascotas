@@ -68,7 +68,6 @@
                 android:elevation="10dp"
                 >
 
-
                 <com.mikhaellopez.circularimageview.CircularImageView
                     android:id="@+id/ivOwnerCreator"
                     android:layout_width="60dp"
@@ -79,7 +78,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     >
                     <TextView
@@ -97,6 +96,16 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="16sp"
                         tools:text="LOCALIZACION" />
+
+                    <TextView
+                        android:id="@+id/tvReferencePlayDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:lines="1"
+                        android:textSize="14sp"
+                        android:gravity="start"
+                        tools:text="En la esquina de calle falsa y fonny" />
                 </LinearLayout>
 
             </LinearLayout>

@@ -9,6 +9,7 @@ public class PlayDate implements Comparable<PlayDate> {
 
     //atributos
     private String idPlay;
+    private String title;
     private Integer privacy; //La privacy es 0 para publica y 1 para privada -- por ahora no esta la funcionalidad de privada
     private String datePlay;
     private String timePlay;
@@ -17,13 +18,15 @@ public class PlayDate implements Comparable<PlayDate> {
     private List<Pet> creatorPets;
     private Owner creator;
     private List<String> participants;
+    private String referenceLocation;
 
     //Constructor
 
     public PlayDate() {
     }
 
-    public PlayDate(String idPlay, Integer privacy, String datePlay, String timePlay, String idPlace, String size, List<Pet> creatorPets, Owner creator, List<String> participants) {
+    public PlayDate(String title,String idPlay, Integer privacy, String datePlay, String timePlay, String idPlace, String size, List<Pet> creatorPets, Owner creator, List<String> participants, String referenceLocation) {
+        this.title = title;
         this.idPlay = idPlay;
         this.privacy = privacy;
         this.datePlay = datePlay;
@@ -33,9 +36,14 @@ public class PlayDate implements Comparable<PlayDate> {
         this.creatorPets = creatorPets;
         this.creator = creator;
         this.participants = participants;
+        this.referenceLocation = referenceLocation;
     }
 
     //Getter
+
+    public String getTitle() {
+        return title;
+    }
 
     public String getIdPlay() {
         return idPlay;
@@ -71,6 +79,10 @@ public class PlayDate implements Comparable<PlayDate> {
 
     public List<String> getParticipants() {
         return participants;
+    }
+
+    public String getReferenceLocation() {
+        return referenceLocation;
     }
 
     //ToString

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
+import android.service.autofill.FillRequest;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -55,10 +58,13 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,6 +80,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class NewPlayDate extends AppCompatActivity implements
         OnMapReadyCallback,
@@ -109,6 +116,8 @@ public class NewPlayDate extends AppCompatActivity implements
     private Owner creator;
 
     private String errorMsg;
+    private String title;
+
 
     //Widgets
     private PlacesClient placesClient;
@@ -116,6 +125,7 @@ public class NewPlayDate extends AppCompatActivity implements
     private EditText etDatePlayDate;
     private EditText etHourPlayDate;
     private EditText etTitlePlayDate;
+    private EditText etReferencePlayDate;
     private Button btnNewPlayDate;
     private Spinner spinnerPetSizePlayDate;
 
@@ -130,6 +140,14 @@ public class NewPlayDate extends AppCompatActivity implements
         etTitlePlayDate = findViewById(R.id.etTitlePlayDate);
         btnNewPlayDate = findViewById(R.id.btnNewPlayDate);
         llNewPlayDate = findViewById(R.id.llNewPlayDate);
+        etReferencePlayDate = findViewById(R.id.etReferencePlayDate);
+
+        //NO MOSTRAR NOMBRE DEL JUEGO
+        etTitlePlayDate.setVisibility(View.GONE);
+        title = etTitlePlayDate.getText().toString();
+        if (title.equals("")){
+            title = getString(R.string.image_default);
+        }
 
         etDatePlayDate.clearFocus();
 
@@ -196,7 +214,7 @@ public class NewPlayDate extends AppCompatActivity implements
 
         // Setup Places Client
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), Util.googleMapsApiKey(this));
+            Places.initialize(getApplicationContext(), Objects.requireNonNull(Util.googleMapsApiKey(this)));
         }
         placesClient = Places.createClient(this);
         
@@ -211,9 +229,22 @@ public class NewPlayDate extends AppCompatActivity implements
             }
         });
 
+        //Focus on edit text search place
         etPlayLocation.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus){
                 searchInMap();
+            }
+        });
+
+        //On accept hide keyboard
+        etReferencePlayDate.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
+                    Util.hideKeyboard(NewPlayDate.this);
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -221,7 +252,7 @@ public class NewPlayDate extends AppCompatActivity implements
     //Checking that all data is correctly completed
     public Boolean checkCompleteData(){
 
-        if (etTitlePlayDate.getText().toString().equals("")){
+        if (title.equals("")){
             errorMsg = "Debes completar el nombre del juego";
             etTitlePlayDate.requestFocus();
             return false;
@@ -252,6 +283,12 @@ public class NewPlayDate extends AppCompatActivity implements
             }else {
                 etPlayLocation.requestFocus();
             }
+            return false;
+        }
+
+        if (etReferencePlayDate.getText().toString().equals("")){
+            errorMsg = "Debes señalar un lugar donde encontrarse, por ejemplo: junto al monumento de ...";
+            etReferencePlayDate.requestFocus();
             return false;
         }
 
@@ -287,6 +324,7 @@ public class NewPlayDate extends AppCompatActivity implements
         List<String> invitados = new ArrayList<>();
         //Creo el nuevo juego
         PlayDate newPlay = new PlayDate(
+                title,
                 idPlay,
                 0, //La privacidad es 0 para publica y 1 para privada -- por ahora no esta la funcionalidad de privada
                 etDatePlayDate.getText().toString(),
@@ -295,7 +333,8 @@ public class NewPlayDate extends AppCompatActivity implements
                 size,
                 myPets,
                 creator,
-                invitados
+                invitados,
+                etReferencePlayDate.getText().toString()
                 );
 
         //Agrego el juego a las collectiones
@@ -329,6 +368,9 @@ public class NewPlayDate extends AppCompatActivity implements
                 now.get(Calendar.DAY_OF_MONTH) // Inital day selection
         );
         dpd.setMinDate(now);
+        dpd.setAccentColor(getColor(R.color.colorPrimary));
+        dpd.setOkColor(getColor(R.color.colorTeal_light));
+        dpd.setCancelColor(getColor(R.color.colorTeal_light));
         // If you're calling this from an AppCompatActivity
          dpd.show(getSupportFragmentManager(), "Datepickerdialog");
     }
@@ -336,12 +378,16 @@ public class NewPlayDate extends AppCompatActivity implements
     //TimePicker
     private void timePicker(){
         Calendar now = Calendar.getInstance();
+
         TimePickerDialog tpd = TimePickerDialog.newInstance(
                 NewPlayDate.this,
-                now.get(Calendar.HOUR),
-                now.get(Calendar.MINUTE),
+                now.get(Calendar.HOUR_OF_DAY),
+                00,
                 true
         );
+        tpd.setAccentColor(getColor(R.color.colorPrimary));
+        tpd.setCancelColor(getColor(R.color.colorTeal_light));
+        tpd.setOkColor(getColor(R.color.colorTeal_light));
         tpd.show(getSupportFragmentManager(),"Timepickerdialog");
     }
 
@@ -361,7 +407,7 @@ public class NewPlayDate extends AppCompatActivity implements
             return false;
         });
 
-        hideSoftKeyboard();
+        Util.hideKeyboard(NewPlayDate.this);
     }
 
     private void searchInMap(){
@@ -378,11 +424,11 @@ public class NewPlayDate extends AppCompatActivity implements
         }
 
         // Start the autocomplete intent.
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY, fields)
-                .setLocationBias(RectangularBounds.newInstance(
-                        biasLocation, biasLocation))
-                .build(NewPlayDate.this);
+        Intent intent =
+                    new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                            .setLocationBias(RectangularBounds.newInstance(biasLocation, biasLocation))
+                            .build(NewPlayDate.this);
+
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
@@ -390,6 +436,7 @@ public class NewPlayDate extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
@@ -412,6 +459,7 @@ public class NewPlayDate extends AppCompatActivity implements
                     moveCamera(mPlace.getLatLng(),DEFAULT_ZOOM,mPlace.getName());
                     etPlayLocation.setText(mPlace.getName());
                     idPlace = mPlace.getId();
+                    etReferencePlayDate.requestFocus();
                 }).addOnFailureListener(exception -> {
                     if (exception instanceof ApiException) {
                         ApiException apiException = (ApiException) exception;
@@ -476,12 +524,14 @@ public class NewPlayDate extends AppCompatActivity implements
     //Mover mapa
     private void moveCamera(LatLng latLng, float zoom,String title){
         Log.d(TAG, "moveCamera: Moving the camera to: lat: " + latLng.latitude + " , lng: " + latLng.longitude );
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
-        if (!title.equals(getResources().getString(R.string.myLocation))) {
-            MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-            mMap.addMarker(options);
+        if (mMap!=null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+            if (!title.equals(getResources().getString(R.string.myLocation))) {
+                MarkerOptions options = new MarkerOptions().position(latLng).title(title);
+                mMap.addMarker(options);
+            }
         }
-        hideSoftKeyboard();
+        Util.hideKeyboard(NewPlayDate.this);
     }
 
     //Inicializar el mapa
@@ -534,11 +584,6 @@ public class NewPlayDate extends AppCompatActivity implements
         }
     }
 
-    //Esconder el teclado
-    private void hideSoftKeyboard(){
-         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
     //DATE TIME PICKERS Method
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
@@ -565,4 +610,6 @@ public class NewPlayDate extends AppCompatActivity implements
             init();
         }
     }
+
+
 }

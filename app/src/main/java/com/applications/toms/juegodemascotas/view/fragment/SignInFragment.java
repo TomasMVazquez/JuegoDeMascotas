@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.applications.toms.juegodemascotas.R;
+import com.applications.toms.juegodemascotas.util.Util;
 import com.applications.toms.juegodemascotas.view.LogInActivity;
 import com.applications.toms.juegodemascotas.view.NewPlayDate;
 import com.applications.toms.juegodemascotas.view.SignInUpActivity;
@@ -79,6 +80,9 @@ public class SignInFragment extends Fragment {
 
         //Button SignIn to sign in
         btnSignIn.setOnClickListener(v -> {
+
+            Util.hideKeyboard(getActivity());
+
             if (!etSigIn.getText().toString().equals("") && !etSigInPass.getText().toString().equals("")) {
                 signInNotify.signIn(etSigIn.getText().toString(), etSigInPass.getText().toString());
             }
@@ -87,6 +91,9 @@ public class SignInFragment extends Fragment {
         //Button to reset password if forgotten
         btnRetrieve.setOnClickListener(v -> {
             if (!etSigIn.getText().toString().equals("")){
+
+                Util.hideKeyboard(getActivity());
+
                 signInNotify.resetPass(etSigIn.getText().toString());
             }else {
                 Snackbar.make(flSignin,getString(R.string.error_email_signin),Snackbar.LENGTH_SHORT).show();
@@ -95,6 +102,7 @@ public class SignInFragment extends Fragment {
 
         //go to sign up if enter into sign in by mistake
         btnCreateAccountSignIn.setOnClickListener(v -> {
+            Util.hideKeyboard(getActivity());
             signInNotify.goSignUp();
             getActivity().getSupportFragmentManager().beginTransaction().remove(SignInFragment.this).commit();
         });

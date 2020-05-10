@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.controller.PetController;
 import com.applications.toms.juegodemascotas.controller.PlayController;
+import com.applications.toms.juegodemascotas.model.Owner;
 import com.applications.toms.juegodemascotas.model.PlayDate;
 import com.applications.toms.juegodemascotas.model.Pet;
 import com.applications.toms.juegodemascotas.util.ResultListener;
@@ -93,6 +94,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
     private TextView tvDateTimePlayDetail;
     private TextView tvSizePlayDetail;
     private TextView quantityParticipants;
+    private TextView tvReferencePlayDetail;
     private ImageView ivOwnerCreator;
     private RecyclerView rvPetsCreator;
     private RecyclerView rvPetsParticipants;
@@ -139,6 +141,7 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         quantityParticipants.setText("0");
         fabExitPlay = findViewById(R.id.fabExitPlay);
         nestedScroll = findViewById(R.id.nestedScroll);
+        tvReferencePlayDetail = findViewById(R.id.tvReferencePlayDetail);
 
         //Adapter
         circulePetsCreatorsAdapter = new CirculePetsAdapter(new ArrayList<>(),this,this);
@@ -316,26 +319,29 @@ public class PlayDateDetail extends AppCompatActivity implements  CirculePetsAda
         tvDateTimePlayDetail.setText(dateTime);
         tvSizePlayDetail.setText(playDateDetail.getSize());
         circulePetsCreatorsAdapter.setPetList(playDateDetail.getCreatorPets());
+        tvReferencePlayDetail.setText(playDateDetail.getReferenceLocation());
 
         PetController petController = new PetController();
         if (playDateDetail.getParticipants().size()>0) {
             for (String participant : playDateDetail.getParticipants()) {
                 petController.giveOwnerPets(participant, this, result -> {
-                    participantsList.addAll(result);
+                    for (Pet pet: result){
+                        if (!participantsList.contains(pet)){
+                            participantsList.add(pet);
+                        }
+                    }
                     circulePetsParticipantsAdapter.setPetList(participantsList);
                     quantityParticipants.setText(String.valueOf(participantsList.size()));
                 });
             }
         }
 
-        //Traer Foto del Owner
-        StorageReference storageReference = mStorage.getReference()
-                .child(playDateDetail.getCreator().getUserId())
-                .child(playDateDetail.getCreator().getAvatar());
-
-        storageReference.getDownloadUrl()
-                .addOnSuccessListener(uri -> Glide.with(this).load(uri).into(ivOwnerCreator))
-                .addOnFailureListener(e -> Glide.with(this).load(playDateDetail.getCreator().getAvatar()).into(ivOwnerCreator));
+        Owner owner = playDateDetail.getCreator();
+        if (owner.getAvatar().equals(getString(R.string.image_default))){
+            Glide.with(this).load(getDrawable(R.drawable.shadow_profile)).into(ivOwnerCreator);
+        }else {
+            Glide.with(this).load(owner.getAvatar()).into(ivOwnerCreator);
+        }
     }
 
     private void initMap(String placeId){

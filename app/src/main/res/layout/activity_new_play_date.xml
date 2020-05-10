@@ -16,7 +16,7 @@
         >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
@@ -42,10 +42,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/Title_new_play_date"
-                    android:inputType="textCapWords"
+                    android:inputType="textCapSentences"
                     android:textAlignment="textEnd"
                     android:textColor="@color/colorBlack"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,6 +64,7 @@
                     android:textAlignment="textEnd"
                     android:textColor="@color/colorBlack"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,10 +78,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/hour_new_play_date"
-                    android:inputType="date"
+                    android:inputType="datetime"
                     android:textAlignment="textEnd"
                     android:textColor="@color/colorBlack"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,6 +111,7 @@
                     android:textAllCaps="true"
                     android:textAlignment="textEnd"
                     android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,6 +137,28 @@
                     android:elevation="10dp"
                     />
             </RelativeLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tiReferencePlayDate"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:id="@+id/etReferencePlayDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/reference_new_play_date"
+                    android:inputType="textCapSentences"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/colorBlack"
+                    android:background="@color/colorWhite"
+                    android:importantForAutofill="noExcludeDescendants"
+                    android:maxLines="1"
+                    android:imeOptions="actionDone"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
     </ScrollView>
     <Button

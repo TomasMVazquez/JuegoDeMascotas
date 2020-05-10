@@ -1,0 +1,200 @@
+<resources>
+    <string name="app_name">Juego De Mascotas</string>
+    <string name="app_desc">En esta aplicación hemos utilizado las siguientes librerias</string>
+
+    //Terms y cond
+    <string name="tyc_1">Al ingresar estás aceptando nuestros </string>
+    <string name="tyc_2"><a href="https://www.websitepolicies.com/policies/view/XLzMTPjn">T y C</a></string>
+    <string name="priv_1">Al crear estás aceptando nuestra </string>
+    <string name="priv_2"><a href="https://www.websitepolicies.com/policies/view/kLgRSyTj">política de privacidad</a></string>
+
+    //OnBoarding Overstyle
+    <string name="onboard_main_toolbar_1">Bienvenido a </string>
+    <string name="onboard_main_toolbar_2">Una aplicacón pensada para que nuestras mascotas disfruten jugando juntas.</string>
+    <string name="onboard_main_toolbar_3">A la izquierda podrás encontrar las diferentes secciones del menú</string>
+    <string name="onboard_main_toolbar_4">A la derecha podrás encontrar el botón para crear tu usuario</string>
+    <string name="onboard_main_toolbar_5">Click en cualquier parte para continuar</string>
+
+    <string name="onboard_main_tablayout_1">Aquí podras ver los nuevos juegos creados, ordenados por fecha</string>
+    <string name="onboard_main_tablayout_2">y en la tab de la izquierda a tus amigos que fuiste agregando</string>
+
+    <string name="onboard_playdate_fab">Aquí puedes crear nuevos juegos</string>
+    <string name="onboard_mypets_fab">Aquí puedes ir agregando a tus mascotas</string>
+    <string name="onboard_profile_edit_fab">Aquí puedes editar tu perfil para saber más de vos</string>
+
+    <string name="onboard_click">ENTENDIDO</string>
+
+    //Menu Drawer
+    <string name="main">Inicio</string>
+    <string name="my_profile">Perfil</string>
+    <string name="my_pets">Mis Mascotas</string>
+    <string name="about_me">Sobre mí</string>
+    <string name="my_owner">Mi Dueñ@</string>
+    <string name="chat">Chat</string>
+    <string name="newchat">Chat</string>
+    <string name="search">Buscador</string>
+    <string name="search_pet">Buscador de Mascotas</string>
+    <string name="search_owner">Buscador de Dueños</string>
+    <string name="about_libraries">About</string>
+    <string name="plays">Juegos a asistir</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="login">Iniciar Sesión</string>
+
+    //TAB Navigation
+    <string name="juegos_fragment">Juegos</string>
+    <string name="amigos_fragment">Amigos</string>
+    <string name="mascotas_fragment">Mascotas</string>
+
+    //LogIn
+    <string name="email_login">Ingresá tu Email</string>
+    <string name="pass_login">Ingresá tu Contraseña</string>
+    <string name="pass_error_1">Debe contener más de 6 caracteres</string>
+    <string name="pass_error_2">Debe contener al menos un número</string>
+    <string name="btn_sign_up">Crear una cuenta</string>
+    <string name="msg_sign_up">¿No tienes cuenta?</string>
+    <string name="msg_forgot">¿Olvidaste tu contraseña?</string>
+    <string name="btn_retrieve">Recuperar</string>
+    <string name="btn_register">Crear Cuenta</string>
+    <string name="btn_sign_in">Iniciar sesión</string>
+    <string name="msg_sign_in">¿Ya tienes una cuenta?</string>
+    <string name="btn_register_toast">Un email se envió para ingresar una contraseña</string>
+    <string name="no_account_toast">Usuario y contraseña no coinciden, si no estas registrado vaya a crear cuenta</string>
+    <string name="msg_welcome_back">Bienvenido de Vuelta!</string>
+    <string name="msg_welcome">Bienvenido!</string>
+    <string name="msg_welcome_back_sub">Entrá y empezá a disfrutar con tus mascotas</string>
+    <string name="msg_welcome_sub">Crea una cuenta y disfrutá con tus mascotas</string>
+    <string name="msg_welcome_sub_first">Registrate y empezá a disfrutar con tus mascotas</string>
+    <string name="key_sign_in">sign_in</string>
+    <string name="key_sign_up">sign_up</string>
+    <string name="error_authentication">Error de autenticación</string>
+    <string name="error_email_signin">Ingrese su Email y vuelva a clickear</string>
+
+    //Firestore Strings
+    <string name="collection_users">Owners</string>
+    <string name="collection_play">Plays</string>
+    <string name="collection_pets">Pets</string>
+    <string name="collection_chats">Chats</string>
+    <string name="collection_my_chats">myChats</string>
+    <string name="collection_my_pets">myPets</string>
+    <string name="collection_my_friends">myFriends</string>
+    <string name="collection_my_plays">myPlays</string>
+    <string name="collection_creator">creator</string>
+    <string name="collection_creator_user_id">userId</string>
+    <string name="collection_participants">participants</string>
+    <string name="collection_id_pet">idPet</string>
+
+    //Profile
+    <string name="about_profile">En esta seccion puedes escribir un poco sobre vos, tus intereses, hobbies y otros. De esta manera cuando asistas a un juego el resto puede conocerte un poco</string>
+    <string name="updateAbout">Escribe un poco sobre vos, tus intereses, hobbies y otros.</string>
+    <string name="address_profile">Aquí puedes poner tu barrio</string>
+    <string name="about_pet">En esta seccion puedes escribir un poco sobre tu mascota, sus gustos, juegos favoritos y otros. De esta manera cuando asistas a un juego el resto puede conocer un poco de tu mascota</string>
+    <string name="take_profile_picture">Elige tu foto de perfil</string>
+    <string name="take_profile_pet_picture">Elige la foto de perfil de tu pet</string>
+    <string name="updateTitle">Actualice su perfíl</string>
+    <string name="updateName">Nombre Completo</string>
+    <string name="updateDir">Dirección/Barrio</string>
+    <string name="updateMasculino">Masculino</string>
+    <string name="updateFemenino">Femenino</string>
+    <string name="updateOtro">Prefiero no decir</string>
+    <string name="sex">Sexo:</string>
+    <string name="updateBirth">Fecha de Nacimiento</string>
+    <string name="btn_update">Actualizar Profile</string>
+    <string name="error_profile_delete">El perfil no se eliminó</string>
+    <string name="error_image_db">Error al guardar imagen en la base de datos</string>
+
+    //Add Pet
+    <string name="add_pet_title">Agregar Mascota</string>
+    <string name="add_pet_name">Nombre</string>
+    <string name="add_pet_birth">Fecha de Nacimiento</string>
+    <string name="add_pet_size">Tamaño</string>
+    <string name="add_pet_raza">Raza</string>
+    <string name="add_pet_photo">Foto Perfil</string>
+    <string name="add_pet_sex_m">Macho</string>
+    <string name="add_pet_sex_h">Hembra</string>
+    <string name="add_pet_info">Sobre tu mascota, sus gustos, juegos favoritos y otros</string>
+    <string name="add_pet_btn">Agregar Mascota</string>
+    <string name="spinner_small">Chico - 0kg a 15kg</string>
+    <string name="spinner_medium">Mediano - 15kg a 25kg</string>
+    <string name="spinner_large">Grande - más de 25kg</string>
+    <string name="spinner_all">Todos los tamaños</string>
+    <string name="error_missing_data">Faltan completar datos</string>
+
+    //New Play Date
+    //MAPS
+
+    <string name="playLocation">Ubicación</string>
+    <string name="myLocation">Mi ubicación</string>
+    <string name="btn_new_play_date">Crear Juego</string>
+    <string name="title_new_play_date">Crear Nuevo Juego</string>
+    <string name="date_new_play_date">Fecha</string>
+    <string name="hour_new_play_date">Hora</string>
+    <string name="Title_new_play_date">Nombre del nuevo juego</string>
+    <string name="reference_new_play_date">Referencia donde encontrarse</string>
+    <string name="error_location">No pudimos rastrear su ubicación</string>
+
+
+    //CARD VIEW PLAY DATE
+    <string name="btn_join_me">Asistir</string>
+    <string name="btn_detail">Detalles</string>
+
+    //PLAY DETAIL
+    <string name="tv_when">Cuando:</string>
+    <string name="tv_where">Donde:</string>
+    <string name="tv_for">Para perros:</string>
+    <string name="tv_creator">Organizadores</string>
+    <string name="tv_participants">Participantes</string>
+    <string name="error_delete">No se eliminó de sus juegos</string>
+    <string name="play_added">Se agrego la cita a tus juegos</string>
+    <string name="play_deleted">Se eliminó de sus juegos</string>
+
+    //CHATS
+    <string name="messege_area">Escribe un mensaje…</string>
+    <string name="collection_chat_id">ChatId</string>
+    <string name="id_chat">idChat</string>
+    <string name="collection_messages">Messages</string>
+    <string name="add_friend">Agregar como amigo</string>
+    <string name="add_friend_confirmation">Se agregó como amigo</string>
+    <string name="add_friend_click">AGREGAR</string>
+
+    //NEW CHAT
+    <string name="type_msg">Escribe un mensaje...</string>
+    <string name="image_default">default</string>
+    <string name="status_on">online</string>
+    <string name="status_off">offline</string>
+
+    <string name="no_msg">Sin Mensajes</string>
+    <string name="seen">Visto</string>
+    <string name="delivered">Entregado</string>
+
+    <string name="error_no_msg">No se puede enviar mensajes vacios</string>
+    <string name="error_msg_push">Error al enviar notificación</string>
+    <string name="new_msg">Nuevo Mensaje</string>
+    //API SERVICES
+    <string name="fcm_url">https://fcm.googleapis.com/</string>
+
+    //MAIN
+    <string name="device_online">SU DISPOSITIVO NO ESTA CONECTADO</string>
+    <string name="problems_google">Hay problemas con Google Play Services</string>
+    <string name="problems_login">Error al intentar iniciar sesión</string>
+
+    //PlayDateFragment
+    <string name="play_already_joined">Ya te encuentras unido a este juego</string>
+    <string name="play_need_login">Debes iniciar sesión para crear un juego</string>
+
+    //ConfirmDialog
+    <string name="dialog_confirm_title">Confirmación</string>
+    <string name="dialog_confirm_text">Por favor confirmar que usted NO quiere participar de este juego</string>
+    <string name="dialog_confirm_accept">Confirmar</string>
+    <string name="dialog_confirm_cancel">Cancelar</string>
+    <string name="dialog_confirm_text_delete_friend">¿Está seguro que lo quiere eliminar?</string>
+
+    //Empty States
+    <string name="empty_state_play_date">No hay ningún Juego creado, sé el primero en crear uno! </string>
+    <string name="empty_state_play_go">No te has unido o creado ningún juego aún</string>
+    <string name="empty_state_friends">Busca a tus amigos en el Buscador y agregalos clickeando en el corazón</string>
+    <string name="empty_state_sala_chat">Aún no tienes ninguna conversación iniciada</string>
+    <string name="empty_state_my_pets">Para agregar a tus mascotas debes clickear el boton de abajo a la derecha</string>
+    <string name="empty_state_search">No hay amigos para mostrar</string>
+</resources>
+
