@@ -36,6 +36,7 @@
     <string name="search_pet">Buscador de Mascotas</string>
     <string name="search_owner">Buscador de Dueños</string>
     <string name="about_libraries">Librerias usadas</string>
+    <string name="about_us">Sobre nosotros</string>
     <string name="plays">Juegos a asistir</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -196,5 +197,11 @@
     <string name="empty_state_sala_chat">Aún no tienes ninguna conversación iniciada</string>
     <string name="empty_state_my_pets">Para agregar a tus mascotas debes clickear el boton de abajo a la derecha</string>
     <string name="empty_state_search">No hay amigos para mostrar</string>
+    //attributions and Licence
+    <string name="title_attribution">Agradecimientos</string>
+    <string name="desc_attribution">Esta aplicación no hubiese sido posible sin el uso de ciertos elementos de libre disposición como los iconos, librerias, códigos libres, entre otros.</string>
+    <string name="desc_2_attribution">Es por ello que queremos agradecerles y reconocerlos aquí, brindando su información, para que usuarios y programadores puedan saber sobre ellos:</string>
+    <string name="flaticon_attribution_icons8"><div>Icons made by <a href="https://icons8.com" title="Icons8">Icons8</a> </div></string>
+
 </resources>
 

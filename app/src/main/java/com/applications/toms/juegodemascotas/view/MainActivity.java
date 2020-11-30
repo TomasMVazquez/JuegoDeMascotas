@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
+import com.applications.toms.juegodemascotas.view.menu_fragments.AboutUsFragment;
 import com.applications.toms.juegodemascotas.view.menu_fragments.UsersFragment;
 import com.applications.toms.juegodemascotas.R;
 import com.applications.toms.juegodemascotas.model.Owner;
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements
     private MyPetsFragment myPetsFragment;
 
     private UsersFragment usersFragment;
+    private AboutUsFragment aboutUsFragment;
 
     //Método de cambio de estado en la base de datos
     private void status(String status){
@@ -414,6 +416,14 @@ public class MainActivity extends AppCompatActivity implements
                         fragments(usersFragment, UsersFragment.TAG);
                         return true;
 
+                    case R.id.aboutUs:
+                        changeActionBarTitle(getString(R.string.about_us));
+                        if (aboutUsFragment == null) {
+                            aboutUsFragment = new AboutUsFragment();
+                        }
+                        fragments(aboutUsFragment, AboutUsFragment.TAG);
+                        return true;
+
                     case R.id.aboutLibraries:
                         new LibsBuilder()
                                 .withActivityTitle(getString(R.string.app_name))
@@ -424,7 +434,6 @@ public class MainActivity extends AppCompatActivity implements
                                 .withLicenseDialog(true)
                                 .withLicenseShown(true)
                                 .start(this);
-
                         return true;
                 }
             }else {
