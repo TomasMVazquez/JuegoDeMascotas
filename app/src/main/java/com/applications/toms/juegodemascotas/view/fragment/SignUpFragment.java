@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -74,10 +75,12 @@ public class SignUpFragment extends Fragment {
             switch ( event.getAction() ) {
                 case MotionEvent.ACTION_DOWN:
                     etPassSigUp.setInputType(InputType.TYPE_CLASS_TEXT);
+                    ivVisiblePassUp.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_visibility_off_black_24dp));
                     break;
                 case MotionEvent.ACTION_UP:
                     etPassSigUp.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     etPassSigUp.setSelection(etPassSigUp.getText().toString().length());
+                    ivVisiblePassUp.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_visibility_black_24dp));
                     break;
             }
             return true;

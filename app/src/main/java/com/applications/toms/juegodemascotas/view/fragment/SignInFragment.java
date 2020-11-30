@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
@@ -69,10 +70,12 @@ public class SignInFragment extends Fragment {
             switch ( event.getAction() ) {
                 case MotionEvent.ACTION_DOWN:
                     etSigInPass.setInputType(InputType.TYPE_CLASS_TEXT);
+                    ivVisiblePass.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_visibility_off_black_24dp));
                     break;
                 case MotionEvent.ACTION_UP:
                     etSigInPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     etSigInPass.setSelection(etSigInPass.getText().toString().length());
+                    ivVisiblePass.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.ic_visibility_black_24dp));
                     break;
             }
             return true;

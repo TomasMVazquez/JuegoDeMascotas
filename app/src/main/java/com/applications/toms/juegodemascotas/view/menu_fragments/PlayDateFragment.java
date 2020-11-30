@@ -114,6 +114,8 @@ public class PlayDateFragment extends Fragment implements MapAdapter.MapAdapterI
                     }else {
                         emptyStatePlayDate.setVisibility(View.VISIBLE);
                     }
+                }else {
+                    emptyStatePlayDate.setVisibility(View.VISIBLE);
                 }
             });
 

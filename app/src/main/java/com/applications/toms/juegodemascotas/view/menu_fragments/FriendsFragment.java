@@ -74,10 +74,14 @@ public class FriendsFragment extends Fragment implements FriendsAdapter.FriendAd
         if (currentUser != null){
             OwnerController ownerController = new OwnerController();
             ownerController.giveFriends(petFriendList, currentUser.getUid(), context, result -> {
-                petFriendList.addAll(result);
-                friendsAdapter.setPetList(petFriendList);
-                if (petFriendList.size()>0){
-                    emptyStateFirends.setVisibility(View.GONE);
+                if(result != null) {
+                    petFriendList.addAll(result);
+                    friendsAdapter.setPetList(petFriendList);
+                    if (petFriendList.size() > 0) {
+                        emptyStateFirends.setVisibility(View.GONE);
+                    } else {
+                        emptyStateFirends.setVisibility(View.VISIBLE);
+                    }
                 }else {
                     emptyStateFirends.setVisibility(View.VISIBLE);
                 }
